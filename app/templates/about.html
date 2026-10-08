@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+{% block title %}About — PrediQt{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
+{% endblock %}
+
+{% block public_content %}
+
+<div class="about-wrap">
+
+    <!-- Header -->
+    <div class="about-header reveal">
+        <div class="about-header-label">About</div>
+        <div class="about-header-underline"></div>
+        <h1 class="about-header-title">The platform behind<br/><em>smarter fraud detection.</em></h1>
+    </div>
+
+    <!-- Three pillars -->
+    <div class="about-rows">
+
+        <div class="about-row about-row-normal about-row-anim" data-dir="left">
+            <div class="about-row-circle-wrap">
+                <div class="about-row-circle">
+                    <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&q=80"
+                         alt="Machine Learning" class="about-row-img" />
+                </div>
+            </div>
+            <div class="about-row-content">
+                <div class="about-row-badge">Machine Learning</div>
+                <h3 class="about-row-title">Three Specialist Models</h3>
+                <p class="about-row-desc">
+                    PrediQt is built on three independent Random Forest classifiers,
+                    each trained on a dedicated real-world dataset. The Credit Card
+                    model uses 1.85 million Sparkov transactions with merchant location,
+                    customer demographics and geographic distance signals. The Online
+                    Payment model uses 590,000 IEEE-CIS e-commerce transactions with
+                    card type, email domain and billing address verification. The Mobile
+                    Transfer model uses PaySim mobile money data with transfer type
+                    and balance change analysis. Together they cover the full spectrum
+                    of modern financial fraud.
+                </p>
+                <div class="about-row-tags">
+                    <span>Random Forest</span>
+                    <span>Sparkov</span>
+                    <span>IEEE-CIS</span>
+                    <span>PaySim</span>
+                    <span>2.5M Transactions</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="about-row about-row-reverse about-row-anim" data-dir="right">
+            <div class="about-row-circle-wrap">
+                <div class="about-row-circle">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80"
+                         alt="Auto Routing" class="about-row-img" />
+                </div>
+            </div>
+            <div class="about-row-content">
+                <div class="about-row-badge">Intelligence</div>
+                <h3 class="about-row-title">Smart Auto-Routing System</h3>
+                <p class="about-row-desc">
+                    The routing engine automatically determines which specialist model
+                    should analyse each transaction based on the transaction type selected
+                    by the user. Card purchases, ATM withdrawals, contactless payments
+                    and grocery transactions are routed to the Credit Card model.
+                    E-commerce orders, digital payments and subscriptions go to the
+                    Online Payment model. Bank transfers, mobile payments and cash
+                    withdrawals are handled by the Mobile Transfer model. The user
+                    never needs to choose a model manually. The system decides silently
+                    and instantly in the background.
+                </p>
+                <div class="about-row-tags">
+                    <span>15 Transaction Types</span>
+                    <span>Auto-Routing</span>
+                    <span>Optimal Threshold</span>
+                    <span>PR-AUC Maximisation</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="about-row about-row-normal about-row-anim" data-dir="left">
+            <div class="about-row-circle-wrap">
+                <div class="about-row-circle">
+                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80"
+                         alt="Platform" class="about-row-img" />
+                </div>
+            </div>
+            <div class="about-row-content">
+                <div class="about-row-badge">Platform</div>
+                <h3 class="about-row-title">Full-Stack Fraud Platform</h3>
+                <p class="about-row-desc">
+                    PrediQt is a complete fraud detection platform built with Python,
+                    Flask and SQLite. Users can check individual transactions through
+                    the universal prediction form, upload batch CSV files containing
+                    thousands of transactions for bulk processing, and monitor a
+                    live real-time transaction feed on the dashboard. Every prediction
+                    is stored with its risk level, fraud probability, transaction type
+                    and model used. Admin users have access to platform-wide statistics,
+                    full user management and audit capabilities. The platform runs
+                    entirely locally with no cloud dependency.
+                </p>
+                <div class="about-row-tags">
+                    <span>Python and Flask</span>
+                    <span>SQLite</span>
+                    <span>Real-time Feed</span>
+                    <span>Batch Upload</span>
+                    <span>Role-based Access</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Quote banner -->
+    <div class="about-quote reveal">
+        <div class="about-quote-inner">
+            <div class="about-quote-mark">"</div>
+            <p class="about-quote-text">
+                Fraud detection is not about catching criminals —
+                it is about protecting people.
+            </p>
+            <div class="about-quote-author">— PrediQt</div>
+        </div>
+    </div>
+
+    <!-- Contact / Info strip -->
+    <div class="about-contact reveal">
+        <div class="about-contact-item">
+            <div class="about-contact-icon"><i class="bi bi-mortarboard"></i></div>
+            <div class="about-contact-label">University</div>
+            <div class="about-contact-value">Ulster University</div>
+        </div>
+        <div class="about-contact-divider"></div>
+        <div class="about-contact-item">
+            <div class="about-contact-icon"><i class="bi bi-folder2-open"></i></div>
+            <div class="about-contact-label">Module</div>
+            <div class="about-contact-value">COM668 Computing Project</div>
+        </div>
+        <div class="about-contact-divider"></div>
+        <div class="about-contact-item">
+            <div class="about-contact-icon"><i class="bi bi-person"></i></div>
+            <div class="about-contact-label">Developer</div>
+            <div class="about-contact-value">Faysal Ahamed</div>
+        </div>
+        <div class="about-contact-divider"></div>
+        <div class="about-contact-item">
+            <div class="about-contact-icon"><i class="bi bi-credit-card-2-front"></i></div>
+            <div class="about-contact-label">Student ID</div>
+            <div class="about-contact-value">B00918889</div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+var revealEls = document.querySelectorAll('.reveal');
+var revealObs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+}, { threshold: 0.15 });
+revealEls.forEach(function(el) { revealObs.observe(el); });
+
+// Header underline
+var aboutHeader = document.querySelector('.about-header');
+if (aboutHeader) {
+    setTimeout(function() {
+        aboutHeader.querySelector('.about-header-underline').style.transform = 'scaleX(1)';
+        aboutHeader.querySelector('.about-header-label').style.opacity = '1';
+        aboutHeader.querySelector('.about-header-label').style.transform = 'translateX(0)';
+    }, 300);
+}
+
+var aboutRows = document.querySelectorAll('.about-row-anim');
+var aboutRowObs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('about-row-visible');
+        }
+    });
+}, { threshold: 0.2 });
+
+aboutRows.forEach(function(row) { aboutRowObs.observe(row); });
+</script>
+{% endblock %}

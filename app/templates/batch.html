@@ -1,0 +1,404 @@
+
+{% extends "base.html" %}
+{% block title %}Batch Upload — PrediQt{% endblock %}
+{% block page_title %}Batch Upload{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/batch.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero -->
+<div class="bt-hero">
+    <div class="bt-hero-img-side">
+        <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=1200&q=80" />
+    </div>
+    <div class="bt-hero-shape">
+        <div class="bt-hero-inner">
+            <div class="bt-hero-label">Bulk Fraud Detection</div>
+            <h1 class="bt-hero-title">
+                For every<br/>
+                <em>transaction.</em>
+            </h1>
+            <p class="bt-hero-sub">
+                Upload a CSV with thousands of transactions and get fraud predictions
+                for all of them at once.
+            </p>
+            <a href="#batchForm" class="bt-hero-cta">Get Started</a>
+        </div>
+    </div>
+    <div class="bt-scroll-cue"><i class="bi bi-chevron-down"></i><div>Scroll</div></div>
+</div>
+
+<!-- Showcase -->
+<div class="bt-showcase reveal">
+    <div class="bt-showcase-header">
+        <h2 class="bt-showcase-title">Three models, one upload.</h2>
+        <p class="bt-showcase-sub">
+            PrediQt automatically routes your file to whichever specialist model<br/>
+            fits the transaction type you're analysing.
+        </p>
+    </div>
+    <div class="bt-showcase-grid">
+        <div class="bt-showcase-card reveal">
+            <div class="bt-sc-body">
+                <h3 class="bt-sc-title">Credit card transactions, covered.</h3>
+                <p class="bt-sc-desc">Trained on the Sparkov dataset across 1.85M transactions. Catches card purchases, ATM withdrawals and online shopping in real time.</p>
+                <a href="{{ url_for('performance') }}" class="bt-sc-btn">View performance</a>
+            </div>
+            <div class="bt-sc-media">
+                <div class="bt-sc-blob"></div>
+                <img src="https://images.unsplash.com/photo-1559526324-593bc073d938?w=600&q=80" alt="Credit card" />
+            </div>
+        </div>
+        <div class="bt-showcase-card reveal">
+            <div class="bt-sc-body">
+                <h3 class="bt-sc-title">Every online payment, checked.</h3>
+                <p class="bt-sc-desc">Built on IEEE-CIS data spanning 590K transactions. Flags risky e-commerce, subscriptions and digital payments before they go through.</p>
+                <a href="{{ url_for('performance') }}" class="bt-sc-btn">View performance</a>
+            </div>
+            <div class="bt-sc-media">
+                <div class="bt-sc-blob"></div>
+                <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&q=80" alt="Online payment" />
+            </div>
+        </div>
+        <div class="bt-showcase-card reveal">
+            <div class="bt-sc-body">
+                <h3 class="bt-sc-title">Mobile transfers, made safer.</h3>
+                <p class="bt-sc-desc">Trained on PaySim's 58K simulated mobile transactions. The strongest of the three, built for bank transfers and mobile payments.</p>
+                <a href="{{ url_for('performance') }}" class="bt-sc-btn">View performance</a>
+            </div>
+            <div class="bt-sc-media">
+                <div class="bt-sc-blob"></div>
+                <img src="https://images.unsplash.com/photo-1605792657660-596af9009e82?w=600&q=80" alt="Mobile transfer" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bt-steps-section reveal">
+    <div class="bt-steps-header">
+        <h2 class="bt-steps-title">From CSV to annotated<br/>results.</h2>
+        <div class="bt-steps-eyebrow">How it works</div>
+    </div>
+    <div class="bt-steps-grid">
+
+        <div class="bt-step-card bt-step-card-green reveal">
+            <div class="bt-step-card-body">
+                <div class="bt-step-card-num">01</div>
+                <h3 class="bt-step-card-title">Upload your CSV</h3>
+                <p class="bt-step-card-desc">Drop in a file with at least an amount column. Everything else is optional — PrediQt fills the rest with safe defaults.</p>
+                <a href="#batchForm" class="bt-step-card-btn">Get started</a>
+            </div>
+            <div class="bt-step-card-media">
+                <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&q=80" alt="Upload CSV" />
+            </div>
+        </div>
+
+        <div class="bt-step-card reveal">
+            <div class="bt-step-card-body">
+                <div class="bt-step-card-num">02</div>
+                <h3 class="bt-step-card-title">Pick the transaction type</h3>
+                <p class="bt-step-card-desc">Select from 15 transaction types across three categories. PrediQt routes your file to the right specialist model automatically.</p>
+                <a href="#batchForm" class="bt-step-card-btn">See models</a>
+            </div>
+            <div class="bt-step-card-media">
+                <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800&q=80" alt="Transaction type" />
+            </div>
+        </div>
+
+        <div class="bt-step-card reveal">
+            <div class="bt-step-card-body">
+                <div class="bt-step-card-num">03</div>
+                <h3 class="bt-step-card-title">Set your sensitivity</h3>
+                <p class="bt-step-card-desc">Adjust the detection threshold to catch more fraud or reduce false alarms. Tune it to your risk tolerance before submitting.</p>
+                <a href="#batchForm" class="bt-step-card-btn">Try it</a>
+            </div>
+            <div class="bt-step-card-media">
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80" alt="Threshold" />
+            </div>
+        </div>
+
+        <div class="bt-step-card bt-step-card-green reveal">
+            <div class="bt-step-card-body">
+                <div class="bt-step-card-num">04</div>
+                <h3 class="bt-step-card-title">Download annotated results</h3>
+                <p class="bt-step-card-desc">Every row gets a fraud probability score, a risk level and a final verdict. Download the fully annotated CSV instantly.</p>
+                <a href="#batchForm" class="bt-step-card-btn">See an example</a>
+            </div>
+            <div class="bt-step-card-media">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80" alt="Results" />
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="bt-form-header reveal">
+    <div class="bt-section-eyebrow">Get started</div>
+    <h2 class="bt-form-title">Upload your file.</h2>
+    <p class="bt-form-sub">Drop in a CSV and PrediQt handles the rest. Routing, scoring, and a fully annotated file back in seconds.</p>
+</div>
+
+<!-- Main Form -->
+<form method="POST" enctype="multipart/form-data" id="batchForm">
+
+    <!-- Transaction Type -->
+    <div class="bt-tx-card reveal" style="background: var(--bg); border: 1.5px solid var(--green);">
+        <div class="bt-tx-card-label" style="color: var(--green);">Step 1</div>
+        <h3 class="bt-tx-card-title" style="background: none; color: var(--text);">Transaction Type</h3>
+        <p class="bt-tx-card-desc" style="color: var(--muted);">What type of transactions are in your CSV?</p>
+        <select name="transaction_type" class="bt-select">
+            <optgroup label="── Card Transactions">
+                <option value="card_purchase">Card Purchase</option>
+                <option value="atm">ATM Withdrawal</option>
+                <option value="online_shopping">Online Shopping</option>
+                <option value="contactless">Contactless Payment</option>
+                <option value="grocery">Grocery</option>
+                <option value="entertainment">Entertainment</option>
+            </optgroup>
+            <optgroup label="── Online Payments">
+                <option value="ecommerce">E-commerce</option>
+                <option value="digital_payment">Digital Payment</option>
+                <option value="subscription">Subscription</option>
+                <option value="online_transfer">Online Transfer</option>
+                <option value="card_not_present">Card Not Present</option>
+            </optgroup>
+            <optgroup label="── Bank / Mobile">
+                <option value="bank_transfer">Bank Transfer</option>
+                <option value="mobile_payment">Mobile Payment</option>
+                <option value="cash_withdrawal">Cash Withdrawal</option>
+                <option value="direct_debit">Direct Debit</option>
+            </optgroup>
+        </select>
+
+        <div class="bt-tx-card-divider"></div>
+
+        <div class="bt-tx-card-label" style="color: var(--green);">Step 2</div>
+        <h3 class="bt-tx-card-title" style="background: none; color: var(--text);">Required CSV Format</h3>
+        <p class="bt-tx-card-desc" style="color: var(--muted);">Minimum required — just one column.</p>
+
+        <div class="bt-csv-format">
+            <div class="bt-csv-header" onclick="toggleCsvFormat()">
+                <div class="bt-csv-header-left">
+                    <div class="bt-csv-badge">!</div>
+                    <span>Tap to see the full format</span>
+                </div>
+                <i class="bi bi-chevron-down bt-csv-arrow" id="csvArrow"></i>
+            </div>
+            <div class="bt-csv-body" id="csvBody">
+                <div class="bt-csv-cols">amount</div>
+                <p class="bt-csv-note">
+                    Only <strong>amount</strong> is required. All other fields
+                    are automatically filled with safe neutral defaults.
+                    Additional columns like <strong>hour</strong>,
+                    <strong>is_weekend</strong>, <strong>merchant_category</strong>
+                    can be included for more accurate predictions but are optional.
+                </p>
+                <div class="bt-csv-optional">
+                    <div class="bt-csv-opt-label">Optional columns for better accuracy:</div>
+                    <div class="bt-csv-cols" style="margin-top:6px;">
+                        amount, hour, is_weekend, merchant_category, is_international, gender, age
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Drop Zone -->
+    <div class="bt-tx-card reveal">
+        <div class="bt-tx-card-label">Step 3</div>
+        <h3 class="bt-tx-card-title">Upload CSV File</h3>
+        <p class="bt-tx-card-desc">Drop your CSV here or click to browse. Accepts files up to 16MB.</p>
+
+        <div class="bt-dropzone-white {{ 'bt-dz-selected' if last_input else '' }}" id="dropZone"
+             onclick="document.getElementById('fileInput').click()"
+             ondragover="event.preventDefault(); this.classList.add('bt-dz-hover')"
+             ondragleave="this.classList.remove('bt-dz-hover')"
+             ondrop="handleDrop(event)">
+            <div class="bt-dz-icon-white"><i class="bi bi-cloud-upload"></i></div>
+            <div class="bt-dz-title-white">Drop your CSV here or click to browse</div>
+            <div class="bt-dz-sub-white">Accepts .csv files up to 16MB</div>
+            <div class="bt-dz-file-white" id="fileName"{% if last_input %} style="display:block;"{% endif %}>
+                {% if last_input %}✓ {{ last_input }}{% endif %}
+            </div>
+            <div class="bt-dz-actions" id="dzActions"{% if last_input %} style="display:flex;"{% endif %}>
+                {% if last_output %}
+                <a href="{{ url_for('batch_results', filename=last_output) }}" class="bt-dz-view-result" onclick="event.stopPropagation();">
+                    <i class="bi bi-bar-chart"></i> View Result
+                </a>
+                {% endif %}
+                <button type="button" class="bt-remove-csv-btn" onclick="event.stopPropagation(); removeCsv();">
+                    <i class="bi bi-x-circle"></i> Remove CSV
+                </button>
+
+            </div>
+        </div>
+        <input type="file" id="fileInput" name="file" accept=".csv" style="display:none;" onchange="showFileName(this)" />
+    </div>
+
+    <!-- Threshold -->
+    <div class="bt-tx-card bt-tx-card-white reveal">
+        <div class="bt-tx-card-label">Step 4</div>
+        <h3 class="bt-tx-card-title">Detection Sensitivity</h3>
+        <p class="bt-tx-card-desc">Adjust the threshold to control how aggressively PrediQt flags fraud.</p>
+
+        <div class="bt-field">
+            <label class="bt-label">
+                Detection Threshold
+                <span class="bt-threshold-val" id="thresholdVal">0.50</span>
+            </label>
+            <div class="bt-range-wrap">
+                <div class="bt-range-bubble" id="thresholdBubble">0.50</div>
+                <input type="range" name="threshold" min="0.1" max="0.9"
+                       step="0.05" value="0.5" class="bt-range" id="thresholdRange"
+                       oninput="updateThreshold(this)" />
+            </div>
+            <div class="bt-range-labels">
+                <span>← Catch more fraud</span>
+                <span>Fewer false alarms →</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submit -->
+    <button type="submit" class="bt-submit-btn">
+        <i class="bi bi-upload"></i>
+        Analyse Batch
+        <span class="bt-submit-arrow">→</span>
+    </button>
+
+</form>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Precise nav height for full-viewport hero
+function setNavHeight() {
+    var nav = document.querySelector('.app-nav');
+    if (nav) document.documentElement.style.setProperty('--nav-h', nav.offsetHeight + 'px');
+}
+setNavHeight();
+window.addEventListener('resize', setNavHeight);
+
+// Scroll-reveal
+(function() {
+    var els = document.querySelectorAll('.reveal');
+    var obs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                obs.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.15 });
+    els.forEach(function(el) { obs.observe(el); });
+})();
+
+function showFileName(input) {
+    if (input.files && input.files[0]) {
+        var nameEl = document.getElementById('fileName');
+        nameEl.textContent = '✓ ' + input.files[0].name;
+        nameEl.style.display = 'block';
+        document.getElementById('dropZone').classList.add('bt-dz-selected');
+
+        document.getElementById('dzActions').style.display = 'flex';
+        var viewBtn = document.querySelector('.bt-dz-view-result');
+        if (viewBtn) viewBtn.style.display = 'none';
+
+        document.querySelectorAll('.alert, #bt-inline-warning').forEach(function(a) { a.remove(); });
+    }
+}
+
+function removeCsv() {
+    window.location.href = "{{ url_for('batch_clear') }}";
+}
+
+function showInlineWarning(message) {
+    var existing = document.getElementById('bt-inline-warning');
+    if (existing) existing.remove();
+    var warning = document.createElement('div');
+    warning.id = 'bt-inline-warning';
+    warning.className = 'alert alert-danger';
+    warning.textContent = message;
+    var dropZone = document.getElementById('dropZone');
+    dropZone.parentElement.insertBefore(warning, dropZone);
+}
+
+document.getElementById('batchForm').addEventListener('submit', function(e) {
+    var fileInput = document.getElementById('fileInput');
+    if (!fileInput.files || fileInput.files.length === 0) {
+        e.preventDefault();
+        showInlineWarning('Please choose a CSV file before analysing.');
+        document.getElementById('dropZone').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+});
+
+function handleDrop(event) {
+    event.preventDefault();
+    var files = event.dataTransfer.files;
+    if (files.length > 0) {
+        document.getElementById('fileInput').files = files;
+        showFileName(document.getElementById('fileInput'));
+    }
+    event.currentTarget.classList.remove('bt-dz-hover');
+}
+
+function toggleCsvFormat() {
+    var body  = document.getElementById('csvBody');
+    var arrow = document.getElementById('csvArrow');
+    if (body.style.display === 'none' || body.style.display === '') {
+        body.style.display    = 'block';
+        arrow.style.transform = 'rotate(180deg)';
+    } else {
+        body.style.display    = 'none';
+        arrow.style.transform = 'rotate(0deg)';
+    }
+}
+
+function updateThreshold(input) {
+    var val = parseFloat(input.value);
+    document.getElementById('thresholdVal').textContent = val.toFixed(2);
+
+    var bubble = document.getElementById('thresholdBubble');
+    bubble.textContent = val.toFixed(2);
+
+    var min = parseFloat(input.min);
+    var max = parseFloat(input.max);
+    var percent = (val - min) / (max - min);
+    var thumbWidth = 16;
+    var trackWidth = input.offsetWidth;
+    var offset = percent * (trackWidth - thumbWidth) + (thumbWidth / 2);
+    bubble.style.left = offset + 'px';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    var r = document.getElementById('thresholdRange');
+    if (r) updateThreshold(r);
+
+    // Relocate server flash alerts to sit above the dropzone
+    var flashWrap = document.querySelector('.app-flash-wrap');
+    var dropZone  = document.getElementById('dropZone');
+    if (flashWrap && dropZone) {
+        var alerts = flashWrap.querySelectorAll('.alert');
+        if (alerts.length > 0) {
+            alerts.forEach(function(alert) {
+                dropZone.parentElement.insertBefore(alert, dropZone);
+            });
+            flashWrap.remove();
+            dropZone.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+});
+
+// Re-snap scroll after images settle, correcting for layout shift
+window.addEventListener('load', function() {
+    if (window.location.hash === '#batchForm') {
+        var form = document.getElementById('batchForm');
+        if (form) form.scrollIntoView({ behavior: 'instant', block: 'start' });
+    }
+});
+</script>
+{% endblock %}

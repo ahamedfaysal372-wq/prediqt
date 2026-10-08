@@ -1,0 +1,135 @@
+{
+  "credit_card": {
+    "features": [
+      "amount",
+      "amount_log",
+      "is_high_amount",
+      "is_micro",
+      "hour",
+      "is_night",
+      "is_weekend",
+      "merchant_category",
+      "is_international",
+      "is_new_merchant",
+      "balance_change",
+      "geo_distance",
+      "is_far_merchant",
+      "is_online",
+      "gender",
+      "age",
+      "city_pop_log"
+    ],
+    "scale_cols": [
+      "amount",
+      "balance_change",
+      "geo_distance",
+      "age",
+      "city_pop_log"
+    ],
+    "threshold": 0.955,
+    "dataset": "Sparkov",
+    "description": "Credit card purchases \u2014 in-person and online retail",
+    "transaction_types": [
+      "card_purchase",
+      "atm",
+      "online_shopping",
+      "contactless",
+      "grocery",
+      "entertainment"
+    ]
+  },
+  "online_payment": {
+    "features": [
+      "count_c14",
+      "count_c5",
+      "count_distinct",
+      "count_c13",
+      "count_match",
+      "count_c11",
+      "count_c6",
+      "count_c4",
+      "d2",
+      "count_c9",
+      "d1",
+      "d3",
+      "card2",
+      "card1",
+      "d15",
+      "amount",
+      "balance_change",
+      "amount_log",
+      "d10",
+      "d4",
+      "hour",
+      "merchant_category",
+      "geo_distance",
+      "is_new_merchant",
+      "email_match",
+      "is_online",
+      "is_international",
+      "card_type",
+      "card_category",
+      "suspicious_email"
+    ],
+    "scale_cols": [
+      "amount",
+      "balance_change",
+      "geo_distance",
+      "count_match",
+      "count_distinct",
+      "count_c4",
+      "count_c5",
+      "count_c6",
+      "count_c9",
+      "count_c11",
+      "count_c13",
+      "count_c14",
+      "card1",
+      "card2",
+      "d1",
+      "d2",
+      "d3",
+      "d4",
+      "d10",
+      "d15"
+    ],
+    "threshold": 0.48,
+    "dataset": "IEEE-CIS",
+    "description": "Online payments \u2014 e-commerce and digital transactions",
+    "transaction_types": [
+      "ecommerce",
+      "digital_payment",
+      "subscription",
+      "online_transfer",
+      "card_not_present"
+    ]
+  },
+  "mobile_transfer": {
+    "features": [
+      "amount",
+      "amount_log",
+      "is_high_amount",
+      "is_micro",
+      "hour",
+      "is_night",
+      "is_weekend",
+      "merchant_category",
+      "is_international",
+      "is_new_merchant",
+      "balance_change"
+    ],
+    "scale_cols": [
+      "amount",
+      "balance_change"
+    ],
+    "threshold": 0.86,
+    "dataset": "PaySim",
+    "description": "Mobile money transfers and bank payments",
+    "transaction_types": [
+      "bank_transfer",
+      "mobile_payment",
+      "cash_withdrawal",
+      "direct_debit"
+    ]
+  }
+}

@@ -1,0 +1,679 @@
+{% extends "base.html" %}
+{% block title %}Check Transaction — PrediQt{% endblock %}
+{% block page_title %}Check Transaction{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/predict.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero Banner -->
+<div class="pr-hero">
+    <div class="pr-hero-img-side">
+        <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=1600&q=80" alt="Check a transaction" />
+    </div>
+    <div class="pr-hero-shape">
+        <div class="pr-hero-inner-text">
+            <div class="pr-hero-label">Auto-Routing Fraud Detection</div>
+            <h1 class="pr-hero-title">Check a<br/><em>transaction.</em></h1>
+            <p class="pr-hero-sub">Select your transaction type and PrediQt automatically routes to the most appropriate specialist model.</p>
+            <a href="#predictForm" class="pr-hero-cta">Check It Now</a>
+        </div>
+    </div>
+    <div class="pr-scroll-cue"><i class="bi bi-chevron-down"></i><div>Scroll</div></div>
+</div>
+
+<div class="pr-steps-section">
+    <div class="pr-steps-header">
+        <div class="pr-steps-eyebrow">How it works</div>
+        <h2 class="pr-steps-title">From details to a<br/>decision.</h2>
+        <p class="pr-steps-sub-line1">Every field you fill in sharpens the result.</p>
+        <p class="pr-steps-sub-line2">Here's exactly what happens after you hit submit.</p>
+    </div>
+    <div class="pr-steps-grid">
+
+        <div class="pr-step-card pr-step-card-green reveal">
+            <div class="pr-step-card-media">
+                <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800&q=80" alt="Pick a type" />
+            </div>
+            <div class="pr-step-card-body">
+                <div class="pr-step-card-num">01</div>
+                <h3 class="pr-step-card-title">Pick a transaction type</h3>
+                <p class="pr-step-card-desc">Choosing a type silently selects which specialist model analyses it — no need to know which one.</p>
+            </div>
+        </div>
+
+        <div class="pr-step-card reveal">
+            <div class="pr-step-card-media">
+                <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&q=80" alt="Fill in details" />
+            </div>
+            <div class="pr-step-card-body">
+                <div class="pr-step-card-num">02</div>
+                <h3 class="pr-step-card-title">Fill in what you know</h3>
+                <p class="pr-step-card-desc">Every field has a safe default. Leave anything blank and you'll still get a real result.</p>
+            </div>
+        </div>
+
+        <div class="pr-step-card reveal">
+            <div class="pr-step-card-media">
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80" alt="Model scores it" />
+            </div>
+            <div class="pr-step-card-body">
+                <div class="pr-step-card-num">03</div>
+                <h3 class="pr-step-card-title">The specialist model scores it</h3>
+                <p class="pr-step-card-desc">The routed model returns a real fraud probability — trained specifically for that transaction type.</p>
+            </div>
+        </div>
+
+        <div class="pr-step-card pr-step-card-green reveal">
+            <div class="pr-step-card-media">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80" alt="Threshold decides" />
+            </div>
+            <div class="pr-step-card-body">
+                <div class="pr-step-card-num">04</div>
+                <h3 class="pr-step-card-title">A threshold decides the verdict</h3>
+                <p class="pr-step-card-desc">That model's own tuned cutoff decides whether it's FRAUD or LEGITIMATE.</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="pr-intro-section reveal" id="predictTypeSection">
+    <div class="pr-steps-eyebrow">Get started</div>
+    <h2 class="pr-steps-title">Tell us what<br/>happened.</h2>
+    <p class="pr-steps-sub-line1">Pick a transaction type and fill in the details you have.</p>
+    <p class="pr-steps-sub-line2">PrediQt handles the routing, scoring, and final verdict.</p>
+</div>
+
+<!-- Main Layout -->
+<div class="pr-layout">
+
+    <!-- Left — Form -->
+    <div class="pr-form-col">
+
+        <!-- Transaction Type -->
+        <div class="pr-section">
+            <div class="pr-section-label">
+                What type of transaction is this?
+                <button type="button" onclick="togglePredictInfo()" class="pr-info-btn" title="How it works">
+                    <i class="bi bi-info-circle"></i>
+                </button>
+            </div>
+            <div class="pr-type-grid">
+                <div class="pr-type-group reveal">
+                    <div class="pr-type-group-label">Card Transactions</div>
+                    <div class="pr-type-options">
+                        <button type="button" class="pr-type-btn active" data-value="card_purchase" onclick="selectType(this)"><i class="bi bi-credit-card"></i> Card Purchase</button>
+                        <button type="button" class="pr-type-btn" data-value="atm" onclick="selectType(this)"><i class="bi bi-bank"></i> ATM</button>
+                        <button type="button" class="pr-type-btn" data-value="online_shopping" onclick="selectType(this)"><i class="bi bi-cart"></i> Online Shopping</button>
+                        <button type="button" class="pr-type-btn" data-value="contactless" onclick="selectType(this)"><i class="bi bi-phone"></i> Contactless</button>
+                        <button type="button" class="pr-type-btn" data-value="grocery" onclick="selectType(this)"><i class="bi bi-basket"></i> Grocery</button>
+                        <button type="button" class="pr-type-btn" data-value="entertainment" onclick="selectType(this)"><i class="bi bi-music-note"></i> Entertainment</button>
+                    </div>
+                </div>
+                <div class="pr-type-group reveal">
+                    <div class="pr-type-group-label">Online Payments</div>
+                    <div class="pr-type-options">
+                        <button type="button" class="pr-type-btn" data-value="ecommerce" onclick="selectType(this)"><i class="bi bi-shop"></i> E-commerce</button>
+                        <button type="button" class="pr-type-btn" data-value="digital_payment" onclick="selectType(this)"><i class="bi bi-lightning"></i> Digital Payment</button>
+                        <button type="button" class="pr-type-btn" data-value="subscription" onclick="selectType(this)"><i class="bi bi-arrow-repeat"></i> Subscription</button>
+                        <button type="button" class="pr-type-btn" data-value="online_transfer" onclick="selectType(this)"><i class="bi bi-arrow-left-right"></i> Online Transfer</button>
+                        <button type="button" class="pr-type-btn" data-value="card_not_present" onclick="selectType(this)"><i class="bi bi-credit-card-2-back"></i> Card Not Present</button>
+                    </div>
+                </div>
+                <div class="pr-type-group reveal">
+                    <div class="pr-type-group-label">Bank / Mobile</div>
+                    <div class="pr-type-options">
+                        <button type="button" class="pr-type-btn" data-value="bank_transfer" onclick="selectType(this)"><i class="bi bi-building"></i> Bank Transfer</button>
+                        <button type="button" class="pr-type-btn" data-value="mobile_payment" onclick="selectType(this)"><i class="bi bi-phone-vibrate"></i> Mobile Payment</button>
+                        <button type="button" class="pr-type-btn" data-value="cash_withdrawal" onclick="selectType(this)"><i class="bi bi-cash"></i> Cash Withdrawal</button>
+                        <button type="button" class="pr-type-btn" data-value="direct_debit" onclick="selectType(this)"><i class="bi bi-calendar-check"></i> Direct Debit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Model Indicator -->
+        <div class="pr-model-indicator" id="modelIndicator">
+            <div class="pr-mi-dot"></div>
+            <div class="pr-mi-text">
+                <span class="pr-mi-label">Auto-routed to:</span>
+                <span class="pr-mi-name" id="miName">Credit Card Fraud Model</span>
+                <span class="pr-mi-detail" id="miDetail">Sparkov dataset — 80% F1</span>
+            </div>
+            <div class="pr-mi-badge" id="miBadge">80% F1</div>
+        </div>
+
+        <!-- Form -->
+        <form method="POST" id="predictForm">
+            <input type="hidden" name="transaction_type" id="transactionTypeHidden" value="card_purchase">
+
+            <!-- Common fields -->
+            <div class="pr-section">
+                <div class="pr-section-label">Tell us about this transaction</div>
+                <div class="pr-fields-grid">
+                    <div class="pr-field">
+                        <label class="pr-label">Transaction Amount (£)</label>
+                        <input type="number" name="amount" step="0.01" placeholder="e.g. 149.62" required class="pr-input" />
+                    </div>
+                    <div class="pr-field">
+                        <label class="pr-label">Time of Transaction (24hr)</label>
+                        <input type="number" name="hour" min="0" max="23" placeholder="e.g. 14 for 2pm" value="12" required class="pr-input" />
+                    </div>
+                    <div class="pr-field">
+                        <label class="pr-label">Day of Week</label>
+                        <select name="is_weekend" class="pr-select">
+                            <option value="0">Monday to Friday</option>
+                            <option value="1">Saturday or Sunday</option>
+                        </select>
+                    </div>
+                    <div class="pr-field">
+                        <label class="pr-label">Merchant Category</label>
+                        <select name="merchant_category" class="pr-select">
+                            <option value="0">Grocery and Supermarket</option>
+                            <option value="1">Shopping and Retail</option>
+                            <option value="2" selected>Miscellaneous</option>
+                            <option value="3">Food and Dining</option>
+                            <option value="4">Transport and Travel</option>
+                            <option value="5">Health and Fitness</option>
+                            <option value="6">Home and Kids</option>
+                            <option value="7">Cash Advance</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Credit Card Fields -->
+            <div id="fields-credit_card" class="pr-section pr-dynamic reveal">
+                <div class="pr-section-label">Cardholder and Merchant Details</div>
+                <div class="pr-fields-grid">
+                    <div class="pr-field">
+                        <label class="pr-label">Cardholder Gender</label>
+                        <select name="gender" class="pr-select">
+                            <option value="0">Female</option>
+                            <option value="1">Male</option>
+                        </select>
+                    </div>
+                    <div class="pr-field">
+                        <label class="pr-label">Cardholder Age</label>
+                        <input type="number" name="age" min="18" max="100" placeholder="e.g. 35" value="35" class="pr-input" />
+                    </div>
+                    <div class="pr-field">
+                        <label class="pr-label">Transaction Location</label>
+                        <select name="is_international" class="pr-select">
+                            <option value="0">Home City</option>
+                            <option value="0">Different City — Same Country</option>
+                            <option value="1">Abroad — International</option>
+                        </select>
+                    </div>
+                    <div class="pr-field">
+                        <label class="pr-label">Card Present?</label>
+                        <select name="is_online" class="pr-select">
+                            <option value="0">Yes — Chip or Tap</option>
+                            <option value="1">No — Online or Phone</option>
+                        </select>
+                    </div>
+                    <div class="pr-field">
+                        <label class="pr-label">Device Used</label>
+                        <select name="device_used" class="pr-select">
+                            <option value="0">Physical Terminal</option>
+                            <option value="0">ATM</option>
+                            <option value="1">Mobile App</option>
+                            <option value="1">Web Browser</option>
+                        </select>
+                    </div>
+                    <div class="pr-field">
+                        <label class="pr-label">First Time at This Merchant?</label>
+                        <select name="is_new_merchant" class="pr-select">
+                            <option value="0">No — Visited before</option>
+                            <option value="1">Yes — First time</option>
+                        </select>
+                    </div>
+                    <div class="pr-field">
+                        <label class="pr-label">Transaction Currency</label>
+                        <select name="currency" class="pr-select">
+                            <option>GBP — British Pound</option>
+                            <option>USD — US Dollar</option>
+                            <option>EUR — Euro</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    <div class="pr-field">
+                        <label class="pr-label">Previous Fraud on Account?</label>
+                        <select name="prev_fraud" class="pr-select">
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+                    <div class="pr-field">
+                        <label class="pr-label">Account Age</label>
+                        <select name="account_age" class="pr-select">
+                            <option value="0">Less than 30 days</option>
+                            <option value="1">1 to 6 months</option>
+                            <option value="2">6 to 12 months</option>
+                            <option value="3">Over 1 year</option>
+                        </select>
+                    </div>
+                    <div class="pr-field">
+                        <label class="pr-label">Time Since Last Transaction</label>
+                        <select name="time_since_last" class="pr-select">
+                            <option>Less than 1 minute</option>
+                            <option>1 to 10 minutes</option>
+                            <option>10 to 60 minutes</option>
+                            <option>More than 1 hour</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Online Payment Fields -->
+            <div id="fields-online_payment" class="pr-section pr-dynamic reveal" style="display:none;">
+                <div class="pr-section-label">Payment and Security Details</div>
+                <div class="pr-fields-grid">
+                    <div class="pr-field">
+                        <label class="pr-label">Card Type</label>
+                        <select name="card_type" class="pr-select">
+                            <option value="visa">Visa</option>
+                            <option value="mastercard">Mastercard</option>
+                            <option value="american express">American Express</option>
+                            <option value="discover">Discover</option>
+                        </select>
+                    </div>
+                    <div class="pr-field">
+                        <label class="pr-label">Card Category</label>
+                        <select name="card_category" class="pr-select">
+                            <option value="debit">Debit</option>
+                            <option value="credit">Credit</option>
+                            <option value="debit or credit">Debit or Credit</option>
+                            <option value="charge card">Charge Card</option>
+                        </select>
+                    </div>
+                    <div class="pr-field">
+                        <label class="pr-label">Customer Email Domain</label>
+                        <select name="suspicious_email" class="pr-select">
+                            <option value="0">Business or Corporate</option>
+                            <option value="0">University or Education</option>
+                            <option value="1">Gmail</option>
+                            <option value="1">Yahoo</option>
+                            <option value="1">Hotmail</option>
+                            <option value="1">Anonymous or Unknown</option>
+                        </select>
+                    </div>
+                    <div class="pr-field">
+                        <label class="pr-label">Billing and Shipping Address Match?</label>
+                        <select name="email_match" class="pr-select">
+                            <option value="1">Yes — Same address</option>
+                            <option value="0">No — Different address</option>
+                        </select>
+                    </div>
+                    <div class="pr-field">
+                        <label class="pr-label">Transaction Location</label>
+                        <select name="is_international" class="pr-select">
+                            <option value="0">Same country as account</option>
+                            <option value="1">International — Different country</option>
+                        </select>
+                    </div>
+                    <div class="pr-field">
+                        <label class="pr-label">Order Value vs Account Average</label>
+                        <select name="order_value" class="pr-select">
+                            <option value="0">Similar to usual</option>
+                            <option value="0">Slightly higher</option>
+                            <option value="1">Much higher than usual</option>
+                            <option value="1">Much lower than usual</option>
+                        </select>
+                    </div>
+                    <div class="pr-field">
+                        <label class="pr-label">Number of Items in Order</label>
+                        <input type="number" name="num_items" min="1" placeholder="e.g. 3" value="1" class="pr-input" />
+                    </div>
+                    <div class="pr-field">
+                        <label class="pr-label">VPN or Proxy Detected?</label>
+                        <select name="vpn_detected" class="pr-select">
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+                    <div class="pr-field">
+                        <label class="pr-label">Account Age</label>
+                        <select name="account_age" class="pr-select">
+                            <option value="0">Less than 30 days</option>
+                            <option value="1">1 to 6 months</option>
+                            <option value="2">6 to 12 months</option>
+                            <option value="3">Over 1 year</option>
+                        </select>
+                    </div>
+                    <div class="pr-field">
+                        <label class="pr-label">Previous Fraud on Account?</label>
+                        <select name="prev_fraud" class="pr-select">
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Transfer Fields -->
+            <div id="fields-mobile_transfer" class="pr-section pr-dynamic reveal" style="display:none;">
+                <div class="pr-section-label">Transfer and Account Details</div>
+                <div class="pr-fields-grid">
+                    <div class="pr-field">
+                        <label class="pr-label">Transfer Type</label>
+                        <select name="transfer_type" class="pr-select">
+                            <option value="PAYMENT">Payment</option>
+                            <option value="TRANSFER">Transfer</option>
+                            <option value="CASH_OUT">Cash Out</option>
+                            <option value="CASH_IN">Cash In</option>
+                            <option value="DEBIT">Debit</option>
+                        </select>
+                    </div>
+                    <div class="pr-field">
+                        <label class="pr-label">Recipient Known?</label>
+                        <select name="is_new_merchant" class="pr-select">
+                            <option value="0">Yes — Sent to before</option>
+                            <option value="1">No — First time recipient</option>
+                        </select>
+                    </div>
+                    <div class="pr-field">
+                        <label class="pr-label">Balance Before Transfer (£)</label>
+                        <input type="number" name="old_balance" step="0.01" placeholder="e.g. 5000.00" value="0" class="pr-input" />
+                    </div>
+                    <div class="pr-field">
+                        <label class="pr-label">Balance After Transfer (£)</label>
+                        <input type="number" name="new_balance" step="0.01" placeholder="e.g. 4500.00" value="0" class="pr-input" />
+                    </div>
+                    <div class="pr-field">
+                        <label class="pr-label">Transfer Location</label>
+                        <select name="is_international" class="pr-select">
+                            <option value="0">Domestic — Same country</option>
+                            <option value="1">International — Cross border</option>
+                        </select>
+                    </div>
+                    <div class="pr-field">
+                        <label class="pr-label">Transfers Made Today</label>
+                        <select name="transfer_frequency" class="pr-select">
+                            <option value="0">This is the first today</option>
+                            <option value="1">2 to 5 transfers today</option>
+                            <option value="2">More than 5 today</option>
+                        </select>
+                    </div>
+                    <div class="pr-field">
+                        <label class="pr-label">Account Age</label>
+                        <select name="account_age" class="pr-select">
+                            <option value="0">Less than 30 days</option>
+                            <option value="1">1 to 6 months</option>
+                            <option value="2">6 to 12 months</option>
+                            <option value="3">Over 1 year</option>
+                        </select>
+                    </div>
+                    <div class="pr-field">
+                        <label class="pr-label">Transaction Currency</label>
+                        <select name="currency" class="pr-select">
+                            <option>GBP — British Pound</option>
+                            <option>USD — US Dollar</option>
+                            <option>EUR — Euro</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    <div class="pr-field">
+                        <label class="pr-label">Previous Fraud on Account?</label>
+                        <select name="prev_fraud" class="pr-select">
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+                    <div class="pr-field">
+                        <label class="pr-label">Time Since Last Transfer</label>
+                        <select name="time_since_last" class="pr-select">
+                            <option>Less than 1 minute</option>
+                            <option>1 to 10 minutes</option>
+                            <option>10 to 60 minutes</option>
+                            <option>More than 1 hour</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="pr-submit-row">
+                <button type="submit" class="pr-submit-btn">
+                    <i class="bi bi-shield-check"></i>
+                    Analyse Transaction
+                    <span class="pr-submit-arrow">→</span>
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- Right — Always visible model cards -->
+    <div class="pr-model-col">
+        <div class="pr-model-col-label">Specialist Models</div>
+
+        <div class="pr-mc-card reveal" id="card-credit_card">
+            <div class="pr-mc-img-wrap">
+                <img src="https://images.unsplash.com/photo-1559526324-593bc073d938?w=800&q=80"
+                     alt="Credit Card" class="pr-mc-img" />
+                <div class="pr-mc-overlay"></div>
+                <div class="pr-mc-top">
+                    <span class="pr-mc-icon">💳</span>
+                    <span class="pr-mc-badge">80% F1</span>
+                </div>
+                <div class="pr-mc-bottom">
+                    <div class="pr-mc-name">Credit Card Fraud</div>
+                    <div class="pr-mc-ds">Sparkov — 1.85M transactions</div>
+                </div>
+            </div>
+            <div class="pr-mc-types">
+                <span>Card Purchase</span>
+                <span>ATM</span>
+                <span>Online Shopping</span>
+                <span>+3</span>
+            </div>
+        </div>
+
+        <div class="pr-mc-card reveal" id="card-online_payment">
+            <div class="pr-mc-img-wrap">
+                <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&q=80"
+                     alt="Online Payment" class="pr-mc-img" />
+                <div class="pr-mc-overlay"></div>
+                <div class="pr-mc-top">
+                    <span class="pr-mc-icon">🌐</span>
+                    <span class="pr-mc-badge">72% F1</span>
+                </div>
+                <div class="pr-mc-bottom">
+                    <div class="pr-mc-name">Online Payment Fraud</div>
+                    <div class="pr-mc-ds">IEEE-CIS — 590K transactions</div>
+                </div>
+            </div>
+            <div class="pr-mc-types">
+                <span>E-commerce</span>
+                <span>Digital Payment</span>
+                <span>+3</span>
+            </div>
+        </div>
+
+        <div class="pr-mc-card reveal" id="card-mobile_transfer">
+            <div class="pr-mc-img-wrap">
+                <img src="https://images.unsplash.com/photo-1605792657660-596af9009e82?w=800&q=80"
+                     alt="Mobile Transfer" class="pr-mc-img" />
+                <div class="pr-mc-overlay"></div>
+                <div class="pr-mc-top">
+                    <span class="pr-mc-icon">📱</span>
+                    <span class="pr-mc-badge best">91% F1</span>
+                </div>
+                <div class="pr-mc-bottom">
+                    <div class="pr-mc-name">Mobile Transfer Fraud</div>
+                    <div class="pr-mc-ds">PaySim — 58K transactions</div>
+                </div>
+            </div>
+            <div class="pr-mc-types">
+                <span>Bank Transfer</span>
+                <span>Mobile Payment</span>
+                <span>+2</span>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- How It Works Modal -->
+<div id="predictInfoModal"
+     style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;
+     background:rgba(0,0,0,0.65);z-index:99999;
+     align-items:center;justify-content:center;"
+     onclick="closePredictInfo(event)">
+    <div style="background:var(--white);border-radius:12px;width:100%;
+         max-width:480px;margin:0 2rem;
+         box-shadow:0 40px 100px rgba(0,0,0,0.25);overflow:hidden;
+         animation:prFadeIn 0.25s cubic-bezier(0.16,1,0.3,1);">
+        <div style="background:var(--text);padding:1.5rem;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:30px 30px;"></div>
+            <div style="position:relative;display:flex;align-items:center;justify-content:space-between;">
+                <div>
+                    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(247,246,243,0.4);margin-bottom:4px;">PrediQt</div>
+                    <div style="font-family:'Fraunces',serif;font-size:1.4rem;font-weight:300;color:#f7f6f3;letter-spacing:-.02em;">How Auto-Routing Works</div>
+                </div>
+                <button onclick="togglePredictInfo()"
+                    style="width:32px;height:32px;border-radius:50%;border:1px solid rgba(255,255,255,0.15);
+                    background:transparent;font-size:18px;color:rgba(247,246,243,0.5);cursor:pointer;
+                    display:flex;align-items:center;justify-content:center;transition:all 0.2s;position:relative;z-index:1;"
+                    onmouseover="this.style.background='#dc2626';this.style.color='#fff';this.style.borderColor='#dc2626'"
+                    onmouseout="this.style.background='transparent';this.style.color='rgba(247,246,243,0.5)';this.style.borderColor='rgba(255,255,255,0.15)'">
+                    ×
+                </button>
+            </div>
+        </div>
+        <div style="padding:1.5rem;display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;gap:14px;align-items:flex-start;padding:1rem;background:var(--bg);border-radius:8px;border:1px solid var(--border);">
+                <div style="width:36px;height:36px;background:var(--green);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:1.1rem;color:#fff;flex-shrink:0;">1</div>
+                <div><div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;">Select Transaction Type</div><div style="font-size:13px;color:var(--muted);line-height:1.6;">The system routes your transaction to the most appropriate specialist model automatically.</div></div>
+            </div>
+            <div style="display:flex;gap:14px;align-items:flex-start;padding:1rem;background:var(--bg);border-radius:8px;border:1px solid var(--border);">
+                <div style="width:36px;height:36px;background:rgba(26,107,74,0.1);border:1px solid rgba(26,107,74,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:1.1rem;color:var(--green);flex-shrink:0;">2</div>
+                <div><div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;">Fill in Available Details</div><div style="font-size:13px;color:var(--muted);line-height:1.6;">Enter the fields you have. Missing values are automatically filled with safe neutral defaults.</div></div>
+            </div>
+            <div style="display:flex;gap:14px;align-items:flex-start;padding:1rem;background:var(--bg);border-radius:8px;border:1px solid var(--border);">
+                <div style="width:36px;height:36px;background:rgba(26,107,74,0.1);border:1px solid rgba(26,107,74,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:1.1rem;color:var(--green);flex-shrink:0;">3</div>
+                <div><div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;">Specialist Model Analyses</div><div style="font-size:13px;color:var(--muted);line-height:1.6;">The routed model returns a fraud probability score with risk level classification.</div></div>
+            </div>
+            <div style="display:flex;gap:14px;align-items:flex-start;padding:1rem;background:var(--bg);border-radius:8px;border:1px solid var(--border);">
+                <div style="width:36px;height:36px;background:rgba(26,107,74,0.1);border:1px solid rgba(26,107,74,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:1.1rem;color:var(--green);flex-shrink:0;">4</div>
+                <div><div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;">Optimal Threshold Applied</div><div style="font-size:13px;color:var(--muted);line-height:1.6;">Each model uses its own optimised threshold via Precision-Recall curve maximisation.</div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function setNavHeight() {
+    var nav = document.querySelector('.app-nav');
+    if (nav) document.documentElement.style.setProperty('--nav-h', nav.offsetHeight + 'px');
+}
+setNavHeight();
+window.addEventListener('resize', setNavHeight);
+
+document.addEventListener('DOMContentLoaded', function() {
+    var modal = document.getElementById('predictInfoModal');
+    if (modal && modal.parentElement !== document.body) {
+        document.body.appendChild(modal);
+    }
+});
+
+window.addEventListener('load', function() {
+    if (window.location.hash === '#predictTypeSection') {
+        var el = document.getElementById('predictTypeSection');
+        if (el) el.scrollIntoView({ behavior: 'instant', block: 'start' });
+    }
+});
+
+var modelRouting = {
+    'card_purchase'   : {key:'credit_card',     name:'Credit Card Fraud Model',    dataset:'Sparkov',  f1:'80%'},
+    'atm'             : {key:'credit_card',     name:'Credit Card Fraud Model',    dataset:'Sparkov',  f1:'80%'},
+    'online_shopping' : {key:'credit_card',     name:'Credit Card Fraud Model',    dataset:'Sparkov',  f1:'80%'},
+    'contactless'     : {key:'credit_card',     name:'Credit Card Fraud Model',    dataset:'Sparkov',  f1:'80%'},
+    'grocery'         : {key:'credit_card',     name:'Credit Card Fraud Model',    dataset:'Sparkov',  f1:'80%'},
+    'entertainment'   : {key:'credit_card',     name:'Credit Card Fraud Model',    dataset:'Sparkov',  f1:'80%'},
+    'ecommerce'       : {key:'online_payment',  name:'Online Payment Fraud Model', dataset:'IEEE-CIS', f1:'72%'},
+    'digital_payment' : {key:'online_payment',  name:'Online Payment Fraud Model', dataset:'IEEE-CIS', f1:'72%'},
+    'subscription'    : {key:'online_payment',  name:'Online Payment Fraud Model', dataset:'IEEE-CIS', f1:'72%'},
+    'online_transfer' : {key:'online_payment',  name:'Online Payment Fraud Model', dataset:'IEEE-CIS', f1:'72%'},
+    'card_not_present': {key:'online_payment',  name:'Online Payment Fraud Model', dataset:'IEEE-CIS', f1:'72%'},
+    'bank_transfer'   : {key:'mobile_transfer', name:'Mobile Transfer Fraud Model',dataset:'PaySim',   f1:'91%'},
+    'mobile_payment'  : {key:'mobile_transfer', name:'Mobile Transfer Fraud Model',dataset:'PaySim',   f1:'91%'},
+    'cash_withdrawal' : {key:'mobile_transfer', name:'Mobile Transfer Fraud Model',dataset:'PaySim',   f1:'91%'},
+    'direct_debit'    : {key:'mobile_transfer', name:'Mobile Transfer Fraud Model',dataset:'PaySim',   f1:'91%'}
+};
+
+function selectType(btn) {
+    document.querySelectorAll('.pr-type-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+
+    var val  = btn.getAttribute('data-value');
+    var info = modelRouting[val];
+
+    document.getElementById('transactionTypeHidden').value = val;
+
+    document.querySelectorAll('.pr-dynamic').forEach(function(el) {
+        el.style.display = 'none';
+    });
+
+    if (info) {
+        var fields = document.getElementById('fields-' + info.key);
+        if (fields) {
+            fields.style.display  = 'block';
+            fields.style.animation = 'prFadeIn 0.3s ease';
+        }
+        document.getElementById('miName').textContent   = info.name;
+        document.getElementById('miDetail').textContent = info.dataset + ' dataset — ' + info.f1 + ' F1';
+        document.getElementById('miBadge').textContent  = info.f1;
+
+        document.querySelectorAll('.pr-hero-model').forEach(function(m) { m.classList.remove('active'); });
+        var hm = document.getElementById('hm-' + info.key);
+        if (hm) hm.classList.add('active');
+
+        document.querySelectorAll('.pr-mc-card').forEach(function(c) { c.classList.remove('active'); });
+        var mc = document.getElementById('card-' + info.key);
+        if (mc) mc.classList.add('active');
+    }
+}
+
+function togglePredictInfo() {
+    var modal = document.getElementById('predictInfoModal');
+    if (modal.style.display === 'none' || modal.style.display === '') {
+        modal.style.display       = 'flex';
+        modal.style.alignItems    = 'center';
+        modal.style.justifyContent = 'center';
+        document.body.style.overflow = 'hidden';
+    } else {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+}
+
+function closePredictInfo(e) {
+    if (e.target === document.getElementById('predictInfoModal')) togglePredictInfo();
+}
+
+
+
+selectType(document.querySelector('.pr-type-btn.active'));
+
+(function() {
+    var els = document.querySelectorAll('.reveal');
+    var obs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                obs.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+    els.forEach(function(el) { obs.observe(el); });
+})();
+</script>
+{% endblock %}

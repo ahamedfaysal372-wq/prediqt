@@ -1,0 +1,554 @@
+{% extends "base.html" %}
+{% block title %}API Keys — PrediQt{% endblock %}
+{% block page_title %}API Keys{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/api_keys.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="ak-hero">
+    <div class="ak-hero-left">
+        <div class="ak-eyebrow">Integration</div>
+        <h1 class="ak-hero-title">Your keys,<br/>your access.</h1>
+        <p class="ak-hero-sub">Generate credentials to call PrediQt's prediction endpoints directly — no dashboard required.</p>
+        <a href="#akManage" class="ak-hero-cta">Manage Keys</a>
+    </div>
+    <div class="ak-hero-right">
+        <div class="ak-hero-blob"></div>
+        <div class="ak-hero-photo">
+            <img src="https://images.unsplash.com/photo-1751448555253-f39c06e29d82?w=500&q=80" alt="API security" />
+        </div>
+        <div class="ak-hero-card">
+            <div class="ak-hero-card-label">Live Key</div>
+            <div class="ak-hero-card-key">pq_live_8f3K9x••••</div>
+            <div class="ak-hero-card-row"><span>Status</span><span class="ak-hero-card-active">Active</span></div>
+            <div class="ak-hero-card-row"><span>Last used</span><span>2 hours ago</span></div>
+        </div>
+    </div>
+</div>
+
+<div class="ak-method reveal">
+    <div class="ak-method-header">
+        <div class="ak-section-eyebrow">How keys work</div>
+        <h2 class="ak-method-title-big">Four things to know.</h2>
+        <p class="ak-method-sub-line1">Everything you need to understand</p>
+        <p class="ak-method-sub-line2">before generating your first key.</p>
+    </div>
+    <div class="ak-carousel-3d reveal">
+        <button class="ak-spin-arrow" id="akArrowPrev" aria-label="Previous"><i class="bi bi-chevron-left"></i></button>
+        <div class="ak-carousel-3d-stage" id="ak3dStage"></div>
+        <button class="ak-spin-arrow" id="akArrowNext" aria-label="Next"><i class="bi bi-chevron-right"></i></button>
+    </div>
+    <div class="ak-spin-dots" id="akSpinDots"></div>
+</div>
+
+<div class="ak-manage" id="akManage">
+    <div class="ak-section-block-centered reveal">
+        <h2 class="ak-section-title-huge">Manage your keys.</h2>
+        <p class="ak-manage-sub">Create new keys, see how they're being used, and revoke anything you no longer need.</p>
+    </div>
+
+    <div class="ak-create-panel reveal">
+        <div class="ak-create-panel-banner">
+            <div class="ak-create-panel-icon"><i class="bi bi-key-fill"></i></div>
+            <div>
+                <h3 class="ak-create-panel-title">Create a new key</h3>
+                <p class="ak-create-panel-sub">Fill in the details — watch it come together on the right.</p>
+            </div>
+        </div>
+
+        <div class="ak-create-split">
+            <form method="POST" action="{{ url_for('create_api_key') }}#akNewKeyBanner" class="ak-create-form" id="akCreateForm">
+
+                <div class="ak-create-step">
+                    <div class="ak-create-step-num">1</div>
+                    <div class="ak-create-step-body">
+                        <label class="ak-create-field-label">Name</label>
+                        <input type="text" name="name" id="akNameInput" class="ak-create-input ak-create-input-big" placeholder="e.g. &quot;Nightly batch job&quot;" required>
+                        <p class="ak-create-field-help">Something you'll recognise later.</p>
+                    </div>
+                </div>
+
+                <div class="ak-create-step">
+                    <div class="ak-create-step-num">2</div>
+                    <div class="ak-create-step-body">
+                        <label class="ak-create-field-label">Type</label>
+                        <div class="ak-type-toggle ak-type-toggle-big">
+                            <label class="ak-type-option"><input type="radio" name="key_type" value="live" checked><span>Live</span></label>
+                            <label class="ak-type-option"><input type="radio" name="key_type" value="test"><span>Test</span></label>
+                        </div>
+                        <p class="ak-create-field-help">Live keys save real predictions. Test keys never save anything.</p>
+                    </div>
+                </div>
+
+                <div class="ak-create-step ak-create-step-last">
+                    <div class="ak-create-step-num">3</div>
+                    <div class="ak-create-step-body">
+                        <label class="ak-create-field-label">Scopes</label>
+                        <div class="ak-scope-options">
+                            <label class="ak-scope-option"><input type="checkbox" name="scope_predict" id="akScopePredict" checked><span>Check Transaction</span></label>
+                            <label class="ak-scope-option"><input type="checkbox" name="scope_batch" id="akScopeBatch" checked><span>Batch Upload</span></label>
+                        </div>
+                        <p class="ak-create-field-help">Only allow this key to do what it actually needs.</p>
+                    </div>
+                </div>
+
+                <button type="submit" class="ak-create-btn"><i class="bi bi-plus-lg"></i> Generate New Key</button>
+            </form>
+
+        </div>
+    </div>
+
+    {% if new_key %}
+    <div class="ak-reveal-banner reveal" id="akNewKeyBanner">
+        <div class="ak-reveal-label">Copy this now — it won't be shown again</div>
+        <div class="ak-reveal-row">
+            <code class="ak-reveal-key" id="akNewKey">{{ new_key }}</code>
+            <button class="ak-copy-btn" onclick="copyAkKey()"><i class="bi bi-clipboard"></i> Copy</button>
+        </div>
+        <div class="ak-code-tabs">
+            <button class="ak-code-tab active" onclick="switchAkCodeTab('curl', this)">cURL</button>
+            <button class="ak-code-tab" onclick="switchAkCodeTab('python', this)">Python</button>
+        </div>
+        <pre class="ak-code-block" id="akCodeCurl">curl -X POST http://127.0.0.1:5000/api/v1/predict \
+  -H "Authorization: Bearer {{ new_key }}" \
+  -H "Content-Type: application/json" \
+  -d '{"transaction_type": "card_purchase", "amount": 450.00, "hour": 14}'</pre>
+        <pre class="ak-code-block" id="akCodePython" style="display:none;">import requests
+
+response = requests.post(
+    "http://127.0.0.1:5000/api/v1/predict",
+    headers={"Authorization": "Bearer {{ new_key }}"},
+    json={"transaction_type": "card_purchase", "amount": 450.00, "hour": 14}
+)
+print(response.json())</pre>
+    </div>
+    {% endif %}
+
+    <div class="ak-keys-section reveal">
+        <div class="ak-keys-section-head">
+            <div>
+                <h3 class="ak-keys-section-title">Your keys</h3>
+                <p class="ak-keys-section-sub">Everything you've created, active or not.</p>
+            </div>
+            <div class="ak-keys-count-badge">{{ keys|length }} total</div>
+        </div>
+
+        {% set active_keys = keys|selectattr('is_active')|list %}
+        {% set revoked_keys = keys|rejectattr('is_active')|list %}
+
+        {% if active_keys %}
+        <div class="ak-card-list" id="akActiveList"></div>
+        <div class="ak-pagination" id="akActivePagination"></div>
+        {% elif revoked_keys %}
+        <div class="ak-empty ak-empty-revoked">
+            <i class="bi bi-key"></i>
+            <p class="ak-empty-title">All your keys are currently revoked.</p>
+            <p class="ak-empty-sub">Create a new one above to get started again.</p>
+        </div>
+        {% else %}
+        <div class="ak-empty">
+            <i class="bi bi-key"></i>
+            <p class="ak-empty-title">No keys yet.</p>
+            <p class="ak-empty-sub">Create your first one above.</p>
+        </div>
+        {% endif %}
+
+        {% if revoked_keys %}
+        <div class="ak-revoked-section-wrap">
+            <div class="ak-revoked-header">
+                <button type="button" class="ak-revoked-toggle" onclick="toggleAkRevokedList()">
+                    <i class="bi bi-chevron-down" id="akRevokedChevron"></i>
+                    <span>Revoked keys</span>
+                </button>
+                <div class="ak-revoked-total" id="akRevokedTotal">Total: {{ revoked_keys|length }}</div>
+            </div>
+            <div class="ak-revoked-wrap" id="akRevokedList" style="display:none;">
+                <div class="ak-card-list" id="akRevokedListInner"></div>
+                <div class="ak-pagination" id="akRevokedPagination"></div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script id="akActiveKeysData" type="application/json">
+[
+    {% for k in active_keys %}
+    {
+        "id": {{ k.id }},
+        "name": {{ k.name|tojson }},
+        "type": {{ k.key_type|tojson }},
+        "prefix": {{ k.key_prefix|tojson }},
+        "requests": {{ k.request_count }},
+        "created": {{ k.created_at.strftime('%d %b')|tojson }},
+        "lastUsed": {{ (k.last_used.strftime('%d %b') if k.last_used else '—')|tojson }},
+        "scopePredict": {{ k.scope_predict|tojson }},
+        "scopeBatch": {{ k.scope_batch|tojson }}
+    }{{ ',' if not loop.last }}
+    {% endfor %}
+]
+</script>
+
+<script id="akRevokedKeysData" type="application/json">
+[
+    {% for k in revoked_keys %}
+    {
+        "id": {{ k.id }},
+        "name": {{ k.name|tojson }},
+        "type": {{ k.key_type|tojson }},
+        "prefix": {{ k.key_prefix|tojson }},
+        "requests": {{ k.request_count }},
+        "created": {{ k.created_at.strftime('%d %b')|tojson }}
+    }{{ ',' if not loop.last }}
+    {% endfor %}
+]
+</script>
+
+<!-- Revoke confirmation modal -->
+<div id="akRevokeModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;">
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:2rem;width:100%;max-width:400px;margin:0 1rem;box-shadow:0 24px 64px rgba(0,0,0,0.15);">
+        <div style="font-family:'DM Sans',sans-serif;font-weight:800;font-size:1.3rem;color:var(--text);margin-bottom:0.5rem;">Revoke this key?</div>
+        <p style="font-size:14px;color:var(--muted);margin-bottom:1.75rem;line-height:1.6;">
+            "<span id="akRevokeKeyName"></span>" will stop working immediately. Anything still using it will lose access right away — this can't be undone.
+        </p>
+        <form id="akRevokeForm" method="POST" action="">
+            <div style="display:flex;gap:10px;justify-content:center;">
+                <button type="button" onclick="closeAkRevokeModal()" style="padding:10px 24px;border-radius:var(--r);border:1.5px solid var(--text);background:transparent;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;color:var(--text);cursor:pointer;">Cancel</button>
+                <button type="submit" style="padding:10px 24px;border-radius:var(--r);border:1.5px solid #dc2626;background:#dc2626;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;color:#fff;cursor:pointer;">Yes, revoke it</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var modal = document.getElementById('akRevokeModal');
+    if (modal && modal.parentElement !== document.body) {
+        document.body.appendChild(modal);
+    }
+});
+
+function setNavHeight() {
+    var nav = document.querySelector('.app-nav');
+    if (nav) document.documentElement.style.setProperty('--nav-h', nav.offsetHeight + 'px');
+}
+setNavHeight();
+window.addEventListener('resize', setNavHeight);
+
+var akSpinData = [
+    { num: '01', title: 'Shown once, ever', desc: 'Your full key is only ever displayed right after you create it. Lose it, and you\'ll need to generate a new one — there\'s no way to retrieve it again.' },
+    { num: '02', title: 'Only a hash is stored', desc: 'PrediQt never stores your actual key, only a one-way hash — the same way your account password is protected.' },
+    { num: '03', title: 'Scopes limit what it can do', desc: 'A key can be restricted to just Check Transaction, just Batch Upload, or both — so a leaked key can\'t do more than it was meant to.' },
+    { num: '04', title: 'Revoke anytime, instantly', desc: 'Revoking a key takes effect immediately. Anything still using it loses access right away, with no grace period.' }
+];
+var ak3dIndex = 0;
+
+function buildAk3DStage() {
+    var stage = document.getElementById('ak3dStage');
+    stage.innerHTML = '';
+    akSpinData.forEach(function(d, i) {
+        var card = document.createElement('div');
+        card.className = 'ak-3d-card';
+        card.dataset.index = i;
+        card.innerHTML =
+            '<div class="ak-3d-num">' + d.num + '</div>' +
+            '<div class="ak-3d-title">' + d.title + '</div>' +
+            '<div class="ak-3d-desc">' + d.desc + '</div>';
+        stage.appendChild(card);
+    });
+    renderAk3DStage();
+}
+
+function renderAk3DStage() {
+    var n = akSpinData.length;
+    document.querySelectorAll('.ak-3d-card').forEach(function(card) {
+        var i = parseInt(card.dataset.index);
+        var diff = i - ak3dIndex;
+        if (diff > n / 2) diff -= n;
+        if (diff < -n / 2) diff += n;
+
+        if (diff === 0) {
+            card.style.transform = 'translateX(0) translateZ(0) rotateY(0deg) scale(1)';
+            card.style.opacity = '1';
+            card.style.zIndex = '3';
+        } else if (Math.abs(diff) === 1) {
+            card.style.transform = 'translateX(' + (diff * 200) + 'px) translateZ(-160px) rotateY(' + (diff * -35) + 'deg) scale(0.82)';
+            card.style.opacity = '0.55';
+            card.style.zIndex = '2';
+        } else {
+            card.style.transform = 'translateX(' + (diff * 220) + 'px) translateZ(-280px) rotateY(' + (diff * -35) + 'deg) scale(0.7)';
+            card.style.opacity = '0';
+            card.style.zIndex = '1';
+        }
+    });
+
+    var dotsWrap = document.getElementById('akSpinDots');
+    dotsWrap.innerHTML = '';
+    akSpinData.forEach(function(_, i) {
+        var dot = document.createElement('div');
+        dot.className = 'ak-spin-dot' + (i === ak3dIndex ? ' active' : '');
+        dotsWrap.appendChild(dot);
+    });
+}
+
+var akSpinAnimating = false;
+
+function rotateAk3D(direction) {
+    if (akSpinAnimating) return;
+    akSpinAnimating = true;
+    ak3dIndex = (ak3dIndex + direction + akSpinData.length) % akSpinData.length;
+    renderAk3DStage();
+    setTimeout(function() { akSpinAnimating = false; }, 600);
+}
+
+document.getElementById('akArrowPrev').addEventListener('click', function() {
+    rotateAk3D(-1);
+});
+
+document.getElementById('akArrowNext').addEventListener('click', function() {
+    rotateAk3D(1);
+});
+
+buildAk3DStage();
+
+window.addEventListener('load', function() {
+    if (window.location.hash === '#akNewKeyBanner') {
+        var el = document.getElementById('akNewKeyBanner');
+        if (el) el.scrollIntoView({ behavior: 'instant', block: 'start' });
+    }
+});
+
+function copyAkKey() {
+    var keyText = document.getElementById('akNewKey').textContent;
+    navigator.clipboard.writeText(keyText).then(function() {
+        showToast('Key copied to clipboard');
+    });
+}
+
+function switchAkCodeTab(lang, btn) {
+    document.querySelectorAll('.ak-code-tab').forEach(function(t) { t.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById('akCodeCurl').style.display = lang === 'curl' ? 'block' : 'none';
+    document.getElementById('akCodePython').style.display = lang === 'python' ? 'block' : 'none';
+}
+
+var akLoadedLogs = {};
+
+function toggleAkLog(keyId) {
+    var panel = document.getElementById('akLog' + keyId);
+    if (!panel) return;
+
+    var isOpen = panel.style.display !== 'none';
+    if (isOpen) {
+        panel.style.display = 'none';
+        return;
+    }
+
+    panel.style.display = 'block';
+    if (akLoadedLogs[keyId]) return;
+
+    panel.innerHTML = '<div class="ak-log-loading">Loading...</div>';
+    fetch('/api/keys/' + keyId + '/logs')
+        .then(function(res) { return res.json(); })
+        .then(function(logs) {
+            akLoadedLogs[keyId] = true;
+            if (!logs.length) {
+                panel.innerHTML = '<div class="ak-log-empty">No activity yet.</div>';
+                return;
+            }
+            panel.innerHTML = logs.map(function(log) {
+                return '<div class="ak-log-row">' +
+                    '<span class="ak-log-endpoint">' + log.endpoint + '</span>' +
+                    (log.result ? '<span class="ak-log-result ak-log-result-' + log.result.toLowerCase() + '">' + log.result + '</span>' : '') +
+                    '<span class="ak-log-time">' + log.timestamp + '</span>' +
+                '</div>';
+            }).join('');
+        })
+        .catch(function() {
+            panel.innerHTML = '<div class="ak-log-empty">Could not load activity.</div>';
+        });
+}
+
+function openAkRevokeModal(keyId, keyName) {
+    var allModals = document.querySelectorAll('#akRevokeModal');
+    console.log('Found', allModals.length, 'element(s) with id akRevokeModal');
+
+    allModals.forEach(function(modalEl) {
+        var nameEl = modalEl.querySelector('#akRevokeKeyName');
+        var formEl = modalEl.querySelector('#akRevokeForm');
+        if (nameEl) nameEl.textContent = keyName;
+        if (formEl) formEl.action = '/api-keys/' + keyId + '/revoke';
+        modalEl.style.display = 'flex';
+        modalEl.style.outline = '4px solid red';
+    });
+
+    document.body.style.overflow = 'hidden';
+}
+
+function closeAkRevokeModal() {
+    document.getElementById('akRevokeModal').style.display = 'none';
+    document.body.style.overflow = '';
+}
+
+document.getElementById('akRevokeModal').addEventListener('click', function(e) {
+    if (e.target === this) closeAkRevokeModal();
+});
+
+function toggleAkRevokedList() {
+    var list = document.getElementById('akRevokedList');
+    var chevron = document.getElementById('akRevokedChevron');
+    var isOpen = list.style.display !== 'none';
+    list.style.display = isOpen ? 'none' : 'block';
+    chevron.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+}
+
+var akActiveKeys = JSON.parse(document.getElementById('akActiveKeysData').textContent || '[]');
+var akRevokedKeys = JSON.parse(document.getElementById('akRevokedKeysData').textContent || '[]');
+var AK_PER_PAGE = 5;
+var akActivePage = 1;
+var akRevokedPage = 1;
+
+function buildActiveCard(k) {
+    var scopes = '';
+    if (k.scopePredict) scopes += '<span class="ak-scope-tag">Predict</span>';
+    if (k.scopeBatch) scopes += '<span class="ak-scope-tag">Batch</span>';
+
+    return '<div class="ak-key-card" data-key-id="' + k.id + '" tabindex="0" role="button" aria-expanded="false" onclick="handleAkCardClick(event, this)" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();handleAkCardClick(event, this);}">' +
+        '<div class="ak-key-card-top">' +
+            '<div class="ak-key-card-name-row">' +
+                '<span class="ak-key-card-name">' + k.name + '</span>' +
+                '<span class="ak-type-badge ak-type-badge-' + k.type + '">' + k.type.toUpperCase() + '</span>' +
+            '</div>' +
+            '<i class="bi bi-chevron-down ak-key-card-chevron" id="akActiveChevron' + k.id + '"></i>' +
+        '</div>' +
+        '<code class="ak-key-card-prefix">' + k.prefix + '</code>' +
+        '<div class="ak-key-card-detail" id="akActiveDetail' + k.id + '" style="display:none;">' +
+            '<div class="ak-key-card-divider"></div>' +
+            '<div class="ak-key-card-detail-row">' +
+                '<div class="ak-key-card-stats">' +
+                    '<div class="ak-key-stat"><span class="ak-key-stat-val">' + k.requests + '</span><span class="ak-key-stat-label">Requests</span></div>' +
+                    '<div class="ak-key-stat-div"></div>' +
+                    '<div class="ak-key-stat"><span class="ak-key-stat-val">' + k.created + '</span><span class="ak-key-stat-label">Created</span></div>' +
+                    '<div class="ak-key-stat-div"></div>' +
+                    '<div class="ak-key-stat"><span class="ak-key-stat-val">' + k.lastUsed + '</span><span class="ak-key-stat-label">Last Used</span></div>' +
+                '</div>' +
+                '<div class="ak-key-card-scopes">' + scopes + '</div>' +
+                '<div class="ak-key-card-actions">' +
+                    '<button type="button" class="ak-log-btn" data-action="log" data-key-id="' + k.id + '" title="View activity"><i class="bi bi-clock-history"></i></button>' +
+                    '<button type="button" class="ak-revoke-btn" data-action="revoke" data-key-id="' + k.id + '">Revoke</button>' +
+                '</div>' +
+            '</div>' +
+        '</div>' +
+    '</div>';
+}
+
+function handleAkCardClick(e, cardEl) {
+    var actionBtn = e.target.closest('[data-action]');
+    if (actionBtn) {
+        e.stopPropagation();
+        var keyId = parseInt(actionBtn.dataset.keyId);
+        if (actionBtn.dataset.action === 'log') {
+            toggleAkLog(keyId);
+        } else if (actionBtn.dataset.action === 'revoke') {
+            var nameEl = cardEl.querySelector('.ak-key-card-name');
+            openAkRevokeModal(keyId, nameEl ? nameEl.textContent : '');
+        }
+        return;
+    }
+    toggleAkActiveDetail(e, parseInt(cardEl.dataset.keyId));
+}
+
+function toggleAkActiveDetail(e, keyId) {
+    var detail = document.getElementById('akActiveDetail' + keyId);
+    var chevron = document.getElementById('akActiveChevron' + keyId);
+    var card = document.querySelector('.ak-key-card[data-key-id="' + keyId + '"]');
+    var isOpen = detail.style.display !== 'none';
+    detail.style.display = isOpen ? 'none' : 'block';
+    chevron.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+    if (card) card.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+}
+
+function buildRevokedCard(k) {
+    return '<div class="ak-revoked-card" data-key-id="' + k.id + '" tabindex="0" role="button" aria-expanded="false" onclick="toggleAkRevokedDetail(' + k.id + ')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();toggleAkRevokedDetail(' + k.id + ');}">' +
+        '<div class="ak-revoked-card-top">' +
+            '<div class="ak-revoked-card-left">' +
+                '<span class="ak-key-card-name">' + k.name + '</span>' +
+                '<span class="ak-type-badge ak-type-badge-' + k.type + '">' + k.type.toUpperCase() + '</span>' +
+            '</div>' +
+            '<span class="ak-status-revoked">Revoked</span>' +
+        '</div>' +
+        '<code class="ak-key-card-prefix">' + k.prefix + '</code>' +
+        '<div class="ak-revoked-detail" id="akRevokedDetail' + k.id + '" style="display:none;">' +
+            '<div class="ak-key-card-stats">' +
+                '<div class="ak-key-stat"><span class="ak-key-stat-val">' + k.requests + '</span><span class="ak-key-stat-label">Requests</span></div>' +
+                '<div class="ak-key-stat-div"></div>' +
+                '<div class="ak-key-stat"><span class="ak-key-stat-val">' + k.created + '</span><span class="ak-key-stat-label">Created</span></div>' +
+            '</div>' +
+        '</div>' +
+    '</div>';
+}
+
+function toggleAkRevokedDetail(keyId) {
+    var detail = document.getElementById('akRevokedDetail' + keyId);
+    var card = document.querySelector('.ak-revoked-card[data-key-id="' + keyId + '"]');
+    if (detail) {
+        var isOpen = detail.style.display !== 'none';
+        detail.style.display = isOpen ? 'none' : 'block';
+        if (card) card.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+    }
+}
+
+function renderAkPage(listId, paginationId, allKeys, page, buildFn, isRevoked) {
+    var listEl = document.getElementById(listId);
+    var pagEl = document.getElementById(paginationId);
+    if (!listEl) return;
+
+    var totalPages = Math.max(1, Math.ceil(allKeys.length / AK_PER_PAGE));
+    page = Math.min(Math.max(1, page), totalPages);
+    var pageItems = allKeys.slice((page - 1) * AK_PER_PAGE, page * AK_PER_PAGE);
+
+    listEl.innerHTML = pageItems.map(buildFn).join('');
+
+    if (totalPages <= 1) { pagEl.innerHTML = ''; return; }
+
+    var html = '<button class="ak-page-btn" ' + (page <= 1 ? 'disabled' : '') + ' onclick="' + (isRevoked ? 'changeAkRevokedPage' : 'changeAkActivePage') + '(' + (page - 1) + ')"><i class="bi bi-chevron-left"></i></button>';
+    for (var p = 1; p <= totalPages; p++) {
+        html += '<button class="ak-page-btn ' + (p === page ? 'ak-page-active' : '') + '" onclick="' + (isRevoked ? 'changeAkRevokedPage' : 'changeAkActivePage') + '(' + p + ')">' + p + '</button>';
+    }
+    html += '<button class="ak-page-btn" ' + (page >= totalPages ? 'disabled' : '') + ' onclick="' + (isRevoked ? 'changeAkRevokedPage' : 'changeAkActivePage') + '(' + (page + 1) + ')"><i class="bi bi-chevron-right"></i></button>';
+    pagEl.innerHTML = html;
+}
+
+function changeAkActivePage(p) {
+    akActivePage = p;
+    renderAkPage('akActiveList', 'akActivePagination', akActiveKeys, akActivePage, buildActiveCard, false);
+}
+
+function changeAkRevokedPage(p) {
+    akRevokedPage = p;
+    renderAkPage('akRevokedListInner', 'akRevokedPagination', akRevokedKeys, akRevokedPage, buildRevokedCard, true);
+}
+
+renderAkPage('akActiveList', 'akActivePagination', akActiveKeys, akActivePage, buildActiveCard, false);
+renderAkPage('akRevokedListInner', 'akRevokedPagination', akRevokedKeys, akRevokedPage, buildRevokedCard, true);
+
+(function() {
+    var els = document.querySelectorAll('.reveal');
+    var obs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                obs.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+    els.forEach(function(el) { obs.observe(el); });
+})();
+</script>
+{% endblock %}

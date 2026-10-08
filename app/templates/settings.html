@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+{% block title %}Settings — PrediQt{% endblock %}
+{% block page_title %}Settings{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="adm-hero-centered">
+    <h1 class="adm-hero-title-huge">Account Settings.</h1>
+    <p class="adm-hero-sub-line">Manage your profile, company details,</p>
+    <p class="adm-hero-sub-line">notifications, and security.</p>
+</div>
+
+<div class="set-layout" id="settingsLayout">
+    <div class="set-nav">
+        <div class="set-nav-label">Account</div>
+        <button class="set-nav-item active" data-tab="profile" onclick="switchSettingsTab('profile', this)">
+            <i class="bi bi-person"></i><span>Profile</span><i class="bi bi-chevron-right set-nav-arrow"></i>
+        </button>
+        <button class="set-nav-item" data-tab="company" onclick="switchSettingsTab('company', this)">
+            <i class="bi bi-building"></i><span>Company</span><i class="bi bi-chevron-right set-nav-arrow"></i>
+        </button>
+        <button class="set-nav-item" data-tab="notifications" onclick="switchSettingsTab('notifications', this)">
+            <i class="bi bi-bell"></i><span>Notifications</span><i class="bi bi-chevron-right set-nav-arrow"></i>
+        </button>
+        <button class="set-nav-item" data-tab="security" onclick="switchSettingsTab('security', this)">
+            <i class="bi bi-shield-lock"></i><span>Security</span><i class="bi bi-chevron-right set-nav-arrow"></i>
+        </button>
+        <button class="set-nav-item" data-tab="activity" onclick="switchSettingsTab('activity', this)">
+            <i class="bi bi-clock-history"></i><span>Activity</span><i class="bi bi-chevron-right set-nav-arrow"></i>
+        </button>
+    </div>
+
+    <div class="set-content">
+
+        <div class="set-panel" id="panel-profile">
+            <h3 class="set-panel-title">Edit your profile</h3>
+            <form method="POST" action="{{ url_for('settings') }}#settingsLayout">
+                <input type="hidden" name="form_type" value="profile">
+                <div class="adm-grid-2">
+                    <div class="adm-field"><label class="adm-label">Name</label><input type="text" class="adm-input" value="{{ current_user.name }}" disabled></div>
+                    <div class="adm-field"><label class="adm-label">Email</label><input type="text" class="adm-input" value="{{ current_user.email }}" disabled></div>
+                </div>
+                <div class="adm-grid-2">
+                    <div class="adm-field"><label class="adm-label">Phone</label><input type="text" name="phone" class="adm-input" value="{{ current_user.phone or '' }}"></div>
+                    <div class="adm-field"><label class="adm-label">Job Title</label><input type="text" name="job_title" class="adm-input" value="{{ current_user.job_title or '' }}"></div>
+                </div>
+                <div class="adm-grid-2">
+                    <div class="adm-field"><label class="adm-label">City</label><input type="text" name="city" class="adm-input" value="{{ current_user.city or '' }}"></div>
+                    <div class="adm-field"><label class="adm-label">Country</label><input type="text" name="country" class="adm-input" value="{{ current_user.country or '' }}"></div>
+                </div>
+                <button type="submit" class="adm-btn"><i class="bi bi-check-lg"></i> Save Changes</button>
+            </form>
+        </div>
+
+        <div class="set-panel" id="panel-company" style="display:none;">
+            <h3 class="set-panel-title">Company details</h3>
+            <form method="POST" action="{{ url_for('settings') }}#settingsLayout">
+                <input type="hidden" name="form_type" value="company">
+                <div class="adm-grid-2">
+                    <div class="adm-field"><label class="adm-label">Company Name</label><input type="text" name="company" class="adm-input" value="{{ current_user.company or '' }}"></div>
+                    <div class="adm-field"><label class="adm-label">Registration Number</label><input type="text" name="company_reg_number" class="adm-input" value="{{ current_user.company_reg_number or '' }}"></div>
+                </div>
+                <div class="adm-grid-2">
+                    <div class="adm-field"><label class="adm-label">Industry</label><input type="text" name="industry" class="adm-input" value="{{ current_user.industry or '' }}"></div>
+                    <div class="adm-field"><label class="adm-label">Company Size</label><input type="text" name="company_size" class="adm-input" value="{{ current_user.company_size or '' }}"></div>
+                </div>
+                <div class="adm-field"><label class="adm-label">Business Address</label><input type="text" name="business_address" class="adm-input" value="{{ current_user.business_address or '' }}"></div>
+                <div class="adm-field"><label class="adm-label">Postcode</label><input type="text" name="postcode" class="adm-input" value="{{ current_user.postcode or '' }}"></div>
+                <button type="submit" class="adm-btn"><i class="bi bi-check-lg"></i> Save Changes</button>
+            </form>
+        </div>
+
+        <div class="set-panel" id="panel-notifications" style="display:none;">
+            <h3 class="set-panel-title">Notification preferences</h3>
+            <form method="POST" action="{{ url_for('settings') }}#settingsLayout">
+                <input type="hidden" name="form_type" value="notifications">
+                <div class="adm-toggle-row">
+                    <div class="adm-toggle-text"><strong>Email notifications</strong><span>Receive login codes and account updates by email.</span></div>
+                    <label class="adm-switch">
+                        <input type="checkbox" name="notifications" value="email" {{ 'checked' if current_user.notifications == 'email' else '' }} onchange="this.value = this.checked ? 'email' : 'none'">
+                        <span class="adm-switch-slider"></span>
+                    </label>
+                </div>
+                <button type="submit" class="adm-btn" style="margin-top:1.5rem;"><i class="bi bi-check-lg"></i> Save Changes</button>
+            </form>
+        </div>
+
+        <div class="set-panel" id="panel-security" style="display:none;">
+            <h3 class="set-panel-title">Update your password</h3>
+            <form method="POST" action="{{ url_for('settings') }}#settingsLayout">
+                <input type="hidden" name="form_type" value="password">
+                <div class="adm-field"><label class="adm-label">Current Password</label><input type="password" name="current_password" class="adm-input" required></div>
+                <div class="adm-grid-2">
+                    <div class="adm-field"><label class="adm-label">New Password</label><input type="password" name="new_password" class="adm-input" required></div>
+                    <div class="adm-field"><label class="adm-label">Confirm New Password</label><input type="password" name="confirm_password" class="adm-input" required></div>
+                </div>
+                <button type="submit" class="adm-btn"><i class="bi bi-shield-lock"></i> Update Password</button>
+            </form>
+
+            <div class="set-info-row">
+                <i class="bi bi-shield-check"></i>
+                <div><strong>Two-factor authentication is always on.</strong><span>Every login sends a one-time code to {{ current_user.email }} — this can't be disabled.</span></div>
+            </div>
+        </div>
+
+        <div class="set-panel" id="panel-activity" style="display:none;">
+            <h3 class="set-panel-title">Account activity</h3>
+            <div class="set-info-row">
+                <i class="bi bi-calendar-check"></i>
+                <div><strong>Member since</strong><span>{{ current_user.created_at.strftime('%d %B %Y') }}</span></div>
+            </div>
+            <div class="set-info-row">
+                <i class="bi bi-clock"></i>
+                <div><strong>Last login</strong><span>{{ current_user.last_login.strftime('%d %B %Y, %H:%M') if current_user.last_login else 'This is your first login' }}</span></div>
+            </div>
+            <div class="set-info-row">
+                <i class="bi bi-person-badge"></i>
+                <div><strong>Role</strong><span>{{ current_user.user_role|title }}</span></div>
+            </div>
+            {% if current_user.is_admin() %}
+            <a href="{{ url_for('audit_log') }}" class="adm-btn" style="margin-top:1rem;text-decoration:none;"><i class="bi bi-journal-text"></i> View Full Audit Log</a>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <div class="set-avatar-col">
+        <div class="set-avatar-circle">
+            {% if current_user.avatar_filename %}
+            <img src="{{ url_for('static', filename='avatars/' + current_user.avatar_filename) }}" alt="Profile picture">
+            {% else %}
+            <span class="set-avatar-initial">{{ current_user.name[0].upper() }}</span>
+            {% endif %}
+        </div>
+        <form method="POST" action="{{ url_for('upload_avatar') }}" enctype="multipart/form-data">
+            <input type="file" name="avatar" id="avatarFileInput" accept=".png,.jpg,.jpeg,.webp" style="display:none;" onchange="this.form.submit()">
+            <button type="button" class="set-avatar-btn" onclick="document.getElementById('avatarFileInput').click()">
+                <i class="bi bi-camera"></i> Change Avatar
+            </button>
+        </form>
+        {% if current_user.avatar_filename %}
+        <form method="POST" action="{{ url_for('delete_avatar') }}">
+            <button type="submit" class="set-avatar-delete-btn">Delete Avatar</button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function switchSettingsTab(tab, btn) {
+    document.querySelectorAll('.set-nav-item').forEach(function(item) { item.classList.remove('active'); });
+    btn.classList.add('active');
+    document.querySelectorAll('.set-panel').forEach(function(panel) { panel.style.display = 'none'; });
+    document.getElementById('panel-' + tab).style.display = 'block';
+}
+</script>
+{% endblock %}

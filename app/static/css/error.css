@@ -1,0 +1,57 @@
+.err-page {
+    min-height: calc(100vh - var(--nav-h, 88px));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin: -2rem -2rem 0 -2rem;
+    padding: 2rem;
+}
+
+.err-code {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 800;
+    font-size: clamp(5rem, 15vw, 10rem);
+    line-height: 1;
+    letter-spacing: -.03em;
+    background: linear-gradient(135deg, var(--text) 0%, var(--green) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 1rem;
+}
+
+.err-title {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 800;
+    font-size: 1.8rem;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+}
+
+.err-message {
+    font-size: 15px;
+    color: var(--muted);
+    max-width: 420px;
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+}
+
+.err-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+
+.err-btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 28px; background: var(--green); color: #fff;
+    border-radius: 50px; font-size: 14px; font-weight: 700;
+    text-decoration: none; transition: all 0.25s ease;
+}
+.err-btn-primary:hover { background: var(--text); transform: translateY(-2px); }
+
+.err-btn-outline {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 28px; border: 1.5px solid var(--border); color: var(--text);
+    border-radius: 50px; font-size: 14px; font-weight: 700; text-decoration: none;
+    transition: all 0.25s ease;
+}
+.err-btn-outline:hover { border-color: var(--green); color: var(--green); }

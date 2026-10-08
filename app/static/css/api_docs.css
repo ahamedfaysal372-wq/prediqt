@@ -1,0 +1,43 @@
+.doc-page-header { padding: 2rem 0 1.5rem; }
+.doc-page-title { font-family: 'DM Sans', sans-serif; font-weight: 800; font-size: 2.1rem; color: var(--text); margin-bottom: 0.5rem; }
+.doc-page-sub { font-size: 15px; color: var(--muted); max-width: 540px; }
+
+.doc-layout { display: grid; grid-template-columns: 220px 1fr; gap: 3rem; }
+
+.doc-nav {
+    position: sticky; top: 100px; align-self: start;
+    display: flex; flex-direction: column; gap: 4px;
+    border-left: 2px solid var(--border); padding-left: 1.25rem;
+}
+.doc-nav-item {
+    font-size: 13.5px; font-weight: 600; color: var(--muted);
+    text-decoration: none; padding: 6px 0; transition: color 0.2s ease;
+}
+.doc-nav-item:hover { color: #4338ca; }
+.doc-nav-item.active { color: #4338ca; font-weight: 700; }
+
+.doc-section { padding-bottom: 3.5rem; border-bottom: 1px solid var(--border); margin-bottom: 3rem; scroll-margin-top: 100px; }
+.doc-section:last-child { border-bottom: none; }
+
+.doc-section-title { font-family: 'DM Sans', sans-serif; font-weight: 800; font-size: 1.6rem; color: var(--text); margin-bottom: 1rem; }
+.doc-subhead { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 1.5rem 0 0.75rem; }
+.doc-text { font-size: 14.5px; color: var(--text); line-height: 1.7; margin-bottom: 1rem; }
+.doc-text code { background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 2px 6px; font-size: 13px; }
+.doc-text a { color: #4338ca; font-weight: 600; text-decoration: none; }
+.doc-text a:hover { text-decoration: underline; }
+
+.doc-code {
+    background: var(--text); color: #f7f6f3; font-family: monospace; font-size: 13px;
+    line-height: 1.7; padding: 1.25rem; border-radius: 12px; overflow-x: auto;
+    white-space: pre-wrap; margin-bottom: 1rem;
+}
+
+.doc-table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+.doc-table th, .doc-table td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 13.5px; }
+.doc-table th { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.doc-table td code { background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 2px 6px; font-size: 12.5px; }
+
+@media (max-width: 800px) {
+    .doc-layout { grid-template-columns: 1fr; }
+    .doc-nav { position: static; flex-direction: row; flex-wrap: wrap; border-left: none; padding-left: 0; border-bottom: 1px solid var(--border); padding-bottom: 1rem; }
+}

@@ -1,0 +1,290 @@
+{% extends "base.html" %}
+{% block title %}Home — PrediQt{% endblock %}
+{% block page_title %}Home{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="hm-hero">
+    <div class="hm-hero-left">
+        <div class="hm-hero-label" id="timeLabel">Good evening</div>
+        <h1 class="hm-hero-title">Hello, {{ current_user.name.split()[0] }}.</h1>
+        <p class="hm-hero-sub">What would you like to do today? Check a transaction, upload a batch, or explore your dashboard — everything's one click away.</p>
+        <a href="#hmRows" class="hm-hero-cta">Get Started</a>
+    </div>
+    <div class="hm-hero-right">
+        <div class="hm-hero-blob"></div>
+        <div class="hm-hero-photo">
+            <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=500&q=80" alt="PrediQt dashboard" />
+        </div>
+        <div class="hm-hero-card">
+            <div class="hm-hero-card-label" id="currentDate"></div>
+            <div class="hm-hero-card-title">
+                <i class="bi bi-building"></i> {{ current_user.company or 'PrediQt' }}
+            </div>
+            <div class="hm-hero-card-row"><span>Specialist Models</span><span>3</span></div>
+            <div class="hm-hero-card-row"><span>Transaction Types</span><span>15</span></div>
+            <div class="hm-hero-card-row"><span>Security</span><span>2FA Enabled</span></div>
+        </div>
+    </div>
+</div>
+
+<div class="hm-stats-strip reveal">
+    <span class="hm-strip-stat"><strong>15</strong> Transaction types</span>
+    <span class="hm-strip-dot">·</span>
+    <span class="hm-strip-stat"><strong>3</strong> Specialist models</span>
+    <span class="hm-strip-dot">·</span>
+    <span class="hm-strip-stat"><strong>2.5M+</strong> Transactions trained</span>
+    <span class="hm-strip-dot">·</span>
+    <span class="hm-strip-stat"><strong>92%</strong> Peak precision</span>
+    <span class="hm-strip-dot">·</span>
+    <span class="hm-strip-stat"><strong>2FA</strong> Security enabled</span>
+</div>
+
+<div class="hm-section-block-centered reveal" id="hmRows">
+    <div class="hm-eyebrow-light">Get started</div>
+    <h2 class="hm-section-title-huge">Everything in one<br/>place.</h2>
+    <p class="hm-section-note">Five ways to put PrediQt to work.<br/>Pick one and dive straight in.</p>
+</div>
+
+<div class="hm-carousel-3d reveal">
+    <button class="hm-spin-arrow" id="hmArrowPrev" aria-label="Previous"><i class="bi bi-chevron-left"></i></button>
+    <div class="hm-carousel-3d-stage" id="hm3dStage"></div>
+    <button class="hm-spin-arrow" id="hmArrowNext" aria-label="Next"><i class="bi bi-chevron-right"></i></button>
+</div>
+<div class="hm-spin-dots" id="hmSpinDots"></div>
+
+<!-- Quick Actions -->
+<div class="hm-text-actions">
+    <div class="hm-section-block-centered reveal">
+        <h2 class="hm-section-title-huge">What you can do<br/>with PrediQt.</h2>
+        <p class="hm-section-note">Five tools, one platform.<br/>Here's what each one actually does.</p>
+    </div>
+
+    <div class="hm-ta-item hm-ta-anim reveal">
+        <div class="hm-ta-circle"><i class="bi bi-shield-check"></i></div>
+        <a href="{{ url_for('predict') }}" class="hm-ta-link">Check a Transaction</a>
+        <p class="hm-ta-desc">
+            Analyse any transaction instantly. Select the type, fill in the details
+            and PrediQt routes it to the right specialist model automatically.
+        </p>
+    </div>
+
+    <div class="hm-ta-item hm-ta-anim reveal">
+        <div class="hm-ta-circle"><i class="bi bi-cloud-upload"></i></div>
+        <a href="{{ url_for('batch') }}" class="hm-ta-link">Upload a Batch File</a>
+        <p class="hm-ta-desc">
+            Process thousands of transactions at once. Upload a CSV and get
+            a fully annotated results file with fraud flags and risk levels.
+        </p>
+    </div>
+
+    <div class="hm-ta-item hm-ta-anim reveal">
+        <div class="hm-ta-circle"><i class="bi bi-graph-up"></i></div>
+        <a href="{{ url_for('dashboard') }}" class="hm-ta-link">View your Dashboard</a>
+        <p class="hm-ta-desc">
+            See your fraud detection stats, charts and full prediction history
+            in one place — updated after every prediction.
+        </p>
+    </div>
+
+    <div class="hm-ta-item hm-ta-anim reveal">
+        <div class="hm-ta-circle"><i class="bi bi-speedometer2"></i></div>
+        <a href="{{ url_for('performance') }}" class="hm-ta-link">Explore Model Performance</a>
+        <p class="hm-ta-desc">
+            Dive into precision, recall, F1 and PR-AUC metrics for all three
+            specialist models and their training datasets.
+        </p>
+    </div>
+</div>
+
+<!-- Model Status -->
+<div class="hm-models-wrap">
+    <div class="hm-models-label">Specialist Models — All Systems Ready</div>
+    <div class="hm-models">
+        <div class="hm-model">
+            <div class="hm-model-left">
+                <div class="hm-model-status"></div>
+                <span class="hm-model-icon">💳</span>
+                <div>
+                    <div class="hm-model-name">Credit Card Fraud Model</div>
+                    <div class="hm-model-ds">Sparkov — 1.85M transactions</div>
+                </div>
+            </div>
+            <div class="hm-model-right">
+                <span class="hm-model-tag">Card Purchase</span>
+                <span class="hm-model-tag">ATM</span>
+                <span class="hm-model-tag">Online Shopping</span>
+                <div class="hm-model-score">80% F1</div>
+            </div>
+        </div>
+        <div class="hm-model-div"></div>
+        <div class="hm-model">
+            <div class="hm-model-left">
+                <div class="hm-model-status"></div>
+                <span class="hm-model-icon">🌐</span>
+                <div>
+                    <div class="hm-model-name">Online Payment Fraud Model</div>
+                    <div class="hm-model-ds">IEEE-CIS — 590K transactions</div>
+                </div>
+            </div>
+            <div class="hm-model-right">
+                <span class="hm-model-tag">E-commerce</span>
+                <span class="hm-model-tag">Digital Payment</span>
+                <span class="hm-model-tag">Subscription</span>
+                <div class="hm-model-score">72% F1</div>
+            </div>
+        </div>
+        <div class="hm-model-div"></div>
+        <div class="hm-model">
+            <div class="hm-model-left">
+                <div class="hm-model-status best"></div>
+                <span class="hm-model-icon">📱</span>
+                <div>
+                    <div class="hm-model-name">Mobile Transfer Fraud Model</div>
+                    <div class="hm-model-ds">PaySim — 58K transactions</div>
+                </div>
+            </div>
+            <div class="hm-model-right">
+                <span class="hm-model-tag">Bank Transfer</span>
+                <span class="hm-model-tag">Mobile Payment</span>
+                <span class="hm-model-tag">Cash Withdrawal</span>
+                <div class="hm-model-score best">91% F1</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function setNavHeight() {
+    var nav = document.querySelector('.app-nav');
+    if (nav) document.documentElement.style.setProperty('--nav-h', nav.offsetHeight + 'px');
+}
+setNavHeight();
+window.addEventListener('resize', setNavHeight);
+
+// Time greeting
+var hour  = new Date().getHours();
+var label = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+document.getElementById('timeLabel').textContent = label;
+
+// Date
+var days   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+var now    = new Date();
+document.getElementById('currentDate').textContent =
+    days[now.getDay()] + ', ' + months[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear();
+
+document.addEventListener('DOMContentLoaded', function() {
+    var hmSpinData = [
+        { tag: 'Detection', title: 'Check a Transaction', desc: 'Enter transaction details and PrediQt instantly routes to the right specialist model for a fraud probability score.', link: "{{ url_for('predict') }}", linkText: 'Get started', img: 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=500&q=80' },
+        { tag: 'Bulk Processing', title: 'Upload a Batch File', desc: 'Upload a CSV with thousands of transactions and get a fully annotated results file back in seconds.', link: "{{ url_for('batch') }}", linkText: 'Get started', img: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=500&q=80' },
+        { tag: 'Intelligence', title: 'Model Performance', desc: 'Compare precision, recall, F1 and PR-AUC across all three specialist models and their training datasets.', link: "{{ url_for('performance') }}", linkText: 'View metrics', img: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=500&q=80' },
+        { tag: 'Integration', title: 'API Keys', desc: "Generate credentials to call PrediQt's prediction endpoints directly from your own code.", link: "{{ url_for('api_keys') }}", linkText: 'Manage keys', img: 'https://images.unsplash.com/photo-1635950340810-2fb374521a7b?w=500&q=80' },
+        { tag: 'Integration', title: 'Webhooks', desc: 'Get notified the instant fraud is detected — PrediQt pushes a signed payload to your server in real time.', link: "{{ url_for('webhooks') }}", linkText: 'Set up webhooks', img: 'https://images.unsplash.com/photo-1649835152887-c62f625bdfc7?w=500&q=80' }
+    ];
+    var hm3dIndex = 0;
+    var hmSpinAnimating = false;
+
+    var stage = document.getElementById('hm3dStage');
+    var prevBtn = document.getElementById('hmArrowPrev');
+    var nextBtn = document.getElementById('hmArrowNext');
+    var dotsWrap = document.getElementById('hmSpinDots');
+
+    if (!stage || !prevBtn || !nextBtn || !dotsWrap) {
+        console.error('Home carousel: missing element', { stage: !!stage, prevBtn: !!prevBtn, nextBtn: !!nextBtn, dotsWrap: !!dotsWrap });
+        return;
+    }
+
+    function buildStage() {
+        stage.innerHTML = '';
+        hmSpinData.forEach(function(d, i) {
+            var card = document.createElement('div');
+            card.className = 'hm-3d-card';
+            card.dataset.index = i;
+            card.innerHTML =
+                '<img class="hm-3d-img" src="' + d.img + '" alt="" />' +
+                '<div class="hm-3d-body">' +
+                    '<div class="hm-3d-tag">' + d.tag + '</div>' +
+                    '<h3 class="hm-3d-title">' + d.title + '</h3>' +
+                    '<p class="hm-3d-desc">' + d.desc + '</p>' +
+                    '<a href="' + d.link + '" class="hm-3d-link">' + d.linkText + ' <i class="bi bi-arrow-right"></i></a>' +
+                '</div>';
+            stage.appendChild(card);
+        });
+        render();
+    }
+
+    function render() {
+        var n = hmSpinData.length;
+        stage.querySelectorAll('.hm-3d-card').forEach(function(card) {
+            var i = parseInt(card.dataset.index);
+            var diff = i - hm3dIndex;
+            if (diff > n / 2) diff -= n;
+            if (diff < -n / 2) diff += n;
+
+            if (diff === 0) {
+                card.style.transform = 'translateX(0) translateZ(0) rotateY(0deg) scale(1)';
+                card.style.opacity = '1'; card.style.zIndex = '3';
+            } else if (Math.abs(diff) === 1) {
+                card.style.transform = 'translateX(' + (diff * 220) + 'px) translateZ(-160px) rotateY(' + (diff * -35) + 'deg) scale(0.82)';
+                card.style.opacity = '0.55'; card.style.zIndex = '2';
+            } else {
+                card.style.transform = 'translateX(' + (diff * 240) + 'px) translateZ(-280px) rotateY(' + (diff * -35) + 'deg) scale(0.7)';
+                card.style.opacity = '0'; card.style.zIndex = '1';
+            }
+        });
+
+        dotsWrap.innerHTML = '';
+        hmSpinData.forEach(function(_, i) {
+            var dot = document.createElement('div');
+            dot.className = 'hm-spin-dot' + (i === hm3dIndex ? ' active' : '');
+            dotsWrap.appendChild(dot);
+        });
+    }
+
+    function rotate(direction) {
+        if (hmSpinAnimating) return;
+        hmSpinAnimating = true;
+        hm3dIndex = (hm3dIndex + direction + hmSpinData.length) % hmSpinData.length;
+        render();
+        setTimeout(function() { hmSpinAnimating = false; }, 600);
+    }
+
+    prevBtn.addEventListener('click', function() { rotate(-1); });
+    nextBtn.addEventListener('click', function() { rotate(1); });
+
+    buildStage();
+});
+
+(function() {
+    var els = document.querySelectorAll('.reveal');
+    var obs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                obs.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+    els.forEach(function(el) { obs.observe(el); });
+})();
+
+var taEls = document.querySelectorAll('.hm-ta-anim');
+var taObs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('hm-ta-visible');
+            taObs.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.15 });
+taEls.forEach(function(el) { taObs.observe(el); });
+</script>
+{% endblock %}

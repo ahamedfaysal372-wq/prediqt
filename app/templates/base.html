@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}PrediQt{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='css/navbar.css') }}" rel="stylesheet" />
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<div id="toast"><div class="td"></div><span id="tMsg"></span></div>
+
+{% if current_user.is_authenticated %}
+
+<!-- =========================================================
+     AUTHENTICATED LAYOUT — TOP NAVBAR
+     ========================================================= -->
+
+{% set nav_section = 'overview' if request.endpoint in ['home', 'dashboard', 'live_feed'] else ('detection' if request.endpoint in ['predict', 'predict_result', 'batch', 'batch_results', 'alerts'] else ('intelligence' if request.endpoint in ['performance', 'explainability'] else ('integration' if request.endpoint in ['api_keys', 'webhooks', 'api_docs'] else ''))) %}
+
+<div class="app-wrap theme-{{ nav_section if nav_section else 'default' }}">
+
+    <!-- Top Navigation -->
+    <nav class="app-nav" id="appNav">
+        <div class="app-nav-inner">
+
+            <!-- Brand -->
+            <a href="{{ url_for('home') }}" class="app-nav-brand">
+                <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
+                    <rect width="28" height="28" rx="6" fill="#f7f6f3"/>
+                    <path d="M7 9.5L14 7L21 9.5V14.5C21 18 17.5 20.5 14 21.5C10.5 20.5 7 18 7 14.5V9.5Z" fill="currentColor" opacity="0.15"/>
+                    <path d="M11 13.5L13.5 16L18 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="app-nav-brand-name">PrediQt</span>
+            </a>
+
+            <!-- Navigation groups with dropdowns -->
+            <div class="app-nav-links">
+
+                <!-- Overview -->
+                <div class="app-nav-group">
+                    <button class="app-nav-btn {{ 'app-nav-btn-active' if request.endpoint in ['dashboard', 'live_feed'] else '' }}">
+                        <span class="app-nav-btn-label">Overview</span> <i class="bi bi-chevron-down app-nav-chevron"></i>
+                    </button>
+                    <div class="app-nav-dropdown app-nav-mega">
+                        <div class="app-nav-mega-col">
+                            <div class="app-nav-mega-label">Overview</div>
+                            <a href="{{ url_for('home') }}" class="app-nav-drop-item {{ 'active' if request.endpoint == 'home' else '' }}">
+                                <div class="app-nav-drop-icon"><i class="bi bi-house"></i></div>
+                                <div>
+                                    <div class="app-nav-drop-title">Home</div>
+                                    <div class="app-nav-drop-sub">Your workspace landing page</div>
+                                </div>
+                            </a>
+                            <a href="{{ url_for('dashboard') }}" class="app-nav-drop-item {{ 'active' if request.endpoint == 'dashboard' else '' }}">
+                                <div class="app-nav-drop-icon"><i class="bi bi-grid-1x2"></i></div>
+                                <div>
+                                    <div class="app-nav-drop-title">Dashboard</div>
+                                    <div class="app-nav-drop-sub">Stats, charts and predictions</div>
+                                </div>
+                            </a>
+                            <a href="{{ url_for('live_feed') }}" class="app-nav-drop-item">
+                                <div class="app-nav-drop-icon" style="position:relative;">
+                                    <i class="bi bi-broadcast"></i>
+                                    <span class="app-nav-live-dot"></span>
+                                </div>
+                                <div>
+                                    <div class="app-nav-drop-title">Live Feed</div>
+                                    <div class="app-nav-drop-sub">Real-time transaction monitoring</div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detection -->
+                <div class="app-nav-group">
+                    <button class="app-nav-btn {{ 'app-nav-btn-active' if request.endpoint in ['predict', 'batch', 'alerts'] else '' }}">
+                        <span class="app-nav-btn-label">Detection</span> <i class="bi bi-chevron-down app-nav-chevron"></i>
+                    </button>
+                    <div class="app-nav-dropdown app-nav-mega">
+                        <div class="app-nav-mega-col">
+                            <div class="app-nav-mega-label">Detection</div>
+                            <a href="{{ url_for('predict') }}" class="app-nav-drop-item {{ 'active' if request.endpoint == 'predict' else '' }}">
+                                <div class="app-nav-drop-icon"><i class="bi bi-search"></i></div>
+                                <div>
+                                    <div class="app-nav-drop-title">Check Transaction</div>
+                                    <div class="app-nav-drop-sub">Single transaction fraud analysis</div>
+                                </div>
+                            </a>
+                            <a href="{{ url_for('batch') }}" class="app-nav-drop-item {{ 'active' if request.endpoint == 'batch' else '' }}">
+                                <div class="app-nav-drop-icon"><i class="bi bi-upload"></i></div>
+                                <div>
+                                    <div class="app-nav-drop-title">Batch Upload</div>
+                                    <div class="app-nav-drop-sub">Process thousands of transactions</div>
+                                </div>
+                            </a>
+                            <a href="{{ url_for('alerts') }}" class="app-nav-drop-item {{ 'active' if request.endpoint == 'alerts' else '' }}">
+                                <div class="app-nav-drop-icon"><i class="bi bi-bell"></i></div>
+                                <div>
+                                    <div class="app-nav-drop-title">Alerts</div>
+                                    <div class="app-nav-drop-sub">High-risk fraud notifications</div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Intelligence -->
+                <div class="app-nav-group">
+                    <button class="app-nav-btn {{ 'app-nav-btn-active' if request.endpoint in ['performance', 'explainability'] else '' }}">
+                        <span class="app-nav-btn-label">Intelligence</span> <i class="bi bi-chevron-down app-nav-chevron"></i>
+                    </button>
+                    <div class="app-nav-dropdown app-nav-mega">
+                        <div class="app-nav-mega-col">
+                            <div class="app-nav-mega-label">Intelligence</div>
+                            <a href="{{ url_for('performance') }}" class="app-nav-drop-item {{ 'active' if request.endpoint == 'performance' else '' }}">
+                                <div class="app-nav-drop-icon"><i class="bi bi-bar-chart-line"></i></div>
+                                <div>
+                                    <div class="app-nav-drop-title">Model Performance</div>
+                                    <div class="app-nav-drop-sub">Metrics, charts and comparisons</div>
+                                </div>
+                            </a>
+                            <a href="{{ url_for('explainability') }}" class="app-nav-drop-item {{ 'active' if request.endpoint == 'explainability' else '' }}">
+                                <div class="app-nav-drop-icon"><i class="bi bi-lightbulb"></i></div>
+                                <div>
+                                    <div class="app-nav-drop-title">Explainability</div>
+                                    <div class="app-nav-drop-sub">Why the model flagged fraud</div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Integration -->
+                <div class="app-nav-group">
+                    <button class="app-nav-btn {{ 'app-nav-btn-active' if request.endpoint in ['api_keys', 'webhooks'] else '' }}">
+                        <span class="app-nav-btn-label">Integration</span> <i class="bi bi-chevron-down app-nav-chevron"></i>
+                    </button>
+                    <div class="app-nav-dropdown app-nav-mega">
+                        <div class="app-nav-mega-col">
+                            <div class="app-nav-mega-label">Integration</div>
+                            <a href="{{ url_for('api_keys') }}" class="app-nav-drop-item {{ 'active' if request.endpoint == 'api_keys' else '' }}">
+                                <div class="app-nav-drop-icon"><i class="bi bi-key"></i></div>
+                                <div>
+                                    <div class="app-nav-drop-title">API Keys</div>
+                                    <div class="app-nav-drop-sub">Manage your API credentials</div>
+                                </div>
+                            </a>
+                            <a href="{{ url_for('webhooks') }}" class="app-nav-drop-item {{ 'active' if request.endpoint == 'webhooks' else '' }}">
+                                <div class="app-nav-drop-icon"><i class="bi bi-link-45deg"></i></div>
+                                <div>
+                                    <div class="app-nav-drop-title">Webhooks</div>
+                                    <div class="app-nav-drop-sub">Real-time fraud event notifications</div>
+                                </div>
+                            </a>
+                            <a href="{{ url_for('api_docs') }}" class="app-nav-drop-item {{ 'active' if request.endpoint == 'api_docs' else '' }}">
+                                <div class="app-nav-drop-icon"><i class="bi bi-book"></i></div>
+                                <div>
+                                    <div class="app-nav-drop-title">API Docs</div>
+                                    <div class="app-nav-drop-sub">Endpoint reference and examples</div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right side — user menu -->
+            <div class="app-nav-right">
+
+                <!-- Notifications -->
+                <button class="app-nav-icon-btn" title="Alerts" id="navBellBtn" data-href="{{ url_for('alerts') }}">
+                    <i class="bi bi-bell"></i>
+                    <span class="app-nav-notif-badge" id="navAlertDot" style="display:none;">0</span>
+                </button>
+
+                <!-- User dropdown -->
+                <div class="app-nav-group app-user-group">
+                    <button class="app-nav-user-btn">
+                        <div class="app-nav-av">
+                            {% if current_user.avatar_filename %}
+                            <img src="{{ url_for('static', filename='avatars/' + current_user.avatar_filename) }}" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">
+                            {% else %}
+                            {{ current_user.name[0].upper() }}
+                            {% endif %}
+                        </div>
+                    </button>
+                    <div class="app-nav-dropdown app-nav-dropdown-right">
+                        <div class="app-nav-drop-header">
+                            <div class="app-nav-drop-header-name">{{ current_user.name }}</div>
+                            <div class="app-nav-drop-header-email">{{ current_user.email }}</div>
+                        </div>
+                        <div class="app-nav-drop-divider"></div>
+                        <a href="{{ url_for('settings') }}" class="app-nav-drop-item">
+                            <div class="app-nav-drop-icon"><i class="bi bi-gear"></i></div>
+                            <div>
+                                <div class="app-nav-drop-title">Settings</div>
+                                <div class="app-nav-drop-sub">Profile and preferences</div>
+                            </div>
+                        </a>
+                        {% if current_user.is_admin() %}
+                        <a href="{{ url_for('users') }}" class="app-nav-drop-item">
+                            <div class="app-nav-drop-icon"><i class="bi bi-people"></i></div>
+                            <div>
+                                <div class="app-nav-drop-title">User Management</div>
+                                <div class="app-nav-drop-sub">Manage all platform users</div>
+                            </div>
+                        </a>
+                        <a href="{{ url_for('audit_log') }}" class="app-nav-drop-item">
+                            <div class="app-nav-drop-icon"><i class="bi bi-journal-text"></i></div>
+                            <div>
+                                <div class="app-nav-drop-title">Audit Log</div>
+                                <div class="app-nav-drop-sub">Track all platform actions</div>
+                            </div>
+                        </a>
+                        {% endif %}
+                        <div class="app-nav-drop-divider"></div>
+                        <button class="app-nav-drop-item app-nav-drop-signout"
+                                onclick="showSignOutModal()">
+                            <div class="app-nav-drop-icon app-nav-drop-icon-red">
+                                <i class="bi bi-box-arrow-left"></i>
+                            </div>
+                            <div>
+                                <div class="app-nav-drop-title app-nav-drop-title-red">Sign out</div>
+                                <div class="app-nav-drop-sub">End your session</div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="app-flash-wrap">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+            {{ message }}
+            <button onclick="this.parentElement.remove()"
+                    style="float:right;background:none;border:none;
+                    cursor:pointer;font-size:1rem;color:inherit;">×</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Page content -->
+    <main class="app-main">
+        {% block content %}{% endblock %}
+    </main>
+
+</div>
+
+{% else %}
+
+<!-- =========================================================
+     PUBLIC LAYOUT
+     ========================================================= -->
+
+<nav class="pub-nav">
+    <a href="{{ url_for('index') }}" class="pub-brand">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <rect width="28" height="28" rx="6" fill="#1a6b4a"/>
+            <path d="M7 9.5L14 7L21 9.5V14.5C21 18 17.5 20.5 14 21.5C10.5 20.5 7 18 7 14.5V9.5Z" fill="white" opacity="0.2"/>
+            <path d="M11 13.5L13.5 16L18 11" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        PrediQt
+    </a>
+    <div class="pub-nav-links">
+        <a href="#models" class="pub-nav-link">Models</a>
+        <a href="#features" class="pub-nav-link">Features</a>
+        <a href="#how-it-works" class="pub-nav-link">How It Works</a>
+        <a href="#stats" class="pub-nav-link">Results</a>
+    </div>
+    <div class="pub-nav-actions">
+        <a href="{{ url_for('login') }}" class="btn-nav-signin">Sign In</a>
+        <a href="{{ url_for('register') }}" class="btn-nav-start">Get Started →</a>
+    </div>
+</nav>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div style="position:fixed;top:70px;right:16px;z-index:999;max-width:380px;">
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }}">
+        {{ message }}
+        <button onclick="this.parentElement.remove()"
+                style="float:right;background:none;border:none;
+                cursor:pointer;font-size:1rem;color:inherit;">×</button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+{% block public_content %}{% endblock %}
+
+{% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+function showToast(msg, err) {
+    var t = document.getElementById('toast');
+    document.getElementById('tMsg').textContent = msg;
+    t.className = 'on' + (err ? ' er' : '');
+    setTimeout(function() { t.className = ''; }, 3000);
+}
+
+document.getElementById('navBellBtn').addEventListener('click', function() {
+    window.location.href = this.dataset.href;
+});
+
+fetch('/api/unread-alerts-count')
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+        var badge = document.getElementById('navAlertDot');
+        var bell = document.getElementById('navBellBtn');
+        if (badge && bell) {
+            if (data.count > 0) {
+                badge.textContent = data.count > 9 ? '9+' : data.count;
+                badge.style.display = 'flex';
+                bell.classList.add('has-alerts');
+            } else {
+                badge.style.display = 'none';
+                bell.classList.remove('has-alerts');
+            }
+        }
+    })
+    .catch(function() {});
+</script>
+
+{% block extra_js %}{% endblock %}
+
+<!-- Sign Out Modal -->
+<div id="signOutModal"
+     style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);
+     z-index:9999;align-items:center;justify-content:center;">
+    <div style="background:var(--white);border:1px solid var(--border);
+         border-radius:var(--r);padding:2rem;width:100%;max-width:400px;
+         margin:0 1rem;box-shadow:0 24px 64px rgba(0,0,0,0.15);">
+        <div style="font-family:'Fraunces',serif;font-size:1.3rem;
+             color:var(--text);margin-bottom:0.5rem;letter-spacing:-.02em;">
+            Sign out
+        </div>
+        <p style="font-size:14px;color:var(--muted);margin-bottom:1.75rem;line-height:1.6;">
+            Are you sure you want to sign out of PrediQt?
+        </p>
+        <div style="display:flex;gap:10px;justify-content:center;">
+            <button onclick="hideSignOutModal()"
+                    style="padding:10px 24px;border-radius:var(--r);
+                    border:1.5px solid var(--text);background:transparent;
+                    font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;
+                    color:var(--text);cursor:pointer;
+                    transition:all 0.3s ease;"
+                    onmouseover="this.style.background='var(--green)';this.style.color='#fff';this.style.borderColor='var(--green)';this.style.transform='translateY(-2px)'"
+                    onmouseout="this.style.background='transparent';this.style.color='var(--text)';this.style.borderColor='var(--text)';this.style.transform='none'">
+                Cancel
+            </button>
+            <a href="{{ url_for('logout') }}"
+               style="padding:10px 24px;border-radius:var(--r);
+               border:1.5px solid #dc2626;background:#dc2626;
+               font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;
+               color:#fff;cursor:pointer;text-decoration:none;
+               display:inline-flex;align-items:center;
+               transition:all 0.3s ease;"
+               onmouseover="this.style.background='#fff';this.style.color='#dc2626';this.style.transform='translateY(-2px)'"
+               onmouseout="this.style.background='#dc2626';this.style.color='#fff';this.style.transform='none'">
+                Yes, sign out
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+function showSignOutModal() {
+    document.getElementById('signOutModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function hideSignOutModal() {
+    document.getElementById('signOutModal').style.display = 'none';
+    document.body.style.overflow = '';
+}
+
+document.getElementById('signOutModal').addEventListener('click', function(e) {
+    if (e.target === this) hideSignOutModal();
+});
+
+// Navbar scroll effect
+var appNav = document.getElementById('appNav');
+if (appNav) {
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 20) {
+            appNav.classList.add('scrolled');
+        } else {
+            appNav.classList.remove('scrolled');
+        }
+    }, { passive: true });
+}
+
+// Dropdown menus
+document.querySelectorAll('.app-nav-group').forEach(function(group) {
+    var btn      = group.querySelector('.app-nav-btn, .app-nav-user-btn');
+    var dropdown = group.querySelector('.app-nav-dropdown');
+    if (!btn || !dropdown) return;
+
+    var closeTimer;
+
+    group.addEventListener('mouseenter', function() {
+        clearTimeout(closeTimer);
+        // Close all other dropdowns
+        document.querySelectorAll('.app-nav-dropdown').forEach(function(d) {
+            if (d !== dropdown) d.classList.remove('open');
+        });
+        document.querySelectorAll('.app-nav-btn, .app-nav-user-btn').forEach(function(b) {
+            if (b !== btn) b.classList.remove('open');
+        });
+        dropdown.classList.add('open');
+        btn.classList.add('open');
+    });
+
+    group.addEventListener('mouseleave', function() {
+        closeTimer = setTimeout(function() {
+            dropdown.classList.remove('open');
+            btn.classList.remove('open');
+        }, 150);
+    });
+});
+
+// Close dropdowns on outside click
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.app-nav-group')) {
+        document.querySelectorAll('.app-nav-dropdown').forEach(function(d) {
+            d.classList.remove('open');
+        });
+        document.querySelectorAll('.app-nav-btn, .app-nav-user-btn').forEach(function(b) {
+            b.classList.remove('open');
+        });
+    }
+});
+
+// Page entrance animation
+document.addEventListener('DOMContentLoaded', function() {
+    var main = document.querySelector('.app-main');
+    if (main) {
+        main.style.opacity = '0';
+        main.style.transform = 'translateY(12px)';
+        setTimeout(function() {
+            main.style.transition = 'opacity 0.4s ease, transform 0.4s cubic-bezier(0.16,1,0.3,1)';
+            main.style.opacity    = '1';
+            main.style.transform  = 'translateY(0)';
+        }, 50);
+    }
+});
+</script>
+
+</body>
+</html>

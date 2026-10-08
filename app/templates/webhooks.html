@@ -1,0 +1,387 @@
+{% extends "base.html" %}
+{% block title %}Webhooks — PrediQt{% endblock %}
+{% block page_title %}Webhooks{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/webhooks.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="ak-hero">
+    <div class="ak-hero-left">
+        <div class="ak-eyebrow">Integration</div>
+        <h1 class="ak-hero-title">PrediQt comes<br/>to you.</h1>
+        <p class="ak-hero-sub">Get notified the instant fraud is detected — no polling, no dashboard required.</p>
+        <a href="#whManage" class="ak-hero-cta">Manage Webhooks</a>
+    </div>
+    <div class="ak-hero-right">
+        <div class="ak-hero-blob"></div>
+        <div class="ak-hero-photo">
+            <img src="https://plus.unsplash.com/premium_vector-1727472340490-d7e47e351c50?q=80&w=1709&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Webhook delivery" />
+        </div>
+        <div class="ak-hero-card">
+            <div class="ak-hero-card-label">Last Delivery</div>
+            <div class="ak-hero-card-key">fraud.detected</div>
+            <div class="ak-hero-card-row"><span>Status</span><span class="ak-hero-card-active">Delivered</span></div>
+            <div class="ak-hero-card-row"><span>Response</span><span>200 OK</span></div>
+        </div>
+    </div>
+</div>
+
+<div class="ak-method reveal">
+    <div class="ak-method-header">
+        <div class="ak-section-eyebrow">How webhooks work</div>
+        <h2 class="ak-method-title-big">Four things to know.</h2>
+        <p class="ak-method-sub-line1">Everything you need to understand</p>
+        <p class="ak-method-sub-line2">before setting up your first one.</p>
+    </div>
+    <div class="ak-carousel-3d reveal">
+        <button class="ak-spin-arrow" id="whArrowPrev" aria-label="Previous"><i class="bi bi-chevron-left"></i></button>
+        <div class="ak-carousel-3d-stage" id="wh3dStage"></div>
+        <button class="ak-spin-arrow" id="whArrowNext" aria-label="Next"><i class="bi bi-chevron-right"></i></button>
+    </div>
+    <div class="ak-spin-dots" id="whSpinDots"></div>
+</div>
+
+<div class="ak-manage" id="whManage">
+    <div class="ak-section-block-centered reveal">
+        <h2 class="ak-section-title-huge">Manage your webhooks.</h2>
+        <p class="ak-manage-sub">Add an endpoint, choose what triggers it, and test it before relying on it.</p>
+    </div>
+
+    <div class="ak-create-panel reveal">
+        <div class="ak-create-panel-banner">
+            <div class="ak-create-panel-icon"><i class="bi bi-broadcast"></i></div>
+            <div>
+                <h3 class="ak-create-panel-title">Add a new webhook</h3>
+                <p class="ak-create-panel-sub">Three quick steps to start receiving events.</p>
+            </div>
+        </div>
+        <div class="ak-create-split">
+            <form method="POST" action="{{ url_for('create_webhook') }}" class="ak-create-form">
+
+                <div class="ak-create-step">
+                    <div class="ak-create-step-num">1</div>
+                    <div class="ak-create-step-body">
+                        <label class="ak-create-field-label">Name</label>
+                        <input type="text" name="name" class="ak-create-input ak-create-input-big" placeholder="e.g. &quot;Slack alerts&quot;" required>
+                        <p class="ak-create-field-help">Something you'll recognise later.</p>
+                    </div>
+                </div>
+
+                <div class="ak-create-step">
+                    <div class="ak-create-step-num">2</div>
+                    <div class="ak-create-step-body">
+                        <label class="ak-create-field-label">Endpoint URL</label>
+                        <input type="url" name="url" class="ak-create-input ak-create-input-big" placeholder="https://your-server.com/webhook" required>
+                        <p class="ak-create-field-help">Where PrediQt should send the POST request when an event fires.</p>
+                    </div>
+                </div>
+
+                <div class="ak-create-step ak-create-step-last">
+                    <div class="ak-create-step-num">3</div>
+                    <div class="ak-create-step-body">
+                        <label class="ak-create-field-label">Events</label>
+                        <div class="ak-scope-options">
+                            <label class="ak-scope-option"><input type="checkbox" name="event_fraud" checked><span>Fraud Detected</span></label>
+                            <label class="ak-scope-option"><input type="checkbox" name="event_batch" checked><span>Batch Completed</span></label>
+                        </div>
+                        <p class="ak-create-field-help">Choose what should trigger this webhook.</p>
+                    </div>
+                </div>
+
+                <button type="submit" class="ak-create-btn"><i class="bi bi-plus-lg"></i> Add Webhook</button>
+            </form>
+        </div>
+    </div>
+
+    {% if new_secret %}
+    <div class="ak-reveal-banner reveal" id="whNewSecretBanner">
+        <div class="ak-reveal-label">Copy this now — it won't be shown again</div>
+        <div class="ak-reveal-row">
+            <code class="ak-reveal-key" id="whNewSecret">{{ new_secret }}</code>
+            <button class="ak-copy-btn" onclick="copyWhSecret()"><i class="bi bi-clipboard"></i> Copy</button>
+        </div>
+        <div class="ak-code-tabs">
+            <button class="ak-code-tab active" onclick="switchWhCodeTab('python', this)">Python (verify)</button>
+            <button class="ak-code-tab" onclick="switchWhCodeTab('payload', this)">Sample payload</button>
+        </div>
+        <pre class="ak-code-block" id="whCodePython">import hmac, hashlib
+
+def verify_signature(payload_body, signature, secret="{{ new_secret }}"):
+    expected = hmac.new(secret.encode(), payload_body, hashlib.sha256).hexdigest()
+    return hmac.compare_digest(expected, signature)</pre>
+        <pre class="ak-code-block" id="whCodePayload" style="display:none;">{
+  "event": "fraud.detected",
+  "amount": 1250.00,
+  "transaction_type": "card_purchase",
+  "probability": 0.91,
+  "risk_level": "HIGH",
+  "model_used": "Credit Card Fraud Model",
+  "timestamp": "2026-06-27T10:15:00"
+}</pre>
+    </div>
+    {% endif %}
+
+    <div class="ak-keys-section reveal">
+        <div class="ak-keys-section-head">
+            <div>
+                <h3 class="ak-keys-section-title">Your webhooks</h3>
+                <p class="ak-keys-section-sub">Everything you've set up, on or off.</p>
+            </div>
+            <div class="ak-keys-count-badge">{{ hooks|length }} total</div>
+        </div>
+
+        {% if hooks %}
+        <div class="ak-card-list" id="whList"></div>
+        <div class="ak-pagination" id="whPagination"></div>
+        {% else %}
+        <div class="ak-empty">
+            <i class="bi bi-broadcast"></i>
+            <p class="ak-empty-title">No webhooks yet.</p>
+            <p class="ak-empty-sub">Add your first one above.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script id="whHooksData" type="application/json">
+[
+    {% for h in hooks %}
+    {
+        "id": {{ h.id }},
+        "name": {{ h.name|tojson }},
+        "url": {{ h.url|tojson }},
+        "active": {{ h.is_active|tojson }},
+        "deliveries": {{ h.delivery_count }},
+        "failures": {{ h.failure_count }},
+        "created": {{ h.created_at.strftime('%d %b')|tojson }},
+        "lastTriggered": {{ (h.last_triggered.strftime('%d %b, %H:%M') if h.last_triggered else 'Never')|tojson }},
+        "eventFraud": {{ h.event_fraud|tojson }},
+        "eventBatch": {{ h.event_batch|tojson }}
+    }{{ ',' if not loop.last }}
+    {% endfor %}
+]
+</script>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function setNavHeight() {
+    var nav = document.querySelector('.app-nav');
+    if (nav) document.documentElement.style.setProperty('--nav-h', nav.offsetHeight + 'px');
+}
+setNavHeight();
+window.addEventListener('resize', setNavHeight);
+
+var whSpinData = [
+    { num: '01', title: 'Sent in real time', desc: 'PrediQt fires the request the moment fraud is detected — no polling, no delay waiting for someone to check a page.' },
+    { num: '02', title: 'Signed with a secret', desc: 'Every payload is signed with HMAC so your server can verify it genuinely came from PrediQt, not an impersonator.' },
+    { num: '03', title: 'Choose what triggers it', desc: 'Fire on individual fraud detections, batch upload summaries, or both — your choice per webhook.' },
+    { num: '04', title: 'Test before you rely on it', desc: 'Send a sample payload anytime to confirm your endpoint is actually receiving and responding correctly.' }
+];
+var wh3dIndex = 0;
+var whSpinAnimating = false;
+
+function buildWh3DStage() {
+    var stage = document.getElementById('wh3dStage');
+    stage.innerHTML = '';
+    whSpinData.forEach(function(d, i) {
+        var card = document.createElement('div');
+        card.className = 'ak-3d-card';
+        card.dataset.index = i;
+        card.innerHTML = '<div class="ak-3d-num">' + d.num + '</div><div class="ak-3d-title">' + d.title + '</div><div class="ak-3d-desc">' + d.desc + '</div>';
+        stage.appendChild(card);
+    });
+    renderWh3DStage();
+}
+
+function renderWh3DStage() {
+    var n = whSpinData.length;
+    document.querySelectorAll('#wh3dStage .ak-3d-card').forEach(function(card) {
+        var i = parseInt(card.dataset.index);
+        var diff = i - wh3dIndex;
+        if (diff > n / 2) diff -= n;
+        if (diff < -n / 2) diff += n;
+        if (diff === 0) {
+            card.style.transform = 'translateX(0) translateZ(0) rotateY(0deg) scale(1)';
+            card.style.opacity = '1'; card.style.zIndex = '3';
+        } else if (Math.abs(diff) === 1) {
+            card.style.transform = 'translateX(' + (diff * 200) + 'px) translateZ(-160px) rotateY(' + (diff * -35) + 'deg) scale(0.82)';
+            card.style.opacity = '0.55'; card.style.zIndex = '2';
+        } else {
+            card.style.transform = 'translateX(' + (diff * 220) + 'px) translateZ(-280px) rotateY(' + (diff * -35) + 'deg) scale(0.7)';
+            card.style.opacity = '0'; card.style.zIndex = '1';
+        }
+    });
+    var dotsWrap = document.getElementById('whSpinDots');
+    dotsWrap.innerHTML = '';
+    whSpinData.forEach(function(_, i) {
+        var dot = document.createElement('div');
+        dot.className = 'ak-spin-dot' + (i === wh3dIndex ? ' active' : '');
+        dotsWrap.appendChild(dot);
+    });
+}
+
+function rotateWh3D(direction) {
+    if (whSpinAnimating) return;
+    whSpinAnimating = true;
+    wh3dIndex = (wh3dIndex + direction + whSpinData.length) % whSpinData.length;
+    renderWh3DStage();
+    setTimeout(function() { whSpinAnimating = false; }, 600);
+}
+
+document.getElementById('whArrowPrev').addEventListener('click', function() { rotateWh3D(-1); });
+document.getElementById('whArrowNext').addEventListener('click', function() { rotateWh3D(1); });
+buildWh3DStage();
+
+function copyWhSecret() {
+    var text = document.getElementById('whNewSecret').textContent;
+    navigator.clipboard.writeText(text).then(function() { showToast('Secret copied to clipboard'); });
+}
+
+function switchWhCodeTab(tab, btn) {
+    document.querySelectorAll('.ak-code-tab').forEach(function(t) { t.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById('whCodePython').style.display = tab === 'python' ? 'block' : 'none';
+    document.getElementById('whCodePayload').style.display = tab === 'payload' ? 'block' : 'none';
+}
+
+window.addEventListener('load', function() {
+    if (window.location.hash === '#whNewSecretBanner') {
+        var el = document.getElementById('whNewSecretBanner');
+        if (el) el.scrollIntoView({ behavior: 'instant', block: 'start' });
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('[id$="Modal"]').forEach(function(modal) {
+        if (modal.parentElement !== document.body) document.body.appendChild(modal);
+    });
+});
+
+var whHooks = JSON.parse(document.getElementById('whHooksData').textContent || '[]');
+var WH_PER_PAGE = 5;
+var whPage = 1;
+var whLoadedDeliveries = {};
+
+function buildWhCard(h) {
+    var events = '';
+    if (h.eventFraud) events += '<span class="ak-scope-tag">Fraud Detected</span>';
+    if (h.eventBatch) events += '<span class="ak-scope-tag">Batch Completed</span>';
+
+    return '<div class="ak-key-card" data-key-id="' + h.id + '" tabindex="0" role="button" aria-expanded="false" onclick="handleWhCardClick(event, this)" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();handleWhCardClick(event, this);}">' +
+        '<div class="ak-key-card-top">' +
+            '<div class="ak-key-card-name-row">' +
+                '<span class="ak-key-card-name">' + h.name + '</span>' +
+                '<span class="ak-type-badge ' + (h.active ? 'ak-type-badge-live' : 'ak-type-badge-test') + '">' + (h.active ? 'ACTIVE' : 'PAUSED') + '</span>' +
+            '</div>' +
+            '<i class="bi bi-chevron-down ak-key-card-chevron" id="whChevron' + h.id + '"></i>' +
+        '</div>' +
+        '<code class="ak-key-card-prefix">' + h.url + '</code>' +
+        '<div class="ak-key-card-detail" id="whDetail' + h.id + '" style="display:none;">' +
+            '<div class="ak-key-card-divider"></div>' +
+            '<div class="ak-key-card-detail-row">' +
+                '<div class="ak-key-card-stats">' +
+                    '<div class="ak-key-stat"><span class="ak-key-stat-val">' + h.deliveries + '</span><span class="ak-key-stat-label">Delivered</span></div>' +
+                    '<div class="ak-key-stat-div"></div>' +
+                    '<div class="ak-key-stat"><span class="ak-key-stat-val">' + h.failures + '</span><span class="ak-key-stat-label">Failed</span></div>' +
+                    '<div class="ak-key-stat-div"></div>' +
+                    '<div class="ak-key-stat"><span class="ak-key-stat-val">' + h.lastTriggered + '</span><span class="ak-key-stat-label">Last Triggered</span></div>' +
+                '</div>' +
+                '<div class="ak-key-card-scopes">' + events + '</div>' +
+                '<div class="ak-key-card-actions">' +
+                    '<button type="button" class="ak-log-btn" data-action="log" data-key-id="' + h.id + '" title="View deliveries"><i class="bi bi-clock-history"></i></button>' +
+                    '<button type="button" class="ak-log-btn" data-action="test" data-key-id="' + h.id + '" title="Send test"><i class="bi bi-send"></i></button>' +
+                    '<form method="POST" action="/webhooks/' + h.id + '/toggle" onclick="event.stopPropagation();"><button type="submit" class="ak-pause-btn">' + (h.active ? 'Pause' : 'Resume') + '</button></form>' +
+                    '<form method="POST" action="/webhooks/' + h.id + '/delete" onclick="event.stopPropagation();" onsubmit="return confirm(\'Delete this webhook permanently?\');"><button type="submit" class="ak-revoke-btn">Delete</button></form>' +
+                '</div>' +
+            '</div>' +
+            '<div class="ak-log-panel" id="whLog' + h.id + '" style="display:none;"></div>' +
+        '</div>' +
+    '</div>';
+}
+
+function handleWhCardClick(e, cardEl) {
+    var actionBtn = e.target.closest('[data-action]');
+    if (actionBtn) {
+        e.stopPropagation();
+        var hookId = parseInt(actionBtn.dataset.keyId);
+        if (actionBtn.dataset.action === 'log') toggleWhLog(hookId);
+        if (actionBtn.dataset.action === 'test') sendWhTest(hookId, actionBtn);
+        return;
+    }
+    var detail = document.getElementById('whDetail' + cardEl.dataset.keyId);
+    var chevron = document.getElementById('whChevron' + cardEl.dataset.keyId);
+    var isOpen = detail.style.display !== 'none';
+    detail.style.display = isOpen ? 'none' : 'block';
+    chevron.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+    cardEl.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+}
+
+function toggleWhLog(hookId) {
+    var panel = document.getElementById('whLog' + hookId);
+    if (!panel) return;
+    var isOpen = panel.style.display !== 'none';
+    if (isOpen) { panel.style.display = 'none'; return; }
+    panel.style.display = 'block';
+    if (whLoadedDeliveries[hookId]) return;
+    panel.innerHTML = '<div class="ak-log-loading">Loading...</div>';
+    fetch('/api/webhooks/' + hookId + '/deliveries')
+        .then(function(res) { return res.json(); })
+        .then(function(deliveries) {
+            whLoadedDeliveries[hookId] = true;
+            if (!deliveries.length) { panel.innerHTML = '<div class="ak-log-empty">No deliveries yet.</div>'; return; }
+            panel.innerHTML = deliveries.map(function(d) {
+                return '<div class="ak-log-row"><span class="ak-log-endpoint">' + d.event_type + '</span>' +
+                    '<span class="ak-log-result ' + (d.success ? 'ak-log-result-legitimate' : 'ak-log-result-fraud') + '">' + (d.success ? (d.status_code || 'OK') : 'Failed') + '</span>' +
+                    '<span class="ak-log-time">' + d.timestamp + '</span></div>';
+            }).join('');
+        })
+        .catch(function() { panel.innerHTML = '<div class="ak-log-empty">Could not load deliveries.</div>'; });
+}
+
+function sendWhTest(hookId, btn) {
+    var original = btn.innerHTML;
+    btn.innerHTML = '<i class="bi bi-hourglass-split"></i>';
+    fetch('/api/webhooks/' + hookId + '/test', { method: 'POST' })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            btn.innerHTML = original;
+            showToast(data.success ? 'Test delivered successfully' : 'Test failed: ' + (data.error || data.status_code));
+        })
+        .catch(function() { btn.innerHTML = original; showToast('Could not send test', true); });
+}
+
+function renderWhPage(page) {
+    var totalPages = Math.max(1, Math.ceil(whHooks.length / WH_PER_PAGE));
+    page = Math.min(Math.max(1, page), totalPages);
+    whPage = page;
+    var listEl = document.getElementById('whList');
+    var pagEl = document.getElementById('whPagination');
+    if (!listEl) return;
+    var pageItems = whHooks.slice((page - 1) * WH_PER_PAGE, page * WH_PER_PAGE);
+    listEl.innerHTML = pageItems.map(buildWhCard).join('');
+    if (totalPages <= 1) { pagEl.innerHTML = ''; return; }
+    var html = '<button class="ak-page-btn" ' + (page <= 1 ? 'disabled' : '') + ' onclick="renderWhPage(' + (page - 1) + ')"><i class="bi bi-chevron-left"></i></button>';
+    for (var p = 1; p <= totalPages; p++) {
+        html += '<button class="ak-page-btn ' + (p === page ? 'ak-page-active' : '') + '" onclick="renderWhPage(' + p + ')">' + p + '</button>';
+    }
+    html += '<button class="ak-page-btn" ' + (page >= totalPages ? 'disabled' : '') + ' onclick="renderWhPage(' + (page + 1) + ')"><i class="bi bi-chevron-right"></i></button>';
+    pagEl.innerHTML = html;
+}
+renderWhPage(1);
+
+(function() {
+    var els = document.querySelectorAll('.reveal');
+    var obs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) { entry.target.classList.add('is-visible'); obs.unobserve(entry.target); }
+        });
+    }, { threshold: 0.1 });
+    els.forEach(function(el) { obs.observe(el); });
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% block title %}API Documentation — PrediQt{% endblock %}
+{% block page_title %}API Documentation{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/api_docs.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="doc-page-header">
+    <h1 class="doc-page-title">API Documentation</h1>
+    <p class="doc-page-sub">Everything you need to call PrediQt's prediction and webhook endpoints directly from your own code.</p>
+</div>
+
+<div class="doc-layout">
+    <div class="doc-nav">
+        <a href="#authentication" class="doc-nav-item active">Authentication</a>
+        <a href="#predict-endpoint" class="doc-nav-item">Check Transaction</a>
+        <a href="#batch-endpoint" class="doc-nav-item">Batch Upload</a>
+        <a href="#errors" class="doc-nav-item">Error Codes</a>
+        <a href="#rate-limits" class="doc-nav-item">Rate Limits</a>
+        <a href="#webhooks-ref" class="doc-nav-item">Webhooks</a>
+    </div>
+
+    <div class="doc-content">
+
+        <section id="authentication" class="doc-section">
+            <h2 class="doc-section-title">Authentication</h2>
+            <p class="doc-text">Every request must include your API key in an <code>Authorization</code> header, using the <code>Bearer</code> scheme. Generate a key on the <a href="{{ url_for('api_keys') }}">API Keys</a> page.</p>
+            <pre class="doc-code">Authorization: Bearer pq_live_8f3K9xAB...</pre>
+            <p class="doc-text">Requests without a valid key return <code>401 Unauthorized</code>. Keys created in <strong>Test</strong> mode score transactions normally but never save predictions to your Dashboard or Alerts — safe for trying things out.</p>
+        </section>
+
+        <section id="predict-endpoint" class="doc-section">
+            <h2 class="doc-section-title">POST /api/v1/predict</h2>
+            <p class="doc-text">Scores a single transaction. Requires the <strong>Predict</strong> scope on your key.</p>
+
+            <div class="doc-subhead">Request body</div>
+            <pre class="doc-code">{
+  "transaction_type": "card_purchase",
+  "amount": 450.00,
+  "hour": 14,
+  "is_weekend": 0,
+  "merchant_category": 2,
+  "is_international": 0,
+  "is_new_merchant": 0
+}</pre>
+            <p class="doc-text">Only <code>amount</code> is required — every other field has a safe default. Some fields are model-specific: <code>gender</code>, <code>age</code>, <code>geo_distance</code> for Credit Card transactions; <code>old_balance</code>, <code>new_balance</code> for Mobile Transfer types. <code>transaction_type</code> determines which specialist model handles the request.</p>
+
+            <div class="doc-subhead">Example request</div>
+            <pre class="doc-code">curl -X POST https://yourdomain.com/api/v1/predict \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"transaction_type": "card_purchase", "amount": 450.00, "hour": 14}'</pre>
+
+            <div class="doc-subhead">Response</div>
+            <pre class="doc-code">{
+  "label": "LEGITIMATE",
+  "probability": 0.09,
+  "risk_level": "LOW",
+  "model_used": "Credit Card Fraud Model",
+  "test_mode": false
+}</pre>
+        </section>
+
+        <section id="batch-endpoint" class="doc-section">
+            <h2 class="doc-section-title">POST /api/v1/batch</h2>
+            <p class="doc-text">Scores every row in an uploaded CSV. Requires the <strong>Batch</strong> scope on your key. Send as <code>multipart/form-data</code>, not JSON.</p>
+
+            <div class="doc-subhead">Example request</div>
+            <pre class="doc-code">curl -X POST https://yourdomain.com/api/v1/batch \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -F "transaction_type=card_purchase" \
+  -F "file=@transactions.csv"</pre>
+
+            <div class="doc-subhead">Response</div>
+            <pre class="doc-code">{
+  "total": 500,
+  "fraud": 12,
+  "legitimate": 488,
+  "test_mode": false,
+  "results": [
+    {"row": 1, "fraud_probability": 0.0421, "risk_level": "LOW", "result": "LEGITIMATE"},
+    {"row": 2, "fraud_probability": 0.8817, "risk_level": "HIGH", "result": "FRAUD"}
+  ]
+}</pre>
+            <p class="doc-text">The CSV needs at minimum an <code>amount</code> column. Additional columns (<code>hour</code>, <code>is_weekend</code>, <code>merchant_category</code>, etc.) improve accuracy but are optional.</p>
+        </section>
+
+        <section id="errors" class="doc-section">
+            <h2 class="doc-section-title">Error Codes</h2>
+            <table class="doc-table">
+                <thead><tr><th>Status</th><th>Meaning</th></tr></thead>
+                <tbody>
+                    <tr><td><code>401</code></td><td>Missing, invalid, or revoked API key</td></tr>
+                    <tr><td><code>403</code></td><td>Your key doesn't have the required scope for this endpoint</td></tr>
+                    <tr><td><code>429</code></td><td>Daily rate limit exceeded</td></tr>
+                    <tr><td><code>400</code></td><td>Malformed request — missing required field or invalid CSV</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="rate-limits" class="doc-section">
+            <h2 class="doc-section-title">Rate Limits</h2>
+            <p class="doc-text">Each key is limited to <strong>{{ rate_limit }} requests per day</strong>, resetting at midnight UTC. The limit applies per key, not per account — multiple keys on one account each get their own allowance.</p>
+        </section>
+
+        <section id="webhooks-ref" class="doc-section">
+            <h2 class="doc-section-title">Webhooks</h2>
+            <p class="doc-text">Instead of polling, you can have PrediQt push data to your own server the moment something happens. Set these up on the <a href="{{ url_for('webhooks') }}">Webhooks</a> page.</p>
+
+            <div class="doc-subhead">Events</div>
+            <table class="doc-table">
+                <thead><tr><th>Event</th><th>Fires when</th></tr></thead>
+                <tbody>
+                    <tr><td><code>fraud.detected</code></td><td>Any single prediction (via the dashboard or <code>/api/v1/predict</code>) is flagged as FRAUD</td></tr>
+                    <tr><td><code>batch.completed</code></td><td>A batch upload finishes with at least one fraud case found</td></tr>
+                </tbody>
+            </table>
+
+            <div class="doc-subhead">Verifying the signature</div>
+            <p class="doc-text">Every webhook payload is signed with HMAC-SHA256 using your webhook's secret, sent in the <code>X-PrediQt-Signature</code> header. Verify it before trusting the payload:</p>
+            <pre class="doc-code">import hmac, hashlib
+
+def verify_signature(payload_body, signature, secret):
+    expected = hmac.new(secret.encode(), payload_body, hashlib.sha256).hexdigest()
+    return hmac.compare_digest(expected, signature)</pre>
+        </section>
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+var sections = document.querySelectorAll('.doc-section');
+var navItems = document.querySelectorAll('.doc-nav-item');
+
+var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+            navItems.forEach(function(item) { item.classList.remove('active'); });
+            var match = document.querySelector('.doc-nav-item[href="#' + entry.target.id + '"]');
+            if (match) match.classList.add('active');
+        }
+    });
+}, { threshold: 0.3, rootMargin: '-100px 0px -60% 0px' });
+sections.forEach(function(s) { obs.observe(s); });
+</script>
+{% endblock %}

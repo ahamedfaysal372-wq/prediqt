@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block title %}Terms and Conditions — PrediQt{% endblock %}
+
+{% block public_content %}
+<div style="max-width:760px;margin:0 auto;padding:6rem 3rem;">
+
+    <div style="margin-bottom:2.5rem;">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;
+             letter-spacing:.1em;color:var(--muted);margin-bottom:0.5rem;">
+            Legal
+        </div>
+        <h1 style="font-family:'Fraunces',serif;font-size:2.4rem;font-weight:300;
+             letter-spacing:-.03em;color:var(--text);margin-bottom:0.75rem;">
+            Terms and Conditions
+        </h1>
+        <p style="font-size:13px;color:var(--muted);">
+            Last updated: June 2026
+        </p>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:2rem;">
+
+        <div class="card">
+            <div class="card-hd"><h5>1. Acceptance of Terms</h5></div>
+            <div class="card-bd">
+                <p style="font-size:14px;color:var(--muted);line-height:1.8;">
+                    By creating an account and using PrediQt, you agree to be bound by these
+                    Terms and Conditions. PrediQt is a machine learning fraud detection platform
+                    developed as part of the COM668 Computing Project at Ulster University.
+                    If you do not agree with any part of these terms, you may not use the platform.
+                </p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-hd"><h5>2. Use of the Platform</h5></div>
+            <div class="card-bd">
+                <p style="font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:1rem;">
+                    PrediQt is intended for fraud detection and analysis purposes only.
+                    You agree to use the platform in a lawful manner and not to:
+                </p>
+                <ul style="font-size:14px;color:var(--muted);line-height:2;padding-left:1.5rem;">
+                    <li>Upload malicious, harmful, or illegal data</li>
+                    <li>Attempt to reverse-engineer or copy the machine learning models</li>
+                    <li>Use the platform to make critical financial decisions without human oversight</li>
+                    <li>Share your account credentials with third parties</li>
+                    <li>Attempt to gain unauthorised access to other user accounts</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-hd"><h5>3. Data and Privacy</h5></div>
+            <div class="card-bd">
+                <p style="font-size:14px;color:var(--muted);line-height:1.8;">
+                    PrediQt stores your account details and prediction history securely using
+                    SQLite with hashed passwords. We do not sell, share, or transfer your data
+                    to third parties. Transaction data submitted for fraud analysis is processed
+                    locally and is not transmitted to external services. You retain full ownership
+                    of any data you upload to the platform.
+                </p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-hd"><h5>4. Accuracy and Limitations</h5></div>
+            <div class="card-bd">
+                <p style="font-size:14px;color:var(--muted);line-height:1.8;">
+                    PrediQt uses machine learning models trained on historical transaction data.
+                    While the models achieve high precision scores, no fraud detection system
+                    is 100% accurate. Predictions should be used as one input in a broader
+                    fraud investigation process and should not be relied upon as the sole basis
+                    for financial or legal decisions. PrediQt accepts no liability for losses
+                    arising from incorrect predictions.
+                </p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-hd"><h5>5. Intellectual Property</h5></div>
+            <div class="card-bd">
+                <p style="font-size:14px;color:var(--muted);line-height:1.8;">
+                    All code, models, designs, and content within PrediQt are the intellectual
+                    property of Faysal Ahamed (B00918889) and Ulster University. You may not
+                    reproduce, distribute, or create derivative works without explicit written
+                    permission. The machine learning models were trained on publicly available
+                    datasets including ULB, Sparkov, IEEE-CIS, and PaySim.
+                </p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-hd"><h5>6. Account Security</h5></div>
+            <div class="card-bd">
+                <p style="font-size:14px;color:var(--muted);line-height:1.8;">
+                    You are responsible for maintaining the confidentiality of your account
+                    credentials. Passwords are hashed using industry-standard bcrypt encryption
+                    and are never stored in plain text. You must notify us immediately if you
+                    suspect unauthorised access to your account. PrediQt reserves the right
+                    to suspend accounts that violate these terms.
+                </p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-hd"><h5>7. Changes to Terms</h5></div>
+            <div class="card-bd">
+                <p style="font-size:14px;color:var(--muted);line-height:1.8;">
+                    PrediQt reserves the right to modify these terms at any time. Changes
+                    will be communicated via the platform. Continued use of PrediQt after
+                    changes constitutes acceptance of the updated terms.
+                </p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-hd"><h5>8. Contact</h5></div>
+            <div class="card-bd">
+                <p style="font-size:14px;color:var(--muted);line-height:1.8;">
+                    For any questions regarding these terms, please contact the developer
+                    through Ulster University's academic channels. This platform was built
+                    as part of COM668 Computing Project under the supervision of
+                    Muhammad Ibrahim (PSG-Q26).
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <div style="margin-top:2rem;text-align:center;">
+        <a href="{{ url_for('register') }}" class="btn-green"
+           style="display:inline-flex;padding:12px 28px;">
+            Back to Registration →
+        </a>
+    </div>
+
+</div>
+{% endblock %}

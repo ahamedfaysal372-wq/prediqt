@@ -1,0 +1,355 @@
+{% extends "base.html" %}
+{% block title %}Explainability — PrediQt{% endblock %}
+{% block page_title %}Explainability{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/explainability.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="ex-hero">
+    <div class="ex-hero-left">
+        <div class="ex-eyebrow">Intelligence</div>
+        <h1 class="ex-hero-title">Why the model<br/>flagged it.</h1>
+        <p class="ex-hero-sub">
+            You shouldn't have to take a probability score on faith. See exactly which
+            factors actually moved the needle on any transaction.
+        </p>
+        <a href="#explainForm" class="ex-hero-cta">Try it now</a>
+    </div>
+    <div class="ex-hero-right">
+        <div class="ex-hero-blob"></div>
+        <div class="ex-hero-photo">
+            <img src="https://images.unsplash.com/photo-1705056508589-a87485825dc1?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Credit card" />
+        </div>
+        <div class="ex-hero-card">
+            <div class="ex-hero-card-label">Explainability</div>
+            <div class="ex-hero-card-title">Why this was flagged</div>
+            <div class="ex-hero-card-row"><span>International transaction</span><span class="ex-hero-card-bar"><span style="width:78%;"></span></span></div>
+            <div class="ex-hero-card-row"><span>Late-night timing</span><span class="ex-hero-card-bar"><span style="width:54%;"></span></span></div>
+            <div class="ex-hero-card-row"><span>Unusual amount</span><span class="ex-hero-card-bar"><span style="width:36%;"></span></span></div>
+        </div>
+    </div>
+</div>
+
+<div class="ex-method reveal">
+    <div class="ex-method-header">
+        <h2 class="ex-method-title">
+            <span class="ex-method-title-line">One feature at a</span>
+            <span class="ex-method-title-line">time.</span>
+        </h2>
+        <p class="ex-method-desc">PrediQt doesn't guess at explanations. Click a card to see the actual process behind every result below.</p>
+    </div>
+    <div class="ex-flip-grid">
+        <div class="ex-flip-card reveal" tabindex="0" role="button" aria-pressed="false"
+             onclick="flipExCard(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();flipExCard(this);}">
+            <div class="ex-flip-inner">
+                <div class="ex-flip-front">
+                    <div class="ex-flip-num">01</div>
+                    <div class="ex-flip-title">You enter a transaction</div>
+                    <div class="ex-flip-desc">Amount, time, type, and a few other details — the same inputs the model already uses for any real prediction.</div>
+                    <div class="ex-flip-hint"><i class="bi bi-arrow-repeat"></i> Tap to flip</div>
+                </div>
+                <div class="ex-flip-back">
+                    <div class="ex-flip-num">04</div>
+                    <div class="ex-flip-title">The biggest drops reveal what mattered</div>
+                    <div class="ex-flip-desc">Whichever resets caused the largest change in fraud probability are the features that were actually driving that score.</div>
+                    <div class="ex-flip-hint"><i class="bi bi-arrow-repeat"></i> Tap to flip back</div>
+                </div>
+            </div>
+        </div>
+        <div class="ex-flip-card reveal" tabindex="0" role="button" aria-pressed="false"
+             onclick="flipExCard(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();flipExCard(this);}">
+            <div class="ex-flip-inner">
+                <div class="ex-flip-front">
+                    <div class="ex-flip-num">02</div>
+                    <div class="ex-flip-title">It's scored exactly like normal</div>
+                    <div class="ex-flip-desc">Routed to the right specialist model and scored exactly the way Check Transaction or Batch Upload would score it.</div>
+                    <div class="ex-flip-hint"><i class="bi bi-arrow-repeat"></i> Tap to flip</div>
+                </div>
+                <div class="ex-flip-back">
+                    <div class="ex-flip-num">05</div>
+                    <div class="ex-flip-title">Nothing is invented</div>
+                    <div class="ex-flip-desc">This is a real test against the actual model, not a plausible-sounding story made up after the fact.</div>
+                    <div class="ex-flip-hint"><i class="bi bi-arrow-repeat"></i> Tap to flip back</div>
+                </div>
+            </div>
+        </div>
+        <div class="ex-flip-card reveal" tabindex="0" role="button" aria-pressed="false"
+             onclick="flipExCard(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();flipExCard(this);}">
+            <div class="ex-flip-inner">
+                <div class="ex-flip-front">
+                    <div class="ex-flip-num">03</div>
+                    <div class="ex-flip-title">Each feature is tested alone</div>
+                    <div class="ex-flip-desc">Anything unusual — a high amount, an odd hour, an international flag — gets temporarily reset, one at a time, and the model is asked again.</div>
+                    <div class="ex-flip-hint"><i class="bi bi-arrow-repeat"></i> Tap to flip</div>
+                </div>
+                <div class="ex-flip-back">
+                    <div class="ex-flip-num">06</div>
+                    <div class="ex-flip-title">Available for any new prediction</div>
+                    <div class="ex-flip-desc">Run this on any transaction below — the result is generated live, not pulled from a fixed example.</div>
+                    <div class="ex-flip-hint"><i class="bi bi-arrow-repeat"></i> Tap to flip back</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="ex-form-header reveal" id="explainForm">
+    <h2 class="ex-form-title">
+        <span class="ex-form-title-line">Score a transaction, see</span>
+        <span class="ex-form-title-line">the reasoning.</span>
+    </h2>
+    <p class="ex-form-sub">Fill in the details below.<br/>PrediQt scores it like a real prediction, then shows you exactly which features moved the result.</p>
+</div>
+
+<form method="POST" class="ex-form reveal" action="{{ url_for('explainability') }}#explainForm">
+
+    <div class="ex-form-label-big">Try it yourself</div>
+    <div class="ex-form-card">
+        <div class="ex-form-card-label">Transaction Details</div>
+        <div class="ex-form-box-grid">
+            <div class="ex-field-box">
+                <label class="ex-label-box">Transaction Type</label>
+                <select name="transaction_type" class="ex-select-box" id="exTxType">
+                    <optgroup label="── Card Transactions">
+                        <option value="card_purchase">Card Purchase</option>
+                        <option value="atm">ATM Withdrawal</option>
+                        <option value="online_shopping">Online Shopping</option>
+                        <option value="contactless">Contactless Payment</option>
+                        <option value="grocery">Grocery</option>
+                        <option value="entertainment">Entertainment</option>
+                    </optgroup>
+                    <optgroup label="── Online Payments">
+                        <option value="ecommerce">E-commerce</option>
+                        <option value="digital_payment">Digital Payment</option>
+                        <option value="subscription">Subscription</option>
+                        <option value="online_transfer">Online Transfer</option>
+                        <option value="card_not_present">Card Not Present</option>
+                    </optgroup>
+                    <optgroup label="── Bank / Mobile">
+                        <option value="bank_transfer">Bank Transfer</option>
+                        <option value="mobile_payment">Mobile Payment</option>
+                        <option value="cash_withdrawal">Cash Withdrawal</option>
+                        <option value="direct_debit">Direct Debit</option>
+                    </optgroup>
+                </select>
+            </div>
+            <div class="ex-field-box">
+                <label class="ex-label-box">Amount (£)</label>
+                <input type="number" name="amount" step="0.01" class="ex-input-box" value="" placeholder="Enter amount">
+            </div>
+            <div class="ex-field-box">
+                <label class="ex-label-box">Hour (0–23)</label>
+                <input type="number" name="hour" min="0" max="23" class="ex-input-box" value="" placeholder="Enter hour">
+            </div>
+            <div class="ex-field-box">
+                <label class="ex-label-box">Weekend?</label>
+                <select name="is_weekend" class="ex-select-box">
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="ex-form-card-label">Risk Factors</div>
+        <div class="ex-form-box-grid">
+            <div class="ex-field-box">
+                <label class="ex-label-box">International?</label>
+                <select name="is_international" class="ex-select-box">
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
+            <div class="ex-field-box">
+                <label class="ex-label-box">New merchant?</label>
+                <select name="is_new_merchant" class="ex-select-box">
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
+            <div class="ex-field-box" id="exGeoField" style="display:none;">
+                <label class="ex-label-box">Distance from usual (miles)</label>
+                <input type="number" name="geo_distance" step="0.1" class="ex-input-box" value="0">
+            </div>
+            <div class="ex-field-box" id="exBalanceField" style="display:none;">
+                <label class="ex-label-box">Old balance (£)</label>
+                <input type="number" name="old_balance" step="0.01" class="ex-input-box" value="1000">
+            </div>
+            <div class="ex-field-box" id="exBalanceField2" style="display:none;">
+                <label class="ex-label-box">New balance (£)</label>
+                <input type="number" name="new_balance" step="0.01" class="ex-input-box" value="1000">
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" class="ex-submit-btn">
+        <i class="bi bi-search"></i> Explain This Transaction
+    </button>
+</form>
+
+{% if result %}
+<div class="ex-result">
+    <div class="ex-result-label-big">Result Preview</div>
+    <div class="ex-result-header">
+        <div class="ex-verdict-card ex-verdict-{{ 'fraud' if result.label == 'FRAUD' else 'legit' }}">
+            <div class="ex-verdict-icon">
+                <i class="bi bi-{{ 'exclamation-triangle-fill' if result.label == 'FRAUD' else 'check-circle-fill' }}"></i>
+            </div>
+            <div class="ex-result-verdict">{{ result.label }}</div>
+            <div class="ex-result-prob">{{ result.probability }}% fraud probability</div>
+            <div class="ex-result-meta">
+                <span class="ex-meta-black">Scored by the {{ result.model_used }}</span>
+                <span class="ex-meta-sep">·</span>
+                <span class="ex-meta-risk ex-meta-risk-{{ result.risk_level|lower }}">Risk level: {{ result.risk_level }}</span>
+            </div>
+        </div>
+    </div>
+
+    {% if result.contributions %}
+    <div class="ex-bars-heading">Why this was flagged</div>
+    <div class="ex-dual-grid">
+
+        <div class="ex-bars">
+            <div class="ex-bar-head">
+                <div>Feature</div>
+                <div>Impact</div>
+                <div style="text-align:right;">Change</div>
+            </div>
+            {% for c in result.contributions %}
+            {% set bar_class = 'ex-bar-up' if c.impact > 0 else 'ex-bar-down' %}
+            {% set bar_width = (c.impact|abs / 50 * 100)|round(0) if c.impact|abs < 50 else 100 %}
+            {% set bar_prefix = '+' if c.impact > 0 else '' %}
+            {% set fill_class = 'ex-bar-fill ' + bar_class %}
+            <div class="ex-bar-row">
+                <div class="ex-bar-label">{{ c.label }}</div>
+                <div class="ex-bar-track">
+                    <div class="{{ fill_class }}" style="--bar-w: {{ bar_width }};"></div>
+                </div>
+                <div class="ex-bar-val {{ bar_class }}">{{ bar_prefix }}{{ c.impact }} pts</div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="ex-reasons-list">
+            {% for c in result.contributions %}
+            <div class="ex-reason-item">
+                <div class="ex-reason-icon {{ 'ex-reason-up' if c.impact > 0 else 'ex-reason-down' }}">
+                    <i class="bi bi-{{ 'arrow-up' if c.impact > 0 else 'arrow-down' }}"></i>
+                </div>
+                <div class="ex-reason-text">
+                    <strong>{{ c.label }}</strong>
+                    {% if c.impact > 0 %}
+                        pushed the fraud probability up by <strong>{{ c.impact }} points</strong>.
+                    {% else %}
+                        pulled the fraud probability down by <strong>{{ c.impact|abs }} points</strong>.
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+    <p class="ex-bars-note">Each entry shows what happened when that one feature was reset to a normal value and the transaction was scored again — the change in probability tells you how much that feature actually mattered.</p>
+    {% else %}
+    <p class="ex-bars-note">Every feature on this transaction was already at a normal baseline value — there's nothing unusual to attribute the score to.</p>
+    {% endif %}
+
+    <div class="ex-try-another-wrap">
+        <a href="{{ url_for('explainability') }}?reset=1#explainForm" class="ex-try-another-btn">
+            <i class="bi bi-arrow-repeat"></i> Try Another One
+        </a>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function setNavHeight() {
+    var nav = document.querySelector('.app-nav');
+    if (nav) document.documentElement.style.setProperty('--nav-h', nav.offsetHeight + 'px');
+}
+setNavHeight();
+window.addEventListener('resize', setNavHeight);
+
+function flipExCard(card) {
+    var isFlipped = card.classList.toggle('ex-flipped');
+    card.setAttribute('aria-pressed', isFlipped ? 'true' : 'false');
+}
+
+function updateExFields() {
+    var type = document.getElementById('exTxType').value;
+    var creditCardTypes = ['card_purchase','atm','online_shopping','contactless','grocery','entertainment'];
+    var mobileTypes = ['bank_transfer','mobile_payment','cash_withdrawal','direct_debit'];
+
+    document.getElementById('exGeoField').style.display = creditCardTypes.indexOf(type) !== -1 ? 'block' : 'none';
+    var showBalance = mobileTypes.indexOf(type) !== -1;
+    document.getElementById('exBalanceField').style.display = showBalance ? 'block' : 'none';
+    document.getElementById('exBalanceField2').style.display = showBalance ? 'block' : 'none';
+}
+document.getElementById('exTxType').addEventListener('change', updateExFields);
+updateExFields();
+
+document.querySelector('.ex-form').addEventListener('submit', function(e) {
+    var amount = document.querySelector('input[name="amount"]').value;
+    var hour = document.querySelector('input[name="hour"]').value;
+
+    if (!amount || !hour) {
+        e.preventDefault();
+        showExWarning();
+    }
+});
+
+function showExWarning() {
+    var existing = document.getElementById('exWarning');
+    if (existing) return;
+
+    var warning = document.createElement('div');
+    warning.id = 'exWarning';
+    warning.className = 'ex-warning';
+    warning.textContent = 'Please fill in the amount and hour before checking.';
+
+    var card = document.querySelector('.ex-form-card');
+    card.parentNode.insertBefore(warning, card);
+    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+document.querySelectorAll('.ex-input-box, .ex-select-box').forEach(function(field) {
+    field.addEventListener('focus', function() {
+        var warning = document.getElementById('exWarning');
+        if (warning) warning.remove();
+    });
+});
+
+(function() {
+    var els = document.querySelectorAll('.reveal');
+    var obs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                obs.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+    els.forEach(function(el) { obs.observe(el); });
+})();
+
+window.addEventListener('load', function() {
+    document.querySelectorAll('.ex-bar-fill').forEach(function(bar) {
+        var target = bar.style.width;
+        bar.style.width = '0';
+        requestAnimationFrame(function() {
+            setTimeout(function() { bar.style.width = target; }, 50);
+        });
+    });
+
+    if (window.location.hash === '#explainForm') {
+        var el = document.getElementById('explainForm');
+        if (el) el.scrollIntoView({ behavior: 'instant', block: 'start' });
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} — PrediQt{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/error.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="err-page">
+    <div class="err-code">{{ code }}</div>
+    <h1 class="err-title">{{ title }}</h1>
+    <p class="err-message">{{ message }}</p>
+    <div class="err-actions">
+        <a href="{{ url_for('dashboard') if current_user.is_authenticated else url_for('index') }}" class="err-btn-primary">
+            <i class="bi bi-house"></i> Back to {{ 'Dashboard' if current_user.is_authenticated else 'Home' }}
+        </a>
+        <a href="javascript:history.back()" class="err-btn-outline">
+            <i class="bi bi-arrow-left"></i> Go Back
+        </a>
+    </div>
+</div>
+
+{% endblock %}

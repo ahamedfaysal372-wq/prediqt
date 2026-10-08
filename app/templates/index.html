@@ -1,0 +1,939 @@
+{% extends "base.html" %}
+{% block title %}PrediQt — Predict. Detect. Protect.{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+{% endblock %}
+
+{% block public_content %}
+
+<!-- HERO -->
+<section class="lp-hero-light">
+    <div class="lp-hero-inner">
+        <div class="lp-hero-text-side reveal">
+            <h1 class="lp-hero-title-light">
+                Intelligent fraud<br/>
+                detection<br/>
+                for <em id="cyclingWord">every</em><br/>
+                transaction type.
+            </h1>
+            <p class="lp-hero-sub-light">
+                PrediQt uses three specialist machine learning models trained on
+                2.5 million real transactions — automatically routing each transaction
+                to the most appropriate fraud detection model.
+            </p>
+            <div class="lp-hero-actions">
+                <a href="{{ url_for('register') }}" class="btn-green">Get started free →</a>
+                <a href="{{ url_for('login') }}" class="btn">Sign in</a>
+            </div>
+            <div class="lp-hero-tags-light">
+                <span class="lp-tag-light">3 Specialist Models</span>
+                <span class="lp-tag-light">Auto-Routing</span>
+                <span class="lp-tag-light">91% Peak Precision</span>
+                <span class="lp-tag-light">Real-time Detection</span>
+                <span class="lp-tag-light">Batch Processing</span>
+                <span class="lp-tag-light">REST API</span>
+            </div>
+            <div class="lp-scroll-indicator">
+                <div class="lp-scroll-arrow">
+                    <i class="bi bi-chevron-down"></i>
+                </div>
+            </div>
+        </div>
+        <div class="lp-hero-video-card reveal reveal-delay-2">
+            <video autoplay muted loop playsinline class="lp-hero-video-right">
+                <source src="{{ url_for('static', filename='hero.mp4') }}" type="video/mp4" />
+            </video>
+            <div class="lp-hero-img-overlay">
+                <div class="lp-overlay-stat">
+                    <span class="lp-overlay-val">2.5M</span>
+                    <span class="lp-overlay-label">Transactions</span>
+                </div>
+                <div class="lp-overlay-divider"></div>
+                <div class="lp-overlay-stat">
+                    <span class="lp-overlay-val">3</span>
+                    <span class="lp-overlay-label">Models</span>
+                </div>
+                <div class="lp-overlay-divider"></div>
+                <div class="lp-overlay-stat">
+                    <span class="lp-overlay-val">91%</span>
+                    <span class="lp-overlay-label">Precision</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- STATS BAR -->
+<section class="lp-stats-bar">
+    <div class="lp-stats-bar-inner">
+        <div class="lp-stats-bar-item reveal">
+            <span class="lp-stats-bar-val" data-target="2500000" data-suffix="+">0</span>
+            <span class="lp-stats-bar-label">Transactions Trained On</span>
+        </div>
+        <div class="lp-stats-bar-divider"></div>
+        <div class="lp-stats-bar-item reveal reveal-delay-1">
+            <span class="lp-stats-bar-val">3</span>
+            <span class="lp-stats-bar-label">Specialist Models</span>
+        </div>
+        <div class="lp-stats-bar-divider"></div>
+        <div class="lp-stats-bar-item reveal reveal-delay-2">
+            <span class="lp-stats-bar-val">15</span>
+            <span class="lp-stats-bar-label">Transaction Types Supported</span>
+        </div>
+        <div class="lp-stats-bar-divider"></div>
+        <div class="lp-stats-bar-item reveal reveal-delay-3">
+            <span class="lp-stats-bar-val" data-target="91" data-suffix="%">0%</span>
+            <span class="lp-stats-bar-label">Peak Precision Score</span>
+        </div>
+        <div class="lp-stats-bar-divider"></div>
+        <div class="lp-stats-bar-item reveal reveal-delay-4">
+            <span class="lp-stats-bar-val" data-target="91" data-suffix="%">0%</span>
+            <span class="lp-stats-bar-label">Peak F1 Score</span>
+        </div>
+    </div>
+</section>
+
+<!-- MODELS SECTION -->
+<section class="lp-models-light" id="models">
+    <div class="lp-models-inner">
+        <div class="lp-models-header reveal">
+            <div class="lp-models-label-wrap" id="modelsHeading">
+                <div class="lp-models-label-text">Specialist Models</div>
+                <div class="lp-models-underline"></div>
+            </div>
+            <h2 class="lp-models-title" id="modelsTitle">
+                Three models. One platform.<br/><em>Automatic routing.</em>
+            </h2>
+            <p class="lp-models-sub" id="modelsSub">
+                Unlike generic fraud detectors, PrediQt trains a specialist model for each
+                fraud domain — then automatically selects the right one based on your
+                transaction type.
+            </p>
+        </div>
+        <div class="lp-models-grid">
+
+            <div class="lp-model-card reveal reveal-delay-1">
+                <div class="lp-model-card-top">
+                    <div class="lp-model-icon">💳</div>
+                    <div class="lp-model-f1-badge">80% F1</div>
+                </div>
+                <div class="lp-model-name">Credit Card Fraud</div>
+                <div class="lp-model-dataset">Sparkov Dataset — 1.85M transactions</div>
+                <p class="lp-model-desc">
+                    Detects fraud in physical and online card purchases using
+                    merchant location, customer demographics, geographic distance,
+                    and spending pattern signals.
+                </p>
+                <div class="lp-model-metrics">
+                    <div class="lp-model-metric">
+                        <span class="lp-model-metric-val">82%</span>
+                        <span class="lp-model-metric-label">Precision</span>
+                    </div>
+                    <div class="lp-model-metric">
+                        <span class="lp-model-metric-val">78%</span>
+                        <span class="lp-model-metric-label">Recall</span>
+                    </div>
+                    <div class="lp-model-metric">
+                        <span class="lp-model-metric-val">85%</span>
+                        <span class="lp-model-metric-label">PR-AUC</span>
+                    </div>
+                </div>
+                <div class="lp-model-types">
+                    <span>Card Purchase</span>
+                    <span>ATM</span>
+                    <span>Online Shopping</span>
+                    <span>Grocery</span>
+                    <span>Entertainment</span>
+                </div>
+            </div>
+
+            <div class="lp-model-card reveal reveal-delay-2">
+                <div class="lp-model-card-top">
+                    <div class="lp-model-icon">🌐</div>
+                    <div class="lp-model-f1-badge">72% F1</div>
+                </div>
+                <div class="lp-model-name">Online Payment Fraud</div>
+                <div class="lp-model-dataset">IEEE-CIS Dataset — 590K transactions</div>
+                <p class="lp-model-desc">
+                    Detects fraud in e-commerce and digital payments using
+                    card type, email domain signals, billing address verification,
+                    and transaction frequency patterns.
+                </p>
+                <div class="lp-model-metrics">
+                    <div class="lp-model-metric">
+                        <span class="lp-model-metric-val">82%</span>
+                        <span class="lp-model-metric-label">Precision</span>
+                    </div>
+                    <div class="lp-model-metric">
+                        <span class="lp-model-metric-val">64%</span>
+                        <span class="lp-model-metric-label">Recall</span>
+                    </div>
+                    <div class="lp-model-metric">
+                        <span class="lp-model-metric-val">75%</span>
+                        <span class="lp-model-metric-label">PR-AUC</span>
+                    </div>
+                </div>
+                <div class="lp-model-types">
+                    <span>E-commerce</span>
+                    <span>Digital Payment</span>
+                    <span>Subscription</span>
+                    <span>Card Not Present</span>
+                </div>
+            </div>
+
+            <div class="lp-model-card reveal reveal-delay-3">
+                <div class="lp-model-card-top">
+                    <div class="lp-model-icon">📱</div>
+                    <div class="lp-model-f1-badge best">91% F1</div>
+                </div>
+                <div class="lp-model-name">Mobile Transfer Fraud</div>
+                <div class="lp-model-dataset">PaySim Dataset — 58K transactions</div>
+                <p class="lp-model-desc">
+                    Detects fraud in bank transfers and mobile payments using
+                    transfer type classification, balance change analysis,
+                    and transaction origin-destination patterns.
+                </p>
+                <div class="lp-model-metrics">
+                    <div class="lp-model-metric">
+                        <span class="lp-model-metric-val">92%</span>
+                        <span class="lp-model-metric-label">Precision</span>
+                    </div>
+                    <div class="lp-model-metric">
+                        <span class="lp-model-metric-val">90%</span>
+                        <span class="lp-model-metric-label">Recall</span>
+                    </div>
+                    <div class="lp-model-metric">
+                        <span class="lp-model-metric-val">96%</span>
+                        <span class="lp-model-metric-label">PR-AUC</span>
+                    </div>
+                </div>
+                <div class="lp-model-types">
+                    <span>Bank Transfer</span>
+                    <span>Mobile Payment</span>
+                    <span>Cash Withdrawal</span>
+                    <span>Direct Debit</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- FEATURES -->
+<section class="lp-features-light" id="features">
+    <div class="lp-features-notion">
+        <div class="lp-notion-left reveal">
+            <div class="lp-features-label-wrap" id="featuresHeading">
+                <span class="lp-section-label-dark" style="display:inline-block;position:relative;padding-bottom:6px;">
+                    Features
+                    <div class="lp-features-underline"></div>
+                </span>
+            </div>
+            <h2 class="lp-notion-title">
+                Built for<br/>fraud<br/><em>analysts.</em>
+            </h2>
+            <p class="lp-notion-sub">
+                Everything you need to detect, investigate,
+                and act on fraud — in one platform.
+            </p>
+            <a href="{{ url_for('register') }}" class="btn-green"
+               style="padding:10px 22px;font-size:14px;margin-top:2rem;display:inline-flex;">
+                Start free →
+            </a>
+        </div>
+        <div class="lp-notion-right">
+            <div class="lp-notion-card reveal">
+                <div class="lp-notion-card-icon"><i class="bi bi-diagram-3"></i></div>
+                <div class="lp-notion-card-body">
+                    <div class="lp-notion-card-header">
+                        <div class="lp-notion-card-title">Auto-Routing Intelligence</div>
+                        <span class="lp-notion-badge">New</span>
+                    </div>
+                    <p class="lp-notion-card-desc">Select your transaction type and PrediQt automatically routes to the most appropriate specialist model — no manual model selection needed.</p>
+                </div>
+            </div>
+            <div class="lp-notion-card reveal">
+                <div class="lp-notion-card-icon"><i class="bi bi-grid-1x2"></i></div>
+                <div class="lp-notion-card-body">
+                    <div class="lp-notion-card-header">
+                        <div class="lp-notion-card-title">Live Dashboard</div>
+                        <span class="lp-notion-badge">Core</span>
+                    </div>
+                    <p class="lp-notion-card-desc">Monitor total transactions, fraud rate, and recent predictions — all in one place, updated in real time. Your entire fraud operation at a glance.</p>
+                </div>
+            </div>
+            <div class="lp-notion-card reveal">
+                <div class="lp-notion-card-icon"><i class="bi bi-broadcast"></i></div>
+                <div class="lp-notion-card-body">
+                    <div class="lp-notion-card-header">
+                        <div class="lp-notion-card-title">Real-Time Transaction Feed</div>
+                        <span class="lp-notion-badge">Live</span>
+                    </div>
+                    <p class="lp-notion-card-desc">Watch transactions stream in and get scored in real time. Fraud flashes red instantly — monitor your operation live without refreshing.</p>
+                </div>
+            </div>
+            <div class="lp-notion-card reveal">
+                <div class="lp-notion-card-icon"><i class="bi bi-upload"></i></div>
+                <div class="lp-notion-card-body">
+                    <div class="lp-notion-card-header">
+                        <div class="lp-notion-card-title">Batch CSV Upload</div>
+                        <span class="lp-notion-badge">Bulk</span>
+                    </div>
+                    <p class="lp-notion-card-desc">Upload thousands of transactions at once. PrediQt processes every row, flags fraud, and exports a fully annotated results file for download.</p>
+                </div>
+            </div>
+            <div class="lp-notion-card reveal">
+                <div class="lp-notion-card-icon"><i class="bi bi-code-square"></i></div>
+                <div class="lp-notion-card-body">
+                    <div class="lp-notion-card-header">
+                        <div class="lp-notion-card-title">REST API Access</div>
+                        <span class="lp-notion-badge">API</span>
+                    </div>
+                    <p class="lp-notion-card-desc">Integrate PrediQt directly into your payment system. POST transactions and receive fraud scores in JSON — with your unique API key.</p>
+                </div>
+            </div>
+            <div class="lp-notion-card reveal">
+                <div class="lp-notion-card-icon"><i class="bi bi-shield-lock"></i></div>
+                <div class="lp-notion-card-body">
+                    <div class="lp-notion-card-header">
+                        <div class="lp-notion-card-title">Secure by Design</div>
+                        <span class="lp-notion-badge">Security</span>
+                    </div>
+                    <p class="lp-notion-card-desc">Hashed passwords, per-user prediction history, role-based access control and secure session management throughout. Your data stays private.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="lp-how-dark" id="how-it-works">
+    <div class="lp-how-inner">
+        <div class="reveal">
+            <div class="lp-how-heading-wrap" id="howHeading">
+                <div class="lp-how-section-label">How it works</div>
+                <div class="lp-how-underline"></div>
+            </div>
+            <h2 class="lp-how-title" id="howTitle">
+                Four steps to <em>smarter fraud detection.</em>
+            </h2>
+            <p class="lp-how-sub" id="howSub">
+                PrediQt makes fraud detection simple: select your transaction type,
+                fill in what you know, and let the system do the rest.
+            </p>
+        </div>
+        <div class="lp-steps lp-steps-4">
+            <div class="lp-step-dark lp-step-anim" id="step1" data-dir="left">
+                <div class="lp-step-img-wrap">
+                    <img class="lp-step-img"
+                         src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&q=80"
+                         alt="Select transaction type" />
+                </div>
+                <div class="lp-step-body-dark">
+                    <div class="lp-step-num-dark">01</div>
+                    <div class="lp-step-title-dark">Select Transaction Type</div>
+                    <p class="lp-step-desc-dark">Choose from 15 transaction types across card payments, online purchases and bank transfers.</p>
+                </div>
+            </div>
+            <div class="lp-step-dark lp-step-anim" id="step2" data-dir="bottom">
+                <div class="lp-step-img-wrap">
+                    <img class="lp-step-img"
+                         src="https://images.unsplash.com/photo-1518186285589-2f7649de83e0?w=600&q=80"
+                         alt="Auto routing" />
+                </div>
+                <div class="lp-step-body-dark">
+                    <div class="lp-step-num-dark">02</div>
+                    <div class="lp-step-title-dark">Auto-Routing Activates</div>
+                    <p class="lp-step-desc-dark">PrediQt automatically selects the most appropriate specialist model for your transaction type.</p>
+                </div>
+            </div>
+            <div class="lp-step-dark lp-step-anim" id="step3" data-dir="bottom">
+                <div class="lp-step-img-wrap">
+                    <img class="lp-step-img"
+                         src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80"
+                         alt="Fill transaction details" />
+                </div>
+                <div class="lp-step-body-dark">
+                    <div class="lp-step-num-dark">03</div>
+                    <div class="lp-step-title-dark">Enter Transaction Details</div>
+                    <p class="lp-step-desc-dark">Fill in the fields you have. Missing values are automatically filled with safe neutral defaults.</p>
+                </div>
+            </div>
+            <div class="lp-step-dark lp-step-anim" id="step4" data-dir="right">
+                <div class="lp-step-img-wrap">
+                    <img class="lp-step-img"
+                         src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=80"
+                         alt="Get results" />
+                </div>
+                <div class="lp-step-body-dark">
+                    <div class="lp-step-num-dark">04</div>
+                    <div class="lp-step-title-dark">Get Instant Results</div>
+                    <p class="lp-step-desc-dark">Receive fraud probability, risk level and confidence score in milliseconds. Act immediately.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- USE CASES -->
+<section class="lp-usecases-dark" id="use-cases">
+    <div class="lp-usecases-inner">
+        <div class="lp-usecases-header">
+            <div class="lp-usecases-label-wrap" id="usecasesHeading">
+                <div class="lp-usecases-label-text">Who it's for</div>
+                <div class="lp-usecases-underline"></div>
+            </div>
+            <h2 class="lp-usecases-title" id="usecasesTitle">
+                Built for any business that <em>processes payments.</em>
+            </h2>
+            <p class="lp-usecases-sub" id="usecasesSub">
+                From banks to e-commerce platforms — PrediQt adapts to your transaction type automatically.
+            </p>
+        </div>
+
+        <!-- Row 1 — image left, text right -->
+        <div class="lp-uc-row lp-uc-row-normal lp-uc-anim" data-dir="left">
+            <div class="lp-uc-img-wrap">
+                <img src="https://images.unsplash.com/photo-1541354329998-f4d9a9f9297f?w=800&q=80"
+                     alt="Banks and Credit Unions" class="lp-uc-img" />
+            </div>
+            <div class="lp-uc-content">
+                <div class="lp-uc-badge">Credit Card Model</div>
+                <h3 class="lp-uc-title">Banks &amp; Credit Unions</h3>
+                <p class="lp-uc-desc">
+                    Monitor card transactions in real time. Use batch upload to screen
+                    thousands of transactions overnight. Get alerted on high-risk fraud
+                    instantly — with 82% precision and only 319 false positives.
+                </p>
+                <a href="{{ url_for('register') }}" class="lp-uc-link">
+                    Get started →
+                </a>
+            </div>
+        </div>
+
+        <!-- Row 2 — text left, image right -->
+        <div class="lp-uc-row lp-uc-row-reverse lp-uc-anim" data-dir="right">
+            <div class="lp-uc-img-wrap">
+                <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&q=80"
+                     alt="E-commerce Platforms" class="lp-uc-img" />
+            </div>
+            <div class="lp-uc-content">
+                <div class="lp-uc-badge">Online Payment Model</div>
+                <h3 class="lp-uc-title">E-commerce Platforms</h3>
+                <p class="lp-uc-desc">
+                    Screen every order before fulfilment. Detect card-not-present fraud
+                    using email domains, billing address mismatches and device signals
+                    — trained on 590,000 real Vesta Corporation transactions.
+                </p>
+                <a href="{{ url_for('register') }}" class="lp-uc-link">
+                    Get started →
+                </a>
+            </div>
+        </div>
+
+        <!-- Row 3 — image left, text right -->
+        <div class="lp-uc-row lp-uc-row-normal lp-uc-anim" data-dir="left">
+            <div class="lp-uc-img-wrap">
+                <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800&q=80"
+                     alt="Fintech and Payment Apps" class="lp-uc-img" />
+            </div>
+            <div class="lp-uc-content">
+                <div class="lp-uc-badge">Mobile Transfer Model</div>
+                <h3 class="lp-uc-title">Fintech &amp; Payment Apps</h3>
+                <p class="lp-uc-desc">
+                    Protect mobile money transfers and bank payments. Identify suspicious
+                    CASH_OUT and TRANSFER patterns before they drain accounts —
+                    with 92% precision and 91% F1 score.
+                </p>
+                <a href="{{ url_for('register') }}" class="lp-uc-link">
+                    Get started →
+                </a>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- RESULTS -->
+<section class="lp-stats-dark" id="stats">
+    <div class="lp-stats-inner">
+        <div class="lp-stats-header reveal">
+            <div style="width:100%;">
+                <div class="lp-results-label-wrap" id="resultsHeading">
+                    <div class="lp-results-label-text">Results</div>
+                    <div class="lp-results-underline"></div>
+                </div>
+                <h2 class="lp-section-title-light" id="resultsTitle">
+                    Numbers that speak<br/>
+                    <em style="color:#ffffff;">for</em>
+                    <em style="color:#4ade80;">themselves.</em>
+                </h2>
+                <p class="lp-results-sub" id="resultsSub"
+                   style="font-size:15px;color:rgba(247,246,243,0.55);line-height:1.75;margin-top:1rem;margin-bottom:1.5rem;max-width:560px;">
+                    Three specialist models trained and evaluated across 2.5 million
+                    real-world transactions from three independent datasets.
+                </p>
+            </div>
+        </div>
+        <div class="lp-stats-divider"></div>
+        <div class="lp-stats-grid-img">
+            <div class="lp-stat-img-cell reveal reveal-delay-1">
+                <img src="https://images.unsplash.com/photo-1614028674026-a65e31bfd27c?w=800&q=80"
+                     alt="Precision" class="lp-stat-bg-img" />
+                <div class="lp-stat-img-overlay"></div>
+                <div class="lp-stat-img-content">
+                    <div class="lp-stat-num-img" data-target="91" data-suffix="%">0%</div>
+                    <div class="lp-stat-label-img">Peak Precision Score</div>
+                    <p class="lp-stat-desc-img">Mobile Transfer model achieves 92% precision — highest of all three specialist models.</p>
+                </div>
+            </div>
+            <div class="lp-stat-img-cell reveal reveal-delay-2">
+                <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&q=80"
+                     alt="Transactions" class="lp-stat-bg-img" />
+                <div class="lp-stat-img-overlay"></div>
+                <div class="lp-stat-img-content">
+                    <div class="lp-stat-num-img" data-target="2500000" data-suffix="+">0</div>
+                    <div class="lp-stat-label-img">Transactions Trained On</div>
+                    <p class="lp-stat-desc-img">Combined training data from Sparkov, IEEE-CIS and PaySim datasets across all fraud domains.</p>
+                </div>
+            </div>
+            <div class="lp-stat-img-cell reveal reveal-delay-3">
+                <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&q=80"
+                     alt="Models" class="lp-stat-bg-img" />
+                <div class="lp-stat-img-overlay"></div>
+                <div class="lp-stat-img-content">
+                    <div class="lp-stat-num-img" data-target="3" data-suffix="">0</div>
+                    <div class="lp-stat-label-img">Specialist Models</div>
+                    <p class="lp-stat-desc-img">Credit card, online payment and mobile transfer — each optimised for its fraud domain.</p>
+                </div>
+            </div>
+            <div class="lp-stat-img-cell reveal reveal-delay-4">
+                <img src="https://images.unsplash.com/photo-1559526324-593bc073d938?w=800&q=80"
+                     alt="Transaction Types" class="lp-stat-bg-img" />
+                <div class="lp-stat-img-overlay"></div>
+                <div class="lp-stat-img-content">
+                    <div class="lp-stat-num-img" data-target="15" data-suffix="">0</div>
+                    <div class="lp-stat-label-img">Transaction Types</div>
+                    <p class="lp-stat-desc-img">From card purchases to bank transfers — auto-routed to the right model automatically.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="lp-cta-light">
+    <div class="lp-cta-inner reveal">
+        <h2 class="lp-cta-title-light" id="ctaTitle">
+            Ready to detect<br/>fraud <em style="color:var(--green);">smarter?</em>
+        </h2>
+        <p class="lp-cta-sub-light" id="ctaSub">
+            Join PrediQt today and start protecting your transactions
+            with intelligent machine learning — free, instant, no credit card required.
+        </p>
+        <div class="lp-cta-actions">
+            <a href="{{ url_for('register') }}" class="btn-green"
+               style="padding:13px 32px;font-size:15px;">
+                Create free account →
+            </a>
+            <a href="{{ url_for('login') }}" class="btn"
+               style="padding:13px 32px;font-size:15px;">
+                Sign in
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="lp-footer-light">
+    <div class="lp-footer-content">
+        <div class="lp-footer-brand-col">
+            <a href="{{ url_for('index') }}" class="lp-footer-brand-main">
+                <div class="lp-footer-logo">
+                    <svg width="32" height="32" viewBox="0 0 28 28" fill="none">
+                        <rect width="28" height="28" rx="6" fill="#1a6b4a"/>
+                        <path d="M7 9.5L14 7L21 9.5V14.5C21 18 17.5 20.5 14 21.5C10.5 20.5 7 18 7 14.5V9.5Z" fill="white" opacity="0.2"/>
+                        <path d="M11 13.5L13.5 16L18 11" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="lp-footer-brand-top">PrediQt</div>
+                    <div class="lp-footer-brand-bottom">Predict. Detect. <span>Protect.</span></div>
+                </div>
+            </a>
+        </div>
+        <div class="lp-footer-divider"></div>
+        <div class="lp-footer-col">
+            <h4>Platform</h4>
+            <a href="#models">Models</a>
+            <a href="#features">Features</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#stats">Results</a>
+        </div>
+        <div class="lp-footer-divider"></div>
+        <div class="lp-footer-col">
+            <h4>Account</h4>
+            <a href="{{ url_for('register') }}">Create Account</a>
+            <a href="{{ url_for('login') }}">Sign In</a>
+            <a href="{{ url_for('about') }}">About</a>
+        </div>
+        <div class="lp-footer-divider"></div>
+        <div class="lp-footer-social">
+            <h4>Follow Us</h4>
+            <div class="lp-social-icons">
+                <a href="https://github.com" target="_blank" class="lp-social-icon github" title="GitHub">
+                    <i class="bi bi-github"></i>
+                </a>
+                <a href="https://linkedin.com" target="_blank" class="lp-social-icon linkedin" title="LinkedIn">
+                    <i class="bi bi-linkedin"></i>
+                </a>
+                <a href="https://twitter.com" target="_blank" class="lp-social-icon twitter" title="Twitter">
+                    <i class="bi bi-twitter-x"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="lp-footer-bottom">
+        <p>© 2026 PrediQt. All rights reserved. Built with Python, Flask & Machine Learning.</p>
+    </div>
+</footer>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Cycling word animation
+var cycleWords   = ['every', 'Credit Card', 'Online Payment', 'Mobile Transfer'];
+var cycleIndex   = 0;
+var cyclingWord  = document.getElementById('cyclingWord');
+
+function cycleWord() {
+    if (!cyclingWord) return;
+
+    // Slide current word up and out
+    cyclingWord.classList.remove('slide-down');
+    cyclingWord.classList.add('slide-up');
+
+    setTimeout(function() {
+        // Move to next word
+        cycleIndex = (cycleIndex + 1) % cycleWords.length;
+        cyclingWord.textContent = cycleWords[cycleIndex];
+
+        // Slide new word down and in
+        cyclingWord.classList.remove('slide-up');
+        cyclingWord.classList.add('slide-down');
+    }, 500);
+}
+
+setInterval(cycleWord, 3000);
+
+// Scroll indicator hide/show
+var scrollIndicator = document.querySelector('.lp-scroll-indicator');
+var scrollIndicatorVisible = false;
+
+// Show after 1.5s delay
+setTimeout(function() {
+    if (window.scrollY <= 100) {
+        scrollIndicator.style.animation = 'none';
+        scrollIndicator.style.opacity = '1';
+        scrollIndicatorVisible = true;
+    }
+}, 1600);
+
+window.addEventListener('scroll', function() {
+    if (window.scrollY > 100) {
+        scrollIndicator.style.opacity = '0';
+        scrollIndicator.style.transform = 'translateY(10px)';
+        scrollIndicator.style.pointerEvents = 'none';
+    } else {
+        if (scrollIndicatorVisible) {
+            scrollIndicator.style.opacity = '1';
+            scrollIndicator.style.transform = 'translateY(0)';
+            scrollIndicator.style.pointerEvents = 'auto';
+        }
+    }
+}, { passive: true });
+</script>
+<script>
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+    anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        var target = document.querySelector(this.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+});
+
+// Active nav on scroll
+var navLinks = document.querySelectorAll('.pub-nav-link');
+var sections = Array.from(document.querySelectorAll('section[id]'));
+
+function updateActiveNav() {
+    var currentId = '';
+    sections.forEach(function(section) {
+        var rect = section.getBoundingClientRect();
+        if (rect.top <= 120 && rect.bottom > 120) currentId = section.id;
+    });
+    navLinks.forEach(function(link) {
+        var isActive = link.getAttribute('href') === '#' + currentId;
+        link.classList.toggle('active-nav', isActive);
+    });
+}
+
+window.addEventListener('scroll', updateActiveNav, { passive: true });
+updateActiveNav();
+
+// Scroll reveal
+var revealObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+}, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+
+document.querySelectorAll('.reveal').forEach(function(el) {
+    revealObserver.observe(el);
+});
+
+// Notion sticky left parallax
+var notionLeft    = document.querySelector('.lp-notion-left');
+var notionSection = document.querySelector('.lp-features-light');
+
+if (notionLeft && notionSection) {
+    var currentY = 0;
+    var targetY  = 0;
+
+    window.addEventListener('scroll', function() {
+        var sectionTop    = notionSection.getBoundingClientRect().top;
+        var sectionHeight = notionSection.offsetHeight;
+        var windowHeight  = window.innerHeight;
+        var progress      = Math.max(0, Math.min(1, (-sectionTop) / (sectionHeight - windowHeight)));
+        targetY = progress * -80;
+    });
+
+    function animateNotion() {
+        currentY += (targetY - currentY) * 0.06;
+        notionLeft.style.transform = 'translateY(' + currentY + 'px)';
+        requestAnimationFrame(animateNotion);
+    }
+    animateNotion();
+}
+
+// Notion left slide in
+var notionLeftEl = document.querySelector('.lp-notion-left');
+if (notionLeftEl) {
+    var featuresObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) notionLeftEl.classList.add('visible');
+            else notionLeftEl.classList.remove('visible');
+        });
+    }, { threshold: 0.2 });
+    featuresObserver.observe(notionLeftEl);
+}
+
+// Features label
+var featuresHeading = document.getElementById('featuresHeading');
+if (featuresHeading) {
+    var featuresLabelObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                featuresHeading.classList.remove('hidden');
+                featuresHeading.classList.add('visible');
+            } else {
+                featuresHeading.classList.remove('visible');
+                featuresHeading.classList.add('hidden');
+            }
+        });
+    }, { threshold: 0.5 });
+    featuresLabelObserver.observe(featuresHeading);
+}
+
+// How it works animations
+var howHeading = document.getElementById('howHeading');
+var howTitle   = document.getElementById('howTitle');
+var howSub     = document.getElementById('howSub');
+
+if (howHeading) {
+    var howFullObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                howHeading.classList.remove('hidden');
+                howHeading.classList.add('visible');
+                if (howTitle) howTitle.classList.add('how-title-visible');
+                if (howSub)   howSub.classList.add('how-sub-visible');
+            } else {
+                howHeading.classList.remove('visible');
+                howHeading.classList.add('hidden');
+                if (howTitle) howTitle.classList.remove('how-title-visible');
+                if (howSub)   howSub.classList.remove('how-sub-visible');
+            }
+        });
+    }, { threshold: 0.3 });
+    howFullObserver.observe(howHeading);
+}
+
+// Step cards
+var stepCards = document.querySelectorAll('.lp-step-anim');
+var stepObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry, i) {
+        if (entry.isIntersecting) {
+            setTimeout(function() {
+                entry.target.classList.add('step-visible');
+            }, i * 100);
+        }
+    });
+}, { threshold: 0.2 });
+
+stepCards.forEach(function(card) {
+    stepObserver.observe(card);
+});
+
+// Results label
+var resultsHeading = document.getElementById('resultsHeading');
+var resultsTitle   = document.getElementById('resultsTitle');
+var resultsSub     = document.getElementById('resultsSub');
+
+if (resultsHeading) {
+    var resultsObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                resultsHeading.classList.remove('hidden');
+                resultsHeading.classList.add('visible');
+                if (resultsTitle) resultsTitle.classList.add('results-title-visible');
+                if (resultsSub)   resultsSub.classList.add('results-sub-visible');
+            } else {
+                resultsHeading.classList.remove('visible');
+                resultsHeading.classList.add('hidden');
+                if (resultsTitle) resultsTitle.classList.remove('results-title-visible');
+                if (resultsSub)   resultsSub.classList.remove('results-sub-visible');
+            }
+        });
+    }, { threshold: 0.3 });
+    resultsObserver.observe(resultsHeading);
+}
+
+// Animated counters
+function animateCounter(el) {
+    var target   = parseInt(el.getAttribute('data-target'));
+    var suffix   = el.getAttribute('data-suffix') || '';
+    var duration = 1800;
+    var start    = performance.now();
+
+    function update(now) {
+        var elapsed  = now - start;
+        var progress = Math.min(elapsed / duration, 1);
+        var eased    = 1 - Math.pow(1 - progress, 3);
+        var current  = Math.round(eased * target);
+        el.textContent = current.toLocaleString() + suffix;
+        if (progress < 1) requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+}
+
+var counterObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+            animateCounter(entry.target);
+            counterObserver.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('[data-target]').forEach(function(el) {
+    counterObserver.observe(el);
+});
+
+// Models heading animations
+var modelsHeading = document.getElementById('modelsHeading');
+var modelsTitle   = document.getElementById('modelsTitle');
+
+if (modelsHeading) {
+    var modelsObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                modelsHeading.classList.remove('hidden');
+                modelsHeading.classList.add('visible');
+                if (modelsTitle) modelsTitle.classList.add('title-visible');
+                var modelsSub = document.getElementById('modelsSub');
+                if (modelsSub) modelsSub.classList.add('sub-visible');
+            } else {
+                modelsHeading.classList.remove('visible');
+                modelsHeading.classList.add('hidden');
+                if (modelsTitle) modelsTitle.classList.remove('title-visible');
+            }
+        });
+    }, { threshold: 0.4 });
+    modelsObserver.observe(modelsHeading);
+}
+
+// Model cards fly-in animation
+var modelCards = document.querySelectorAll('.lp-model-card');
+var cardObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('card-visible');
+        }
+    });
+}, { threshold: 0.2 });
+
+modelCards.forEach(function(card) {
+    cardObserver.observe(card);
+});
+
+// Use cases heading animations
+var ucHeading = document.getElementById('usecasesHeading');
+if (ucHeading) {
+    var ucTitle = document.getElementById('usecasesTitle');
+    var ucSub   = document.getElementById('usecasesSub');
+
+    var ucObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                ucHeading.classList.remove('hidden');
+                ucHeading.classList.add('visible');
+                if (ucTitle) ucTitle.classList.add('uc-title-visible');
+                if (ucSub)   ucSub.classList.add('uc-sub-visible');
+            } else {
+                ucHeading.classList.remove('visible');
+                ucHeading.classList.add('hidden');
+                if (ucTitle) ucTitle.classList.remove('uc-title-visible');
+                if (ucSub)   ucSub.classList.remove('uc-sub-visible');
+                setTimeout(function() { ucHeading.classList.remove('hidden'); }, 500);
+            }
+        });
+    }, { threshold: 0.25 });
+
+    ucObserver.observe(ucHeading);
+}
+
+// Use cases rows fly-in
+var ucRows = document.querySelectorAll('.lp-uc-anim');
+var ucRowObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('uc-row-visible');
+        }
+    });
+}, { threshold: 0.2 });
+
+ucRows.forEach(function(row) {
+    ucRowObserver.observe(row);
+});
+
+// CTA animations
+var ctaTitle = document.getElementById('ctaTitle');
+var ctaSub   = document.getElementById('ctaSub');
+
+if (ctaTitle) {
+    var ctaObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                ctaTitle.classList.add('cta-visible');
+                if (ctaSub) ctaSub.classList.add('cta-visible');
+            }
+        });
+    }, { threshold: 0.3 });
+    ctaObserver.observe(ctaTitle);
+}
+</script>
+{% endblock %}

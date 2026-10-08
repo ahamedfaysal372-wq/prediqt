@@ -1,0 +1,585 @@
+{% extends "base.html" %}
+{% block title %}Live Feed — PrediQt{% endblock %}
+{% block page_title %}Live Feed{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/live_feed.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="lf-hero">
+    <div class="lf-hero-left">
+        <h1 class="lf-hero-title">Every transaction,<br/>in real time.</h1>
+        <p class="lf-hero-sub">
+            Watch simulated transactions stream in live, flagged and
+            scored by the right model the moment they happen.
+        </p>
+        <a href="#feedWrap" class="lf-hero-cta">View the feed</a>
+    </div>
+    <div class="lf-hero-right">
+        <div class="lf-hero-blob"></div>
+        <div class="lf-hero-photo">
+            <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=500&q=80" alt="Checking transactions" />
+        </div>
+        <div class="lf-hero-card">
+            <div class="lf-hero-card-label">Live Feed</div>
+            <div class="lf-hero-card-title">Recent transactions</div>
+            <div class="lf-hero-card-row">
+                <span>Card Purchase</span>
+                <span>£45.20</span>
+                <i class="bi bi-check-circle-fill"></i>
+            </div>
+            <div class="lf-hero-card-row">
+                <span>Online Transfer</span>
+                <span>£812.00</span>
+                <i class="bi bi-check-circle-fill"></i>
+            </div>
+            <div class="lf-hero-card-row lf-hero-card-row-alert">
+                <span>Bank Transfer</span>
+                <span>£1,901.29</span>
+                <i class="bi bi-exclamation-triangle-fill"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="lf-info-section reveal">
+    <div class="lf-info-header">
+        <div class="lf-info-eyebrow">How this page works</div>
+        <h2 class="lf-info-title">
+            Two ways data reaches<br/>
+            this feed.
+        </h2>
+        <p class="lf-info-sub">Single checks and batch uploads each show their own results in isolation — this page pulls both together into one live view.</p>
+    </div>
+
+    <div class="lf-tab-toggle-wrap">
+        <div class="lf-tab-toggle">
+            <button class="lf-tab-btn active" data-tab="automatic" onclick="switchTab('automatic')">Automatic</button>
+            <button class="lf-tab-btn" data-tab="manual" onclick="switchTab('manual')">Manual</button>
+        </div>
+    </div>
+
+    <div class="lf-source-panel lf-panel-visible" id="panel-automatic">
+        <div class="lf-source-grid">
+            <div class="lf-source-card reveal">
+                <div class="lf-source-graphic">
+                    <img src="https://images.unsplash.com/photo-1644088379091-d574269d422f?w=500&q=80" alt="Synthetic data" />
+                </div>
+                <div class="lf-source-body">
+                    <div class="lf-source-tag">Automatic</div>
+                    <h3 class="lf-source-title">Synthetic input data</h3>
+                    <ul class="lf-source-list">
+                        <li>A random amount, time of day, and transaction type are generated</li>
+                        <li>Values stay within realistic ranges for that type</li>
+                        <li>No two simulated transactions look identical</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="lf-source-card reveal">
+                <div class="lf-source-graphic">
+                    <img src="https://images.unsplash.com/photo-1727434032773-af3cd98375ba?w=500&q=80" alt="Model scoring" />
+                </div>
+                <div class="lf-source-body">
+                    <div class="lf-source-tag">Automatic</div>
+                    <h3 class="lf-source-title">Genuine model scoring</h3>
+                    <ul class="lf-source-list">
+                        <li>Routed to whichever specialist model the type would actually use</li>
+                        <li>Scored with the same model call as a real check</li>
+                        <li>Probability and risk level are true output, not invented</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="lf-source-card reveal">
+                <div class="lf-source-graphic">
+                    <img src="https://images.unsplash.com/photo-1579548122080-c35fd6820ecb?w=500&q=80" alt="Labeled clearly" />
+                </div>
+                <div class="lf-source-body">
+                    <div class="lf-source-tag">Automatic</div>
+                    <h3 class="lf-source-title">Always clearly labeled</h3>
+                    <ul class="lf-source-list">
+                        <li>Every simulated row carries a visible "Simulated" tag</li>
+                        <li>Real and synthetic activity never look the same</li>
+                        <li>You always know what you're looking at</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="lf-source-panel" id="panel-manual" style="display:none;">
+        <div class="lf-source-grid">
+            <div class="lf-source-card reveal">
+                <div class="lf-source-graphic">
+                    <img src="https://images.unsplash.com/photo-1562575214-da9fcf59b907?w=500&q=80" alt="Check Transaction" />
+                </div>
+                <div class="lf-source-body">
+                    <div class="lf-source-tag">Manual</div>
+                    <h3 class="lf-source-title">From Check Transaction</h3>
+                    <ul class="lf-source-list">
+                        <li>Every single transaction you score gets saved instantly</li>
+                        <li>No extra steps — same database write as the result page</li>
+                        <li>Appears in the feed within seconds</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="lf-source-card reveal">
+                <div class="lf-source-graphic">
+                    <img src="https://images.unsplash.com/photo-1604011237320-8e0506614fdf?w=500&q=80" alt="Batch Upload" />
+                </div>
+                <div class="lf-source-body">
+                    <div class="lf-source-tag">Manual</div>
+                    <h3 class="lf-source-title">From Batch Upload</h3>
+                    <ul class="lf-source-list">
+                        <li>Every row in an uploaded CSV is saved the same way</li>
+                        <li>Upload a 500-row file, watch 500 rows stream past</li>
+                        <li>Works identically for one row or one thousand</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="lf-source-card reveal">
+                <div class="lf-source-graphic">
+                    <img src="https://images.unsplash.com/photo-1579567761406-4684ee0c75b6?w=500&q=80" alt="Live updates" />
+                </div>
+                <div class="lf-source-body">
+                    <div class="lf-source-tag">Manual</div>
+                    <h3 class="lf-source-title">Updates within seconds</h3>
+                    <ul class="lf-source-list">
+                        <li>The feed polls for new entries every two seconds</li>
+                        <li>New activity from any user appears almost immediately</li>
+                        <li>Admins see everyone's activity; users see their own</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="lf-feed-intro reveal">
+    <div class="lf-feed-intro-eyebrow">The feed</div>
+    <h2 class="lf-feed-intro-title">
+        See it happen, row by<br/>
+        row.
+    </h2>
+    <p class="lf-feed-intro-sub">Every transaction below is scored the moment it arrives — real activity and simulated traffic, side by side.</p>
+</div>
+
+<div class="lf-controls-bar">
+    <div class="lf-live-badge"><span class="lf-live-dot"></span> LIVE</div>
+    <button class="lf-control-btn lf-control-btn-outline" onclick="exportFeed()">
+        <i class="bi bi-download"></i> Export CSV
+    </button>
+</div>
+
+<div class="lf-stats-grid">
+    <div class="lf-stat-card lf-stat-card-clickable" data-filter="all" onclick="setFilter('all')">
+        <div class="lf-stat-card-icon"><i class="bi bi-list-ul"></i></div>
+        <div class="lf-stat-card-val" id="statSeen">0</div>
+        <div class="lf-stat-card-label">Total</div>
+    </div>
+    <div class="lf-stat-card lf-stat-card-fraud lf-stat-card-clickable" data-filter="fraud" onclick="setFilter('fraud')">
+        <div class="lf-stat-card-icon"><i class="bi bi-exclamation-triangle-fill"></i></div>
+        <div class="lf-stat-card-val" id="statFraud">0</div>
+        <div class="lf-stat-card-label">Fraud Flagged</div>
+    </div>
+    <div class="lf-stat-card lf-stat-card-legit lf-stat-card-clickable" data-filter="legit" onclick="setFilter('legit')">
+        <div class="lf-stat-card-icon"><i class="bi bi-check-circle-fill"></i></div>
+        <div class="lf-stat-card-val" id="statLegit">0</div>
+        <div class="lf-stat-card-label">Legitimate</div>
+    </div>
+    <div class="lf-stat-card lf-stat-card-trend">
+        <svg id="sparkline" viewBox="0 0 120 32" width="100%" height="32"></svg>
+        <div class="lf-stat-card-label">Recent Trend</div>
+    </div>
+</div>
+
+<div class="lf-feed-wrap" id="feedWrap">
+    <div class="lf-feed-header">
+        <div></div>
+        <div>Transaction</div>
+        <div>Card</div>
+        <div>Amount</div>
+        <div>Risk</div>
+        <div>Probability</div>
+        <div style="text-align:right;">Time</div>
+    </div>
+    <div id="feedRows">
+        <div class="lf-feed-empty" id="feedEmpty">Waiting for transactions...</div>
+    </div>
+    <button id="newActivityBadge" class="lf-new-activity-badge" style="display:none;" onclick="jumpToTop()">
+        <span class="lf-new-count">0</span> new — jump to top
+    </button>
+    <div id="feedPagination"></div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function setNavHeight() {
+    var nav = document.querySelector('.app-nav');
+    if (nav) document.documentElement.style.setProperty('--nav-h', nav.offsetHeight + 'px');
+}
+setNavHeight();
+window.addEventListener('resize', setNavHeight);
+
+var allTransactions = [];
+var currentPage = 1;
+var perPage = 20;
+var activeFilter = 'all';
+var newSinceLeavingTop = 0;
+var seen = 0, fraudCount = 0, legitCount = 0;
+var lastSeenId = 0, initialized = false;
+var fraudHistory = [];
+
+function formatType(t) {
+    return t.replace(/_/g, ' ').replace(/\b\w/g, function(c) { return c.toUpperCase(); });
+}
+
+function getFakeCardLast4() {
+    return Math.floor(1000 + Math.random() * 9000);
+}
+
+function getTypeIcon(type) {
+    var creditCardTypes = ['card_purchase','atm','online_shopping','contactless','grocery','entertainment'];
+    var onlineTypes = ['ecommerce','digital_payment','subscription','online_transfer','card_not_present'];
+    if (creditCardTypes.indexOf(type) !== -1) return '💳';
+    if (onlineTypes.indexOf(type) !== -1) return '🌐';
+    return '📱';
+}
+
+function animateCount(elId, target) {
+    var el = document.getElementById(elId);
+    var start = parseInt(el.textContent) || 0;
+    if (start === target) return;
+    var duration = 400;
+    var startTime = performance.now();
+    function update(now) {
+        var progress = Math.min((now - startTime) / duration, 1);
+        el.textContent = Math.round(start + (target - start) * progress);
+        if (progress < 1) requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+}
+
+function updateRelativeTimes() {
+    document.querySelectorAll('.lf-row-time').forEach(function(el) {
+        var ts = parseInt(el.getAttribute('data-timestamp'));
+        var diff = Math.floor((Date.now() - ts) / 1000);
+        if (diff < 5) el.textContent = 'just now';
+        else if (diff < 60) el.textContent = diff + 's ago';
+        else el.textContent = Math.floor(diff / 60) + 'm ago';
+    });
+}
+setInterval(updateRelativeTimes, 1000);
+
+function updateSparkline() {
+    var svg = document.getElementById('sparkline');
+    if (!svg) return;
+    var w = 120, h = 32, n = fraudHistory.length;
+    if (n < 2) { svg.innerHTML = ''; return; }
+    var stepX = w / (n - 1);
+    var points = fraudHistory.map(function(v, i) {
+        var x = i * stepX;
+        var y = h - (v * (h - 4)) - 2;
+        return x + ',' + y;
+    }).join(' ');
+    svg.innerHTML = '<polyline points="' + points + '" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />';
+}
+
+function receiveTransaction(data) {
+    data._ts = Date.now();
+    data.card = getFakeCardLast4();
+    allTransactions.unshift(data);
+
+    seen++;
+    if (data.is_fraud) { fraudCount++; } else { legitCount++; }
+    fraudHistory.push(data.is_fraud ? 1 : 0);
+    if (fraudHistory.length > 20) fraudHistory.shift();
+    updateSparkline();
+
+    animateCount('statSeen', seen);
+    animateCount('statFraud', fraudCount);
+    animateCount('statLegit', legitCount);
+
+    var matchesFilter = activeFilter === 'all' || (activeFilter === 'fraud' && data.is_fraud) || (activeFilter === 'legit' && !data.is_fraud);
+
+    if (currentPage === 1 && matchesFilter) {
+        var emptyEl = document.getElementById('feedEmpty');
+        if (emptyEl) emptyEl.remove();
+        prependRow(data);
+        var outers = document.getElementById('feedRows').querySelectorAll('.lf-row-outer');
+        if (outers.length > perPage) outers[outers.length - 1].remove();
+    } else if (matchesFilter) {
+        newSinceLeavingTop++;
+        updateNewActivityBadge();
+    }
+    updatePaginationControls();
+}
+
+function getFilteredList() {
+    if (activeFilter === 'fraud') return allTransactions.filter(function(t) { return t.is_fraud; });
+    if (activeFilter === 'legit') return allTransactions.filter(function(t) { return !t.is_fraud; });
+    return allTransactions;
+}
+
+function setFilter(filter) {
+    newSinceLeavingTop = 0;
+    activeFilter = filter;
+    document.querySelectorAll('.lf-stat-card-clickable').forEach(function(el) {
+        el.classList.toggle('lf-stat-active', el.dataset.filter === filter);
+    });
+    renderPage(1);
+    document.getElementById('feedWrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function buildRowOuter(data) {
+    var outer = document.createElement('div');
+    outer.className = 'lf-row-outer';
+
+    var row = document.createElement('div');
+    row.className = 'lf-row' + (data.is_fraud ? ' lf-row-fraud' : '');
+    row.innerHTML =
+        '<div class="lf-row-status"><div class="lf-status-circle ' + (data.is_fraud ? 'lf-status-fraud' : 'lf-status-ok') + '">' +
+            '<i class="bi bi-' + (data.is_fraud ? 'exclamation-lg' : 'check-lg') + '"></i></div></div>' +
+        '<div class="lf-row-type"><span class="lf-type-icon">' + getTypeIcon(data.transaction_type) + '</span>' +
+            formatType(data.transaction_type) + (data.simulated ? ' <span class="lf-sim-badge">Simulated</span>' : '') + '</div>' +
+        '<div class="lf-row-card">•••• ' + data.card + '</div>' +
+        '<div class="lf-row-amount">£' + data.amount.toFixed(2) + '</div>' +
+        '<div class="lf-row-risk"><span class="badge badge-' + data.risk_level.toLowerCase() + '">' + data.risk_level + '</span></div>' +
+        '<div class="lf-row-prob">' + Math.round(data.probability * 100) + '%</div>' +
+        '<div class="lf-row-time" data-timestamp="' + (data._ts || Date.now()) + '">just now</div>';
+
+    var detail = document.createElement('div');
+    detail.className = 'lf-row-detail';
+    detail.innerHTML =
+        '<div class="lf-detail-item"><span class="lf-detail-label">Model used</span><span class="lf-detail-val">' + (data.model_used || 'Unknown') + '</span></div>' +
+        '<div class="lf-detail-item"><span class="lf-detail-label">Source</span><span class="lf-detail-val">' + (data.simulated ? 'Simulated' : 'Real prediction') + '</span></div>' +
+        '<div class="lf-detail-item"><span class="lf-detail-label">Fraud probability</span><span class="lf-detail-val">' + (data.probability * 100).toFixed(1) + '%</span></div>' +
+        (data.user_name ? '<div class="lf-detail-item"><span class="lf-detail-label">User</span><span class="lf-detail-val">' + data.user_name + '</span></div>' : '');
+
+    row.setAttribute('tabindex', '0');
+    row.setAttribute('role', 'button');
+    row.setAttribute('aria-expanded', 'false');
+
+    function toggleDetail() {
+        var isOpen = detail.classList.toggle('lf-detail-open');
+        row.classList.toggle('lf-row-expanded', isOpen);
+        row.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    }
+
+    row.onclick = toggleDetail;
+    row.onkeydown = function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggleDetail();
+        }
+    };
+
+    outer.appendChild(row);
+    outer.appendChild(detail);
+    return outer;
+}
+
+function prependRow(data) {
+    var outer = buildRowOuter(data);
+    var row = outer.querySelector('.lf-row');
+    row.classList.add('lf-row-new');
+    var feedRows = document.getElementById('feedRows');
+    feedRows.insertBefore(outer, feedRows.firstChild);
+    requestAnimationFrame(function() { row.classList.add('lf-row-visible'); });
+    setTimeout(function() { row.classList.remove('lf-row-new'); }, 900);
+}
+
+function renderPage(page) {
+    var list = getFilteredList();
+    var totalPages = Math.max(1, Math.ceil(list.length / perPage));
+    currentPage = Math.min(Math.max(1, page), totalPages);
+
+    if (currentPage === 1) newSinceLeavingTop = 0;
+    updateNewActivityBadge();
+
+    var feedRows = document.getElementById('feedRows');
+    feedRows.innerHTML = '';
+    var pageItems = list.slice((currentPage - 1) * perPage, currentPage * perPage);
+
+    if (pageItems.length === 0) {
+        var msg = activeFilter === 'fraud' ? 'No fraud detected yet.' :
+                  activeFilter === 'legit' ? 'No legitimate transactions yet.' :
+                  'Waiting for transactions...';
+        feedRows.innerHTML = '<div class="lf-feed-empty" id="feedEmpty">' + msg + '</div>';
+    } else {
+        pageItems.forEach(function(item) {
+            var outer = buildRowOuter(item);
+            outer.querySelector('.lf-row').classList.add('lf-row-visible');
+            feedRows.appendChild(outer);
+        });
+    }
+    updatePaginationControls(totalPages);
+}
+
+function updatePaginationControls(totalPages) {
+    var list = getFilteredList();
+    totalPages = totalPages || Math.max(1, Math.ceil(list.length / perPage));
+    var wrap = document.getElementById('feedPagination');
+    if (totalPages <= 1) { wrap.innerHTML = ''; return; }
+
+    var html = '<button class="lf-page-btn" ' + (currentPage <= 1 ? 'disabled' : '') + ' onclick="renderPage(' + (currentPage - 1) + ')"><i class="bi bi-chevron-left"></i></button>';
+    for (var p = 1; p <= totalPages; p++) {
+        html += '<button class="lf-page-btn ' + (p === currentPage ? 'lf-page-active' : '') + '" onclick="renderPage(' + p + ')">' + p + '</button>';
+    }
+    html += '<button class="lf-page-btn" ' + (currentPage >= totalPages ? 'disabled' : '') + ' onclick="renderPage(' + (currentPage + 1) + ')"><i class="bi bi-chevron-right"></i></button>';
+    wrap.innerHTML = html;
+}
+
+function initLastSeen() {
+    fetch('/api/last-prediction-id')
+        .then(function(res) { return res.json(); })
+        .then(function(data) { lastSeenId = data.last_id; initialized = true; })
+        .catch(function() { initialized = true; });
+}
+
+var connectionIssue = false;
+
+function showConnectionWarning() {
+    if (connectionIssue) return;
+    connectionIssue = true;
+    var badge = document.querySelector('.lf-live-badge');
+    if (badge) {
+        var warn = document.createElement('span');
+        warn.id = 'lfConnWarn';
+        warn.className = 'lf-conn-warning';
+        warn.textContent = 'Connection issue — retrying...';
+        badge.parentNode.appendChild(warn);
+    }
+}
+
+function clearConnectionWarning() {
+    connectionIssue = false;
+    var warn = document.getElementById('lfConnWarn');
+    if (warn) warn.remove();
+}
+
+function exportFeed() {
+    var list = getFilteredList();
+    if (list.length === 0) return;
+
+    var lines = [['Time','Type','Card','Amount','Result','Risk Level','Probability','Model Used','Source']];
+    list.forEach(function(t) {
+        lines.push([
+            new Date(t._ts).toLocaleTimeString(),
+            formatType(t.transaction_type),
+            '**** ' + t.card,
+            t.amount.toFixed(2),
+            t.is_fraud ? 'FRAUD' : 'LEGITIMATE',
+            t.risk_level,
+            Math.round(t.probability * 100) + '%',
+            t.model_used || 'Unknown',
+            t.simulated ? 'Simulated' : 'Real'
+        ]);
+    });
+
+    var csv = lines.map(function(r) {
+        return r.map(function(c) { return '"' + String(c).replace(/"/g, '""') + '"'; }).join(',');
+    }).join('\n');
+
+    var blob = new Blob([csv], { type: 'text/csv' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'prediqt_live_feed_' + Date.now() + '.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+function updateNewActivityBadge() {
+    var wrap = document.getElementById('newActivityBadge');
+    if (!wrap) return;
+    if (newSinceLeavingTop > 0 && currentPage !== 1) {
+        wrap.style.display = 'inline-flex';
+        wrap.querySelector('.lf-new-count').textContent = newSinceLeavingTop;
+    } else {
+        wrap.style.display = 'none';
+    }
+}
+
+function jumpToTop() {
+    newSinceLeavingTop = 0;
+    renderPage(1);
+}
+
+function pollReal() {
+    if (!initialized) return;
+    fetch('/api/recent-predictions?since=' + lastSeenId)
+        .then(function(res) { return res.json(); })
+        .then(function(rows) {
+            clearConnectionWarning();
+            rows.forEach(function(row) {
+                receiveTransaction(row);
+                if (row.id > lastSeenId) lastSeenId = row.id;
+            });
+        })
+        .catch(function() { showConnectionWarning(); });
+}
+
+function pollSimulated() {
+    fetch('/api/live-feed')
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            clearConnectionWarning();
+            receiveTransaction(data);
+        })
+        .catch(function() { showConnectionWarning(); });
+}
+
+function switchTab(tab) {
+    document.querySelectorAll('.lf-tab-btn').forEach(function(btn) {
+        btn.classList.toggle('active', btn.dataset.tab === tab);
+    });
+
+    var autoPanel   = document.getElementById('panel-automatic');
+    var manualPanel = document.getElementById('panel-manual');
+    var showPanel   = tab === 'automatic' ? autoPanel : manualPanel;
+    var hidePanel   = tab === 'automatic' ? manualPanel : autoPanel;
+
+    hidePanel.classList.remove('lf-panel-visible');
+    setTimeout(function() {
+        hidePanel.style.display = 'none';
+        showPanel.style.display = 'block';
+        requestAnimationFrame(function() {
+            showPanel.classList.add('lf-panel-visible');
+        });
+    }, 250);
+}
+
+document.querySelectorAll('.lf-stat-card-clickable').forEach(function(el) {
+    el.setAttribute('tabindex', '0');
+    el.setAttribute('role', 'button');
+    el.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            el.click();
+        }
+    });
+});
+
+initLastSeen();
+pollSimulated();
+setInterval(pollReal, 2000);
+setInterval(pollSimulated, 7000);
+
+(function() {
+    var els = document.querySelectorAll('.reveal');
+    var obs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                obs.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.15 });
+    els.forEach(function(el) { obs.observe(el); });
+})();
+</script>
+{% endblock %}

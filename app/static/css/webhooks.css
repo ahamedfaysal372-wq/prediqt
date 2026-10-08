@@ -1,0 +1,22 @@
+@import url('api_keys.css');
+
+.ak-hero-left { max-width: 540px; }
+.ak-hero-blob { top: 52%; }
+
+.ak-pause-btn {
+    padding: 7px 16px;
+    border-radius: 50px;
+    border: 1.5px solid var(--green);
+    background: transparent;
+    color: var(--green);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.ak-pause-btn:hover {
+    background: #4338ca;
+    color: #fff;
+    border-color: #4338ca;
+}

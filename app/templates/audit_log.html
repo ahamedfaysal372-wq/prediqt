@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Audit Log — PrediQt{% endblock %}
+{% block page_title %}Audit Log{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="adm-hero-centered">
+    <h1 class="adm-hero-title-huge">Audit Log.</h1>
+    <p class="adm-hero-sub-line">A record of account activity across PrediQt —</p>
+    <p class="adm-hero-sub-line">logins, key changes, role updates.</p>
+</div>
+
+<div class="aud-filter-bar">
+    <form method="GET" action="{{ url_for('audit_log') }}" class="aud-filter-form" id="auditFilterForm">
+        <div class="aud-filter-field">
+            <label class="aud-filter-label">Action</label>
+            <select name="action" class="aud-filter-select" onchange="document.getElementById('auditFilterForm').submit()">
+                <option value="all" {{ 'selected' if action_filter == 'all' else '' }}>All actions</option>
+                {% for a in distinct_actions %}
+                <option value="{{ a }}" {{ 'selected' if action_filter == a else '' }}>{{ a }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="aud-filter-field">
+            <label class="aud-filter-label">Start date</label>
+            <input type="date" name="start_date" class="aud-filter-select" value="{{ start_date }}" onchange="document.getElementById('auditFilterForm').submit()">
+        </div>
+        <div class="aud-filter-field">
+            <label class="aud-filter-label">End date</label>
+            <input type="date" name="end_date" class="aud-filter-select" value="{{ end_date }}" onchange="document.getElementById('auditFilterForm').submit()">
+        </div>
+        <a href="{{ url_for('audit_log') }}" class="aud-clear-btn"><i class="bi bi-x-lg"></i> Clear filters</a>
+    </form>
+</div>
+
+<div class="adm-table-wrap">
+    <div class="aud-row aud-row-head">
+        <div>Timestamp</div>
+        <div>Action</div>
+        <div>User</div>
+        <div>IP Address</div>
+        <div>Details</div>
+    </div>
+
+    {% for log in logs.items %}
+    <div class="aud-row">
+        <div class="aud-timestamp">{{ log.timestamp.strftime('%d %b %Y, %H:%M') }}</div>
+        <div><span class="aud-action-badge">{{ log.action }}</span></div>
+        <div class="aud-user">{{ log.user.name if log.user else 'System' }}</div>
+        <div class="aud-ip">{{ log.ip_address or '—' }}</div>
+        <div class="aud-details">{{ log.details or 'No additional details' }}</div>
+    </div>
+    {% else %}
+    <div class="aud-empty">No activity matches these filters.</div>
+    {% endfor %}
+
+    {% if logs.pages > 1 %}
+    <div class="adm-pagination">
+        {% if logs.has_prev %}<a href="{{ url_for('audit_log', page=logs.prev_num, action=action_filter, start_date=start_date, end_date=end_date) }}" class="adm-page-btn"><i class="bi bi-chevron-left"></i></a>{% else %}<span class="adm-page-btn disabled"><i class="bi bi-chevron-left"></i></span>{% endif %}
+        {% for p in logs.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+            {% if p %}<a href="{{ url_for('audit_log', page=p, action=action_filter, start_date=start_date, end_date=end_date) }}" class="adm-page-btn {{ 'adm-page-active' if p == logs.page else '' }}">{{ p }}</a>{% else %}<span class="adm-page-btn">…</span>{% endif %}
+        {% endfor %}
+        {% if logs.has_next %}<a href="{{ url_for('audit_log', page=logs.next_num, action=action_filter, start_date=start_date, end_date=end_date) }}" class="adm-page-btn"><i class="bi bi-chevron-right"></i></a>{% else %}<span class="adm-page-btn disabled"><i class="bi bi-chevron-right"></i></span>{% endif %}
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

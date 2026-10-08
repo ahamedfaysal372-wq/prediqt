@@ -1,0 +1,510 @@
+{% extends "base.html" %}
+{% block title %}Model Performance — PrediQt{% endblock %}
+{% block page_title %}Model Performance{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/performance.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero -->
+<div class="pf-hero">
+    <div class="pf-hero-left">
+        <div class="pf-eyebrow">Intelligence</div>
+        <h1 class="pf-hero-title">Random Forest<br/>Classifier.</h1>
+        <p class="pf-hero-sub">
+            The same approach across every specialist model — strongest on Mobile Transfer,
+            trained on PaySim's 58,000 simulated transactions.
+        </p>
+        <a href="#pfCharts" class="pf-hero-cta">See the comparison</a>
+    </div>
+    <div class="pf-hero-right">
+        <div class="pf-hero-blob"></div>
+        <div class="pf-hero-photo">
+            <img src="https://images.unsplash.com/photo-1669399213378-2853e748f217?q=80&w=2232&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+        </div>
+        {% set mt = specialist_metrics.mobile_transfer %}
+        {% set prec_w = (mt.precision * 100)|round(0)|string + '%' %}
+        {% set rec_w  = (mt.recall * 100)|round(0)|string + '%' %}
+        {% set f1_w   = (mt.f1 * 100)|round(0)|string + '%' %}
+        {% set prec_p = "%.0f"|format(mt.precision * 100) + '%' %}
+        {% set rec_p  = "%.0f"|format(mt.recall * 100) + '%' %}
+        {% set f1_p   = "%.0f"|format(mt.f1 * 100) + '%' %}
+        <div class="pf-hero-card">
+            <div class="pf-hero-card-label">Best Performing Model</div>
+            <div class="pf-hero-card-title">Mobile Transfer</div>
+            <div class="pf-hero-card-row">
+                <span>Precision</span>
+                <span class="pf-hero-card-bar"><span data-w="{{ prec_w }}"></span></span>
+                <span class="pf-hero-card-pct">{{ prec_p }}</span>
+            </div>
+            <div class="pf-hero-card-row">
+                <span>Recall</span>
+                <span class="pf-hero-card-bar"><span data-w="{{ rec_w }}"></span></span>
+                <span class="pf-hero-card-pct">{{ rec_p }}</span>
+            </div>
+            <div class="pf-hero-card-row">
+                <span>F1 Score</span>
+                <span class="pf-hero-card-bar"><span data-w="{{ f1_w }}"></span></span>
+                <span class="pf-hero-card-pct">{{ f1_p }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Model Comparison -->
+<div class="pf-section-block-centered reveal" id="pfCharts">
+    <h2 class="pf-section-title-huge">Model Comparison.</h2>
+</div>
+
+<!-- Dataset dark row -->
+<div class="pf-dataset">
+    <div class="pf-dataset-img">
+        <img src="https://images.unsplash.com/photo-1666875753105-c63a6f3bdc86?w=1200&q=80" alt="Training data" />
+        <div class="pf-dataset-overlay"></div>
+    </div>
+    <div class="pf-dataset-body">
+        <div class="pf-dataset-label">Specialist Training Data</div>
+        <div class="pf-dataset-title">Three datasets,<br/>one consistent approach.</div>
+        <div class="pf-dataset-desc">
+            Each specialist model is trained on real-world data suited to its transaction
+            type — from 58,000 simulated mobile transfers to 1.85 million card purchases —
+            using the same Random Forest approach throughout.
+        </div>
+        <div class="pf-dataset-stats">
+            <div class="pf-ds-stat"><div class="pf-ds-val">1.85M</div><div class="pf-ds-label">Sparkov Rows</div></div>
+            <div class="pf-ds-div"></div>
+            <div class="pf-ds-stat"><div class="pf-ds-val">590K</div><div class="pf-ds-label">IEEE-CIS Rows</div></div>
+            <div class="pf-ds-div"></div>
+            <div class="pf-ds-stat"><div class="pf-ds-val">58K</div><div class="pf-ds-label">PaySim Rows</div></div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts -->
+<div class="pf-section-block-centered reveal">
+    <div class="pf-eyebrow-light">Comparison</div>
+    <h2 class="pf-section-title-huge">Specialist Models,<br/>Head to Head.</h2>
+    <p class="pf-section-note">Three models, three different problems to solve.<br/>Here's where each one actually stands.</p>
+</div>
+<div class="pf-cf-grid">
+    <div class="pf-cf-card reveal" tabindex="0" role="button" aria-pressed="false"
+         onclick="flipPfCard(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();flipPfCard(this);}">
+        <div class="pf-cf-inner">
+            <div class="pf-cf-front">
+                <div class="pf-cf-title">F1 Score Comparison</div>
+                <div class="pf-cf-canvas-wrap"><canvas id="f1Chart"></canvas></div>
+                <div class="pf-cf-hint"><i class="bi bi-arrow-repeat"></i> Tap to flip</div>
+            </div>
+            <div class="pf-cf-back">
+                <div class="pf-cf-title-big">What this means</div>
+                <p class="pf-cf-back-desc">Mobile Transfer leads here — PaySim's structured features are easier to learn than IEEE-CIS's messier data. Online Payment trails because its real-world transaction patterns are noisier and harder to separate cleanly.</p>
+                <div class="pf-cf-hint pf-cf-hint-back"><i class="bi bi-arrow-repeat"></i> Tap to flip back</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="pf-cf-card reveal" tabindex="0" role="button" aria-pressed="false"
+         onclick="flipPfCard(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();flipPfCard(this);}">
+        <div class="pf-cf-inner">
+            <div class="pf-cf-front">
+                <div class="pf-cf-title">PR-AUC Comparison</div>
+                <div class="pf-cf-canvas-wrap"><canvas id="prChart"></canvas></div>
+                <div class="pf-cf-hint"><i class="bi bi-arrow-repeat"></i> Tap to flip</div>
+            </div>
+            <div class="pf-cf-back">
+                <div class="pf-cf-title-big">What this means</div>
+                <p class="pf-cf-back-desc">All three models hold up well once precision and recall are weighed together. PR-AUC matters more than accuracy here since fraud is rare in every dataset — even Online Payment's lower score reflects a genuinely harder problem, not a weak model.</p>
+                <div class="pf-cf-hint pf-cf-hint-back"><i class="bi bi-arrow-repeat"></i> Tap to flip back</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="pf-cf-card reveal" tabindex="0" role="button" aria-pressed="false"
+         onclick="flipPfCard(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();flipPfCard(this);}">
+        <div class="pf-cf-inner">
+            <div class="pf-cf-front">
+                <div class="pf-cf-title">All Metrics Overview</div>
+                <div class="pf-cf-canvas-wrap"><canvas id="radarChart"></canvas></div>
+                <div class="pf-cf-hint"><i class="bi bi-arrow-repeat"></i> Tap to flip</div>
+            </div>
+            <div class="pf-cf-back">
+                <div class="pf-cf-title-big">What this means</div>
+                <p class="pf-cf-back-desc">Mobile Transfer's shape is the most balanced across all four metrics — no single weak point drags down an otherwise strong score. Online Payment's recall dips visibly, but the cases it does catch are reliable.</p>
+                <div class="pf-cf-hint pf-cf-hint-back"><i class="bi bi-arrow-repeat"></i> Tap to flip back</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Full Comparison Table -->
+<div class="pf-section-block reveal">
+    <div class="pf-eyebrow-light">Full Comparison</div>
+    <h2 class="pf-section-title">Specialist Model Results.</h2>
+</div>
+<div class="pf-table">
+    <div class="tw">
+        <table>
+            <thead>
+                <tr>
+                    <th>Model</th><th>Precision</th><th>Recall</th><th>F1 Score</th><th>ROC-AUC</th><th>PR-AUC</th><th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Credit Card Fraud</strong></td>
+                    <td>{{ "%.4f"|format(specialist_metrics.credit_card.precision) }}</td>
+                    <td>{{ "%.4f"|format(specialist_metrics.credit_card.recall) }}</td>
+                    <td>{{ "%.4f"|format(specialist_metrics.credit_card.f1) }}</td>
+                    <td>{{ "%.4f"|format(specialist_metrics.credit_card.roc_auc) }}</td>
+                    <td>{{ "%.4f"|format(specialist_metrics.credit_card.pr_auc) }}</td>
+                    <td style="color:var(--muted);font-size:12px;">Active</td>
+                </tr>
+                <tr>
+                    <td><strong>Online Payment Fraud</strong></td>
+                    <td>{{ "%.4f"|format(specialist_metrics.online_payment.precision) }}</td>
+                    <td>{{ "%.4f"|format(specialist_metrics.online_payment.recall) }}</td>
+                    <td>{{ "%.4f"|format(specialist_metrics.online_payment.f1) }}</td>
+                    <td>{{ "%.4f"|format(specialist_metrics.online_payment.roc_auc) }}</td>
+                    <td>{{ "%.4f"|format(specialist_metrics.online_payment.pr_auc) }}</td>
+                    <td style="color:var(--muted);font-size:12px;">Active</td>
+                </tr>
+                <tr class="pf-best-row">
+                    <td>
+                        <strong style="color:var(--text);">Mobile Transfer Fraud</strong>
+                        <span class="pf-row-badge">Best</span>
+                    </td>
+                    <td><strong style="color:var(--text);">{{ "%.4f"|format(specialist_metrics.mobile_transfer.precision) }}</strong></td>
+                    <td>{{ "%.4f"|format(specialist_metrics.mobile_transfer.recall) }}</td>
+                    <td><strong style="color:var(--text);">{{ "%.4f"|format(specialist_metrics.mobile_transfer.f1) }}</strong></td>
+                    <td>{{ "%.4f"|format(specialist_metrics.mobile_transfer.roc_auc) }}</td>
+                    <td><strong style="color:var(--text);">{{ "%.4f"|format(specialist_metrics.mobile_transfer.pr_auc) }}</strong></td>
+                    <td><span class="pf-row-badge">✓ Strongest</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Specialist Models -->
+<div class="pf-section-block-centered reveal" style="margin-top:2.5rem;">
+    <div class="pf-eyebrow-light">Specialist Models</div>
+    <h2 class="pf-section-title-huge">Production.</h2>
+    <p class="pf-section-note">Three models, each trained for one specific job.<br/>Here's how they're actually performing right now.</p>
+</div>
+<div class="pf-specialist">
+    <div class="pf-sp-card reveal">
+        <div class="pf-sp-head">
+            <span class="pf-sp-icon">💳</span>
+            <div>
+                <div class="pf-sp-name">Credit Card Fraud</div>
+                <div class="pf-sp-ds">Sparkov — 1.85M transactions</div>
+            </div>
+        </div>
+        <div class="pf-sp-radar-wrap"><canvas id="spRadar1"></canvas></div>
+        <div class="pf-sp-types">
+            <span>Card Purchase</span><span>ATM</span><span>Online Shopping</span><span>Grocery</span>
+        </div>
+    </div>
+
+    <div class="pf-sp-card reveal">
+        <div class="pf-sp-head">
+            <span class="pf-sp-icon">🌐</span>
+            <div>
+                <div class="pf-sp-name">Online Payment Fraud</div>
+                <div class="pf-sp-ds">IEEE-CIS — 590K transactions</div>
+            </div>
+        </div>
+        <div class="pf-sp-radar-wrap"><canvas id="spRadar2"></canvas></div>
+        <div class="pf-sp-types">
+            <span>E-commerce</span><span>Digital Payment</span><span>Subscription</span><span>Card Not Present</span>
+        </div>
+    </div>
+
+    <div class="pf-sp-card pf-sp-best-card reveal">
+        <div class="pf-sp-badge-top">Best Performer</div>
+        <div class="pf-sp-head">
+            <span class="pf-sp-icon">📱</span>
+            <div>
+                <div class="pf-sp-name">Mobile Transfer Fraud</div>
+                <div class="pf-sp-ds">PaySim — 58K transactions</div>
+            </div>
+        </div>
+        <div class="pf-sp-radar-wrap"><canvas id="spRadar3"></canvas></div>
+        <div class="pf-sp-types">
+            <span>Bank Transfer</span><span>Mobile Payment</span><span>Cash Withdrawal</span><span>Direct Debit</span>
+        </div>
+    </div>
+</div>
+
+<!-- Why Random Forest -->
+<div class="pf-section-block-centered reveal" style="margin-top:2.5rem;">
+    <div class="pf-eyebrow-light">Why this model</div>
+    <h2 class="pf-section-title-huge">Why Random Forest<br/>was selected.</h2>
+</div>
+<div class="pf-carousel-3d reveal">
+    <button class="pf-spin-arrow" onclick="rotatePf3D(-1)" aria-label="Previous"><i class="bi bi-chevron-left"></i></button>
+    <div class="pf-carousel-3d-stage" id="pf3dStage"></div>
+    <button class="pf-spin-arrow" onclick="rotatePf3D(1)" aria-label="Next"><i class="bi bi-chevron-right"></i></button>
+</div>
+<div class="pf-spin-dots" id="pfSpinDots"></div>
+
+<!-- Hidden data -->
+<input type="hidden" id="cc-f1"   value="{{ specialist_metrics.credit_card.f1 }}">
+<input type="hidden" id="op-f1"   value="{{ specialist_metrics.online_payment.f1 }}">
+<input type="hidden" id="mt-f1"   value="{{ specialist_metrics.mobile_transfer.f1 }}">
+<input type="hidden" id="cc-pr"   value="{{ specialist_metrics.credit_card.pr_auc }}">
+<input type="hidden" id="op-pr"   value="{{ specialist_metrics.online_payment.pr_auc }}">
+<input type="hidden" id="mt-pr"   value="{{ specialist_metrics.mobile_transfer.pr_auc }}">
+<input type="hidden" id="cc-prec" value="{{ specialist_metrics.credit_card.precision }}">
+<input type="hidden" id="op-prec" value="{{ specialist_metrics.online_payment.precision }}">
+<input type="hidden" id="mt-prec" value="{{ specialist_metrics.mobile_transfer.precision }}">
+<input type="hidden" id="cc-rec"  value="{{ specialist_metrics.credit_card.recall }}">
+<input type="hidden" id="op-rec"  value="{{ specialist_metrics.online_payment.recall }}">
+<input type="hidden" id="mt-rec"  value="{{ specialist_metrics.mobile_transfer.recall }}">
+<input type="hidden" id="cc-prec2" value="{{ specialist_metrics.credit_card.precision }}">
+<input type="hidden" id="cc-rec2"  value="{{ specialist_metrics.credit_card.recall }}">
+<input type="hidden" id="op-prec2" value="{{ specialist_metrics.online_payment.precision }}">
+<input type="hidden" id="op-rec2"  value="{{ specialist_metrics.online_payment.recall }}">
+<input type="hidden" id="mt-prec2" value="{{ specialist_metrics.mobile_transfer.precision }}">
+<input type="hidden" id="mt-rec2"  value="{{ specialist_metrics.mobile_transfer.recall }}">
+
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+var ccF1 = parseFloat(document.getElementById('cc-f1').value);
+var opF1 = parseFloat(document.getElementById('op-f1').value);
+var mtF1 = parseFloat(document.getElementById('mt-f1').value);
+var ccPR = parseFloat(document.getElementById('cc-pr').value);
+var opPR = parseFloat(document.getElementById('op-pr').value);
+var mtPR = parseFloat(document.getElementById('mt-pr').value);
+var ccPrec = parseFloat(document.getElementById('cc-prec').value);
+var opPrec = parseFloat(document.getElementById('op-prec').value);
+var mtPrec = parseFloat(document.getElementById('mt-prec').value);
+var ccRec = parseFloat(document.getElementById('cc-rec').value);
+var opRec = parseFloat(document.getElementById('op-rec').value);
+var mtRec = parseFloat(document.getElementById('mt-rec').value);
+
+var models = ['Credit Card', 'Online Payment', 'Mobile Transfer'];
+var colors = ['#8c8580', '#b5b0aa', '#fb923c'];
+
+var barOpts = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+        y: { beginAtZero: true, max: 1, ticks: { color: '#1a1916', callback: function(v) { return (v*100).toFixed(0)+'%'; }, font: { family: 'DM Sans' } }, grid: { color: 'rgba(0,0,0,0.04)' } },
+        x: { ticks: { color: '#1a1916', font: { family: 'DM Sans', weight: '600', size: 11 } }, grid: { display: false } }
+    }
+};
+
+new Chart(document.getElementById('f1Chart').getContext('2d'), {
+    type: 'bar',
+    data: { labels: models, datasets: [{ data: [ccF1, opF1, mtF1], backgroundColor: colors, borderRadius: 6, borderWidth: 0 }] },
+    options: barOpts
+});
+
+new Chart(document.getElementById('prChart').getContext('2d'), {
+    type: 'bar',
+    data: { labels: models, datasets: [{ data: [ccPR, opPR, mtPR], backgroundColor: colors, borderRadius: 6, borderWidth: 0 }] },
+    options: barOpts
+});
+
+new Chart(document.getElementById('radarChart').getContext('2d'), {
+    type: 'radar',
+    data: {
+        labels: ['Precision','Recall','F1','PR-AUC'],
+        datasets: [
+            { label: 'Credit Card', data: [ccPrec, ccRec, ccF1, ccPR], borderColor: '#8c8580', backgroundColor: 'rgba(140,133,128,0.1)', borderWidth: 2, pointBackgroundColor: '#8c8580' },
+            { label: 'Online Payment', data: [opPrec, opRec, opF1, opPR], borderColor: '#b5b0aa', backgroundColor: 'rgba(181,176,170,0.1)', borderWidth: 2, pointBackgroundColor: '#b5b0aa' },
+            { label: 'Mobile Transfer', data: [mtPrec, mtRec, mtF1, mtPR], borderColor: '#fb923c', backgroundColor: 'rgba(251,146,60,0.1)', borderWidth: 2, pointBackgroundColor: '#fb923c' }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom', labels: { color: '#1a1916', font: { family: 'DM Sans', size: 10 }, padding: 8 } } },
+        scales: { r: { beginAtZero: true, max: 1, ticks: { color: '#1a1916', callback: function(v){ return (v*100).toFixed(0)+'%'; }, font: { family: 'DM Sans', size: 8 } }, grid: { color: 'rgba(0,0,0,0.06)' }, angleLines: { color: 'rgba(0,0,0,0.06)' }, pointLabels: { color: '#1a1916', font: { family: 'DM Sans', weight: '700', size: 10 } } } }
+    }
+});
+
+// Stagger animations
+function staggerAnimate(selector, delay) {
+    var els = document.querySelectorAll(selector);
+    els.forEach(function(el, i) {
+        el.style.opacity   = '0';
+        el.style.transform = 'translateY(24px)';
+        el.style.transition = 'opacity 0.6s cubic-bezier(0.16,1,0.3,1) '+(i*delay)+'s, transform 0.6s cubic-bezier(0.16,1,0.3,1) '+(i*delay)+'s, background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease';
+        var obs = new IntersectionObserver(function(entries) {
+            if (entries[0].isIntersecting) {
+                el.style.opacity = '1';
+                el.style.transform = 'translateY(0)';
+                obs.unobserve(el);
+            }
+        }, { threshold: 0, rootMargin: '0px 0px -40px 0px' });
+        obs.observe(el);
+    });
+}
+
+staggerAnimate('.pf-metric',    0.08);
+
+var pfSpinData = [
+    { num: '01', title: 'Highest F1 in Production', desc: 'Mobile Transfer reached the highest F1 score of all three specialist models — 90.7%, on the PaySim dataset.' },
+    { num: '02', title: 'Fewest False Positives', desc: 'Just 132 false positives for Mobile Transfer in testing — fewer wasted reviews on legitimate transactions.' },
+    { num: '03', title: 'Scales Across Dataset Sizes', desc: 'Performed reliably from 58,000 rows (PaySim) up to 1.85 million rows (Sparkov) — a 31x range — without changing approach.' },
+    { num: '04', title: 'Ensemble Robustness', desc: 'Many decision trees combined, applied consistently to all three specialist models in production today.' }
+];
+var pf3dIndex = 0;
+
+function buildPf3DStage() {
+    var stage = document.getElementById('pf3dStage');
+    stage.innerHTML = '';
+    pfSpinData.forEach(function(d, i) {
+        var card = document.createElement('div');
+        card.className = 'pf-3d-card';
+        card.dataset.index = i;
+        card.innerHTML =
+            '<div class="pf-3d-num">' + d.num + '</div>' +
+            '<div class="pf-3d-title">' + d.title + '</div>' +
+            '<div class="pf-3d-desc">' + d.desc + '</div>';
+        stage.appendChild(card);
+    });
+    renderPf3DStage();
+}
+
+function renderPf3DStage() {
+    var n = pfSpinData.length;
+    document.querySelectorAll('.pf-3d-card').forEach(function(card) {
+        var i = parseInt(card.dataset.index);
+        var diff = i - pf3dIndex;
+        if (diff > n / 2) diff -= n;
+        if (diff < -n / 2) diff += n;
+
+        if (diff === 0) {
+            card.style.transform = 'translateX(0) translateZ(0) rotateY(0deg) scale(1)';
+            card.style.opacity = '1';
+            card.style.zIndex = '3';
+        } else if (Math.abs(diff) === 1) {
+            card.style.transform = 'translateX(' + (diff * 200) + 'px) translateZ(-160px) rotateY(' + (diff * -35) + 'deg) scale(0.82)';
+            card.style.opacity = '0.55';
+            card.style.zIndex = '2';
+        } else {
+            card.style.transform = 'translateX(' + (diff * 220) + 'px) translateZ(-280px) rotateY(' + (diff * -35) + 'deg) scale(0.7)';
+            card.style.opacity = '0';
+            card.style.zIndex = '1';
+        }
+    });
+
+    var dotsWrap = document.getElementById('pfSpinDots');
+    dotsWrap.innerHTML = '';
+    pfSpinData.forEach(function(_, i) {
+        var dot = document.createElement('div');
+        dot.className = 'pf-spin-dot' + (i === pf3dIndex ? ' active' : '');
+        dotsWrap.appendChild(dot);
+    });
+}
+
+function rotatePf3D(direction) {
+    pf3dIndex = (pf3dIndex + direction + pfSpinData.length) % pfSpinData.length;
+    renderPf3DStage();
+}
+
+buildPf3DStage();
+
+function setNavHeight() {
+    var nav = document.querySelector('.app-nav');
+    if (nav) document.documentElement.style.setProperty('--nav-h', nav.offsetHeight + 'px');
+}
+setNavHeight();
+window.addEventListener('resize', setNavHeight);
+
+document.querySelectorAll('.pf-hero-card-bar span[data-w]').forEach(function(el) {
+    el.style.width = el.dataset.w;
+});
+
+function flipPfCard(card) {
+    var isFlipped = card.classList.toggle('pf-flipped');
+    card.setAttribute('aria-pressed', isFlipped ? 'true' : 'false');
+}
+
+(function() {
+    var els = document.querySelectorAll('.reveal');
+    var obs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                obs.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+    els.forEach(function(el) { obs.observe(el); });
+})();
+
+var ccPrec2 = parseFloat(document.getElementById('cc-prec2').value);
+var ccRec2  = parseFloat(document.getElementById('cc-rec2').value);
+var opPrec2 = parseFloat(document.getElementById('op-prec2').value);
+var opRec2  = parseFloat(document.getElementById('op-rec2').value);
+var mtPrec2 = parseFloat(document.getElementById('mt-prec2').value);
+var mtRec2  = parseFloat(document.getElementById('mt-rec2').value);
+
+function makeBarGradient(ctx, baseColor) {
+    var chartArea = ctx.chart.chartArea;
+    if (!chartArea) return baseColor;
+    var gradient = ctx.chart.ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
+    gradient.addColorStop(0, baseColor + '40');
+    gradient.addColorStop(1, baseColor);
+    return gradient;
+}
+
+var monoShades = ['#fed7aa', '#fdba74', '#fb923c', '#c2410c'];
+
+function buildSpBars(canvasId, data) {
+    new Chart(document.getElementById(canvasId).getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels: ['Precision', 'Recall', 'F1', 'PR-AUC'],
+            datasets: [{
+                data: data,
+                backgroundColor: function(context) {
+                    return makeBarGradient(context, monoShades[context.dataIndex] || '#000');
+                },
+                borderRadius: 6,
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, max: 1, ticks: { callback: function(v) { return (v*100).toFixed(0)+'%'; }, font: { family: 'DM Sans', size: 12, weight: '700' }, color: '#1a1916' }, grid: { color: 'rgba(0,0,0,0.04)' } },
+                x: { ticks: { font: { family: 'DM Sans', weight: '700', size: 11 }, color: '#1a1916' }, grid: { display: false } }
+            }
+        }
+    });
+}
+
+buildSpBars('spRadar1', [ccPrec2, ccRec2, ccF1, ccPR]);
+buildSpBars('spRadar2', [opPrec2, opRec2, opF1, opPR]);
+buildSpBars('spRadar3', [mtPrec2, mtRec2, mtF1, mtPR]);
+
+// pf-anim elements
+document.querySelectorAll('.pf-anim, .pf-dataset').forEach(function(el) {
+    el.style.opacity   = '0';
+    el.style.transform = 'translateY(24px)';
+    el.style.transition = 'opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1)';
+    var obs = new IntersectionObserver(function(entries) {
+        if (entries[0].isIntersecting) {
+            el.style.opacity   = '1';
+            el.style.transform = 'translateY(0)';
+            obs.unobserve(el);
+        }
+    }, { threshold: 0, rootMargin: '0px 0px -40px 0px' });
+    obs.observe(el);
+});
+</script>
+{% endblock %}

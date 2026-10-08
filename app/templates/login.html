@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% block title %}Sign In — PrediQt{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+{% endblock %}
+
+{% block public_content %}
+
+<div class="auth-split">
+
+    <!-- Left panel -->
+    <div class="auth-left">
+        <div class="auth-left-bg"></div>
+        <div class="auth-left-content">
+
+            <a href="{{ url_for('index') }}" class="auth-brand">
+                <div class="auth-brand-logo">
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                        <rect width="28" height="28" rx="6" fill="#1a6b4a"/>
+                        <path d="M7 9.5L14 7L21 9.5V14.5C21 18 17.5 20.5 14 21.5C10.5 20.5 7 18 7 14.5V9.5Z" fill="white" opacity="0.2"/>
+                        <path d="M11 13.5L13.5 16L18 11" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <span>PrediQt</span>
+            </a>
+
+            <div class="auth-left-hero">
+                <h1 class="auth-left-title">
+                    Welcome<br/>
+                    back to<br/>
+                    <em>PrediQt.</em>
+                </h1>
+                <p class="auth-left-sub">
+                    Sign in to access your fraud detection dashboard,
+                    transaction checker, batch processing and
+                    specialist model analytics.
+                </p>
+            </div>
+
+            <div class="auth-trust">
+                <div class="auth-trust-item">
+                    <div class="auth-trust-icon">🛡️</div>
+                    <div>
+                        <div class="auth-trust-title">Secure Login</div>
+                        <div class="auth-trust-sub">Bcrypt password hashing</div>
+                    </div>
+                </div>
+                <div class="auth-trust-item">
+                    <div class="auth-trust-icon">📊</div>
+                    <div>
+                        <div class="auth-trust-title">Full Dashboard Access</div>
+                        <div class="auth-trust-sub">All your predictions and stats</div>
+                    </div>
+                </div>
+                <div class="auth-trust-item">
+                    <div class="auth-trust-icon">🤖</div>
+                    <div>
+                        <div class="auth-trust-title">3 Specialist Models</div>
+                        <div class="auth-trust-sub">Auto-routing fraud detection</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="auth-left-tags">
+                <span>Credit Card Model</span>
+                <span>Online Payment Model</span>
+                <span>Mobile Transfer Model</span>
+                <span>92% Peak Precision</span>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Right panel -->
+    <div class="auth-right">
+        <div class="auth-form-wrap">
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="auth-flash auth-flash-{{ category }}">{{ message }}</div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            <div class="auth-step-header">
+                <h2 class="auth-title">Sign in</h2>
+                <p class="auth-sub">Enter your credentials to access your account</p>
+            </div>
+
+            <form method="POST" id="loginForm">
+
+                <div class="ff">
+                    <label class="auth-label-strong">Email Address</label>
+                    <input type="email" name="email" id="loginEmail"
+                           placeholder="you@company.com"
+                           required autocomplete="email" class="auth-input" />
+                </div>
+
+                <div class="ff" style="margin-bottom:0.5rem;">
+                    <label class="auth-label-strong">Password</label>
+                    <div class="auth-input-icon">
+                        <input type="password" name="password" id="loginPassword"
+                               placeholder="Your password"
+                               required autocomplete="current-password" class="auth-input" />
+                        <button type="button" class="auth-eye"
+                                onclick="togglePassword('loginPassword', this)">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Remember me + Forgot password -->
+                <div class="login-options">
+                    <label class="auth-checkbox-label" style="flex-direction:row;align-items:center;">
+                        <input type="checkbox" name="remember" id="rememberMe" />
+                        <span class="auth-checkbox-custom"></span>
+                        <span style="font-size:13px;color:var(--muted);margin-left:4px;">
+                            Remember me
+                        </span>
+                    </label>
+                    <a href="#" class="login-forgot" onclick="showForgotMessage(); return false;">
+                        Forgot password?
+                    </a>
+                </div>
+
+                <div class="auth-field-hint" id="forgotHint" style="margin-bottom:0.75rem;"></div>
+
+                <button type="submit" class="auth-btn-submit" style="margin-top:0.75rem;">
+                    <span>Sign in</span>
+                    <span class="auth-btn-arrow">→</span>
+                </button>
+
+            </form>
+
+            <p class="auth-switch">
+                Don't have an account?
+                <a href="{{ url_for('register') }}">Create one free</a>
+            </p>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Show/hide password
+function togglePassword(inputId, btn) {
+    var input = document.getElementById(inputId);
+    if (input.type === 'password') {
+        input.type    = 'text';
+        btn.innerHTML = '<i class="bi bi-eye-slash"></i>';
+    } else {
+        input.type    = 'password';
+        btn.innerHTML = '<i class="bi bi-eye"></i>';
+    }
+}
+
+// Forgot password message
+function showForgotMessage() {
+    var hint = document.getElementById('forgotHint');
+    hint.textContent = 'Please contact your administrator to reset your password.';
+    hint.style.color = 'var(--green)';
+    setTimeout(function() { hint.textContent = ''; }, 4000);
+}
+
+
+</script>
+{% endblock %}

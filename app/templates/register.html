@@ -1,0 +1,811 @@
+{% extends "base.html" %}
+{% block title %}Create Account — PrediQt{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+{% endblock %}
+
+{% block public_content %}
+
+<div class="auth-split">
+
+    <!-- Left panel -->
+    <div class="auth-left">
+        <div class="auth-left-bg"></div>
+        <div class="auth-left-content">
+
+            <a href="{{ url_for('index') }}" class="auth-brand">
+                <div class="auth-brand-logo">
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                        <rect width="28" height="28" rx="6" fill="#1a6b4a"/>
+                        <path d="M7 9.5L14 7L21 9.5V14.5C21 18 17.5 20.5 14 21.5C10.5 20.5 7 18 7 14.5V9.5Z" fill="white" opacity="0.2"/>
+                        <path d="M11 13.5L13.5 16L18 11" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <span>PrediQt</span>
+            </a>
+
+            <div class="auth-left-hero">
+                <h1 class="auth-left-title">
+                    Start detecting<br/>
+                    fraud with<br/>
+                    <em>AI today.</em>
+                </h1>
+                <p class="auth-left-sub">
+                    Create your free PrediQt business account and instantly
+                    access fraud detection, batch processing and specialist
+                    model analytics.
+                </p>
+            </div>
+
+            <div class="auth-trust">
+                <div class="auth-trust-item">
+                    <div class="auth-trust-icon">🔒</div>
+                    <div>
+                        <div class="auth-trust-title">256-bit Encryption</div>
+                        <div class="auth-trust-sub">Your data is fully protected</div>
+                    </div>
+                </div>
+                <div class="auth-trust-item">
+                    <div class="auth-trust-icon">🤖</div>
+                    <div>
+                        <div class="auth-trust-title">3 Specialist Models</div>
+                        <div class="auth-trust-sub">92% peak precision</div>
+                    </div>
+                </div>
+                <div class="auth-trust-item">
+                    <div class="auth-trust-icon">⚡</div>
+                    <div>
+                        <div class="auth-trust-title">Instant Access</div>
+                        <div class="auth-trust-sub">No credit card required</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="auth-left-tags">
+                <span>Free Forever</span>
+                <span>No Credit Card</span>
+                <span>Instant Access</span>
+                <span>Full Dashboard</span>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Right panel -->
+    <div class="auth-right">
+        <div class="auth-form-wrap">
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="auth-flash auth-flash-{{ category }}">{{ message }}</div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            <!-- Step indicator -->
+            <div class="auth-steps">
+                <div class="auth-step {{ 'active' if step == 1 else 'done' if step > 1 else '' }}">
+                    <div class="auth-step-circle">
+                        {% if step > 1 %}<i class="bi bi-check"></i>{% else %}1{% endif %}
+                    </div>
+                    <div class="auth-step-label">Contact</div>
+                </div>
+                <div class="auth-step-line {{ 'done' if step > 1 else '' }}"></div>
+                <div class="auth-step {{ 'active' if step == 2 else 'done' if step > 2 else '' }}">
+                    <div class="auth-step-circle">
+                        {% if step > 2 %}<i class="bi bi-check"></i>{% else %}2{% endif %}
+                    </div>
+                    <div class="auth-step-label">Company</div>
+                </div>
+                <div class="auth-step-line {{ 'done' if step > 2 else '' }}"></div>
+                <div class="auth-step {{ 'active' if step == 3 else 'done' if step > 3 else '' }}">
+                    <div class="auth-step-circle">
+                        {% if step > 3 %}<i class="bi bi-check"></i>{% else %}3{% endif %}
+                    </div>
+                    <div class="auth-step-label">Usage</div>
+                </div>
+                <div class="auth-step-line {{ 'done' if step > 3 else '' }}"></div>
+                <div class="auth-step {{ 'active' if step == 4 else '' }}">
+                    <div class="auth-step-circle">4</div>
+                    <div class="auth-step-label">Security</div>
+                </div>
+            </div>
+
+            <!-- Progress bar -->
+            <div class="auth-progress">
+                <div class="auth-progress-fill" id="progressFill"></div>
+            </div>
+
+            <!-- ── STEP 1 — Contact Details ── -->
+            {% if step == 1 %}
+            <div class="auth-step-header">
+                <h2 class="auth-title">Contact Details</h2>
+                <p class="auth-sub">Tell us about the person managing this account</p>
+            </div>
+
+            <form method="POST" id="stepForm">
+                <input type="hidden" name="step" value="1">
+
+                <div class="f2">
+                    <div class="ff">
+                        <label class="auth-label-strong">First Name</label>
+                        <input type="text" name="first_name" class="auth-input"
+                               placeholder="e.g. John" required autocomplete="given-name"
+                               value="{{ saved.get('reg_name', '').split(' ')[0] if saved and saved.get('reg_name') else '' }}" />
+                    </div>
+                    <div class="ff">
+                        <label class="auth-label-strong">Last Name</label>
+                        <input type="text" name="last_name" class="auth-input"
+                               placeholder="e.g. Smith" required autocomplete="family-name"
+                               value="{{ saved.get('reg_name', '').split(' ')[-1] if saved and saved.get('reg_name') else '' }}" />
+                    </div>
+                </div>
+
+                <div class="ff" style="margin-bottom:1rem;">
+                    <label class="auth-label-strong">Email Address</label>
+                    <div style="position:relative;">
+                        <input type="email" name="email" id="emailInput" class="auth-input"
+                               placeholder="you@company.com" required autocomplete="email"
+                               value="{{ saved.get('reg_email', '') if saved else '' }}" />
+                        <div class="auth-email-status" id="emailStatus"></div>
+                    </div>
+                    <div class="auth-field-hint" id="emailHint"></div>
+                </div>
+
+                <div class="f2">
+                    <div class="ff">
+                        <label class="auth-label-strong">Date of Birth</label>
+                        <input type="date" name="dob" class="auth-input"
+                               value="{{ saved.get('reg_dob', '') if saved else '' }}" />
+                    </div>
+                    <div class="ff">
+                        <label class="auth-label-strong">Phone Number <span class="auth-optional">optional</span></label>
+                        <input type="tel" name="phone" class="auth-input"
+                               placeholder="+44 7700 900000" autocomplete="tel"
+                               style="color:var(--muted);" onfocus="this.style.color='var(--text)'"
+                               value="{{ saved.get('reg_phone', '') if saved else '' }}" />
+                    </div>
+                </div>
+
+                <div class="f2">
+                    <div class="ff">
+                        <label class="auth-label-strong">Country</label>
+                        <select name="country" class="auth-select"
+                                style="color:var(--muted);" onchange="this.style.color='var(--text)'">
+                            <option value="" disabled selected>Select your country</option>
+                            <optgroup label="── Europe">
+                                <option>United Kingdom</option>
+                                <option>Ireland</option>
+                                <option>Germany</option>
+                                <option>France</option>
+                                <option>Netherlands</option>
+                                <option>Spain</option>
+                                <option>Italy</option>
+                                <option>Portugal</option>
+                                <option>Belgium</option>
+                                <option>Switzerland</option>
+                                <option>Austria</option>
+                                <option>Sweden</option>
+                                <option>Norway</option>
+                                <option>Denmark</option>
+                                <option>Finland</option>
+                                <option>Poland</option>
+                                <option>Czech Republic</option>
+                                <option>Romania</option>
+                                <option>Hungary</option>
+                                <option>Greece</option>
+                                <option>Turkey</option>
+                            </optgroup>
+                            <optgroup label="── North America">
+                                <option>United States</option>
+                                <option>Canada</option>
+                                <option>Mexico</option>
+                            </optgroup>
+                            <optgroup label="── South America">
+                                <option>Brazil</option>
+                                <option>Argentina</option>
+                                <option>Colombia</option>
+                                <option>Chile</option>
+                                <option>Peru</option>
+                            </optgroup>
+                            <optgroup label="── Middle East">
+                                <option>United Arab Emirates</option>
+                                <option>Saudi Arabia</option>
+                                <option>Qatar</option>
+                                <option>Kuwait</option>
+                                <option>Bahrain</option>
+                                <option>Oman</option>
+                                <option>Jordan</option>
+                                <option>Lebanon</option>
+                                <option>Israel</option>
+                                <option>Egypt</option>
+                            </optgroup>
+                            <optgroup label="── Asia Pacific">
+                                <option>India</option>
+                                <option>China</option>
+                                <option>Japan</option>
+                                <option>South Korea</option>
+                                <option>Singapore</option>
+                                <option>Australia</option>
+                                <option>New Zealand</option>
+                                <option>Hong Kong</option>
+                                <option>Malaysia</option>
+                                <option>Indonesia</option>
+                                <option>Thailand</option>
+                                <option>Vietnam</option>
+                                <option>Philippines</option>
+                                <option>Pakistan</option>
+                                <option>Bangladesh</option>
+                                <option>Sri Lanka</option>
+                            </optgroup>
+                            <optgroup label="── Africa">
+                                <option>South Africa</option>
+                                <option>Nigeria</option>
+                                <option>Kenya</option>
+                                <option>Ghana</option>
+                                <option>Ethiopia</option>
+                                <option>Tanzania</option>
+                                <option>Morocco</option>
+                                <option>Tunisia</option>
+                            </optgroup>
+                            <optgroup label="── Other">
+                                <option>Other</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="ff">
+                        <label class="auth-label-strong">City</label>
+                        <input type="text" name="city" class="auth-input"
+                               placeholder="e.g. London"
+                               value="{{ saved.get('reg_city', '') if saved else '' }}" />
+                    </div>
+                </div>
+
+                <button type="submit" class="auth-btn-submit">
+                    <span>Continue to Company Details</span>
+                    <span class="auth-btn-arrow">→</span>
+                </button>
+
+                <p class="auth-switch">
+                    Already have an account? <a href="{{ url_for('login') }}">Sign in</a>
+                </p>
+            </form>
+            {% endif %}
+
+            <!-- ── STEP 2 — Company Details ── -->
+            {% if step == 2 %}
+            <div class="auth-step-header">
+                <h2 class="auth-title">Company Details</h2>
+                <p class="auth-sub">Tell us about your organisation</p>
+            </div>
+
+            <form method="POST" id="stepForm">
+                <input type="hidden" name="step" value="2">
+
+                <div class="f2">
+                    <div class="ff">
+                        <label class="auth-label-strong">Company Name</label>
+                        <input type="text" name="company" class="auth-input"
+                               placeholder="e.g. Acme Bank" required
+                               value="{{ saved.get('reg_company', '') if saved else '' }}" />
+                    </div>
+                    <div class="ff">
+                        <label class="auth-label-strong">Company Registration No.</label>
+                        <input type="text" name="company_reg_number" class="auth-input"
+                               placeholder="e.g. 12345678" required
+                               value="{{ saved.get('reg_company_reg', '') if saved else '' }}" />
+                    </div>
+                </div>
+
+                <div class="f2">
+                    <div class="ff">
+                        <label class="auth-label-strong">Industry</label>
+                        <select name="industry" class="auth-select" required
+                                style="color:var(--muted);" onchange="this.style.color='var(--text)'">
+                            <option value="" disabled selected>Select industry</option>
+                            <option>Banking</option>
+                            <option>Fintech</option>
+                            <option>E-commerce</option>
+                            <option>Insurance</option>
+                            <option>Retail</option>
+                            <option>Payments</option>
+                            <option>Cryptocurrency</option>
+                            <option>Healthcare</option>
+                            <option>Government</option>
+                            <option>Education</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    <div class="ff">
+                        <label class="auth-label-strong">Number of Employees</label>
+                        <select name="company_size" class="auth-select" required
+                                style="color:var(--muted);" onchange="this.style.color='var(--text)'">
+                            <option value="" disabled selected>Select employee count</option>
+                            <option>Just me</option>
+                            <option>2-10</option>
+                            <option>11-50</option>
+                            <option>51-200</option>
+                            <option>201-500</option>
+                            <option>500-1,000</option>
+                            <option>1,000-5,000</option>
+                            <option>5,000+</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="f2">
+                    <div class="ff">
+                        <label class="auth-label-strong">Annual Revenue <span class="auth-optional">optional</span></label>
+                        <select name="annual_revenue" class="auth-select"
+                                style="color:var(--muted);" onchange="this.style.color='var(--text)'">
+                            <option value="" disabled selected>Select revenue range</option>
+                            <option>Under £100K</option>
+                            <option>£100K - £500K</option>
+                            <option>£500K - £1M</option>
+                            <option>£1M - £10M</option>
+                            <option>£10M - £50M</option>
+                            <option>£50M - £100M</option>
+                            <option>£100M+</option>
+                            <option>Prefer not to say</option>
+                        </select>
+                    </div>
+                    <div class="ff">
+                        <label class="auth-label-strong">Postcode / ZIP</label>
+                        <input type="text" name="postcode" class="auth-input"
+                               placeholder="e.g. EC1A 1BB" required
+                               value="{{ saved.get('reg_postcode', '') if saved else '' }}" />
+                    </div>
+                </div>
+
+                <div class="ff" style="margin-bottom:1.5rem;">
+                    <label class="auth-label-strong">Business Address</label>
+                    <input type="text" name="business_address" class="auth-input"
+                           placeholder="e.g. 123 Finance Street, London" required
+                           value="{{ saved.get('reg_address', '') if saved else '' }}" />
+                </div>
+
+                <button type="submit" class="auth-btn-submit">
+                    <span>Continue to Usage Details</span>
+                    <span class="auth-btn-arrow">→</span>
+                </button>
+
+                <p class="auth-switch" style="text-align:center;margin-top:1rem;">
+                    <a href="{{ url_for('register') }}?step=1" class="auth-back-link">
+                        ← Back to Contact Details
+                    </a>
+                </p>
+            </form>
+            {% endif %}
+
+            <!-- ── STEP 3 — Usage Details ── -->
+            {% if step == 3 %}
+            <div class="auth-step-header">
+                <h2 class="auth-title">Usage Details</h2>
+                <p class="auth-sub">Help us understand how you will use PrediQt</p>
+            </div>
+
+            <form method="POST" id="stepForm">
+                <input type="hidden" name="step" value="3">
+
+                <div class="f2">
+                    <div class="ff">
+                        <label class="auth-label-strong">Job Title</label>
+                        <select name="job_title" class="auth-select"
+                                style="color:var(--muted);" onchange="this.style.color='var(--text)'">
+                            <option value="" disabled selected>Select your job title</option>
+                            <optgroup label="── Fraud and Risk">
+                                <option>Fraud Analyst</option>
+                                <option>Senior Fraud Analyst</option>
+                                <option>Fraud Investigator</option>
+                                <option>Risk Analyst</option>
+                                <option>Risk Manager</option>
+                                <option>Fraud Operations Manager</option>
+                                <option>Chief Risk Officer</option>
+                            </optgroup>
+                            <optgroup label="── Data and Technology">
+                                <option>Data Scientist</option>
+                                <option>Machine Learning Engineer</option>
+                                <option>Data Analyst</option>
+                                <option>Software Developer</option>
+                                <option>Software Engineer</option>
+                                <option>Backend Developer</option>
+                                <option>Full Stack Developer</option>
+                                <option>DevOps Engineer</option>
+                                <option>IT Manager</option>
+                                <option>Chief Technology Officer</option>
+                            </optgroup>
+                            <optgroup label="── Finance and Compliance">
+                                <option>Compliance Officer</option>
+                                <option>AML Analyst</option>
+                                <option>Financial Analyst</option>
+                                <option>Finance Manager</option>
+                                <option>Chief Financial Officer</option>
+                                <option>Internal Auditor</option>
+                            </optgroup>
+                            <optgroup label="── Business">
+                                <option>Business Analyst</option>
+                                <option>Product Manager</option>
+                                <option>Operations Manager</option>
+                                <option>Business Owner</option>
+                                <option>Chief Executive Officer</option>
+                                <option>Director</option>
+                            </optgroup>
+                            <optgroup label="── Academic">
+                                <option>Student</option>
+                                <option>Researcher</option>
+                                <option>Academic</option>
+                                <option>Professor</option>
+                            </optgroup>
+                            <optgroup label="── Other">
+                                <option>Other</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="ff">
+                        <label class="auth-label-strong">Number of Fraud Analysts</label>
+                        <select name="fraud_analysts" class="auth-select"
+                                style="color:var(--muted);" onchange="this.style.color='var(--text)'">
+                            <option value="" disabled selected>Select count</option>
+                            <option>Just me</option>
+                            <option>2-3</option>
+                            <option>4-5</option>
+                            <option>6-10</option>
+                            <option>10+</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="f2">
+                    <div class="ff">
+                        <label class="auth-label-strong">Primary Use Case</label>
+                        <select name="use_case" class="auth-select"
+                                style="color:var(--muted);" onchange="this.style.color='var(--text)'">
+                            <option value="" disabled selected>Select use case</option>
+                            <option>Real-time Monitoring</option>
+                            <option>Batch Analysis</option>
+                            <option>API Integration</option>
+                            <option>Research</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    <div class="ff">
+                        <label class="auth-label-strong">Monthly Transactions</label>
+                        <select name="monthly_transactions" class="auth-select"
+                                style="color:var(--muted);" onchange="this.style.color='var(--text)'">
+                            <option value="" disabled selected>Expected volume</option>
+                            <option>Under 1,000</option>
+                            <option>1,000 - 10,000</option>
+                            <option>10,000 - 100,000</option>
+                            <option>100,000+</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="f2">
+                    <div class="ff">
+                        <label class="auth-label-strong">Current Fraud Solution</label>
+                        <select name="current_fraud_solution" class="auth-select"
+                                style="color:var(--muted);" onchange="this.style.color='var(--text)'">
+                            <option value="" disabled selected>What are you using now?</option>
+                            <option>None</option>
+                            <option>Manual Review</option>
+                            <option>Third-party Tool</option>
+                            <option>In-house Solution</option>
+                            <option>Rule-based System</option>
+                            <option>Other ML Solution</option>
+                        </select>
+                    </div>
+                    <div class="ff">
+                        <label class="auth-label-strong">Compliance Requirements</label>
+                        <select name="compliance" class="auth-select"
+                                style="color:var(--muted);" onchange="this.style.color='var(--text)'">
+                            <option value="" disabled selected>Select requirement</option>
+                            <option>PCI-DSS</option>
+                            <option>GDPR</option>
+                            <option>SOX</option>
+                            <option>FCA</option>
+                            <option>PSD2</option>
+                            <option>Multiple</option>
+                            <option>None</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="ff" style="margin-bottom:1.5rem;">
+                    <label class="auth-label-strong">How did you hear about us?</label>
+                    <select name="referral" class="auth-select"
+                            style="color:var(--muted);" onchange="this.style.color='var(--text)'">
+                        <option value="" disabled selected>Select an option</option>
+                        <option>Google Search</option>
+                        <option>LinkedIn</option>
+                        <option>Colleague or Friend</option>
+                        <option>University</option>
+                        <option>Social Media</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="auth-btn-submit">
+                    <span>Continue to Security</span>
+                    <span class="auth-btn-arrow">→</span>
+                </button>
+
+                <p class="auth-switch" style="text-align:center;margin-top:1rem;">
+                    <a href="{{ url_for('register') }}?step=2" class="auth-back-link">
+                        ← Back to Company Details
+                    </a>
+                </p>
+            </form>
+            {% endif %}
+
+            <!-- ── STEP 4 — Security ── -->
+            {% if step == 4 %}
+            <div class="auth-step-header">
+                <h2 class="auth-title">Create Password</h2>
+                <p class="auth-sub">Secure your PrediQt account</p>
+            </div>
+
+            <form method="POST" id="stepForm">
+                <input type="hidden" name="step" value="4">
+
+                <div class="ff" style="margin-bottom:1rem;">
+                    <label class="auth-label-strong">Password</label>
+                    <div class="auth-input-icon">
+                        <input type="password" name="password" id="passwordInput"
+                               placeholder="Create a strong password"
+                               required class="auth-input" />
+                        <button type="button" class="auth-eye"
+                                onclick="togglePassword('passwordInput', this)">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <div class="auth-strength">
+                        <div class="auth-strength-bar">
+                            <div class="auth-strength-fill" id="strengthFill"></div>
+                        </div>
+                        <span class="auth-strength-label" id="strengthLabel">Enter password</span>
+                    </div>
+                    <div class="auth-requirements">
+                        <div class="auth-req" id="req-length">
+                            <i class="bi bi-x-circle"></i> At least 8 characters
+                        </div>
+                        <div class="auth-req" id="req-upper">
+                            <i class="bi bi-x-circle"></i> One uppercase letter
+                        </div>
+                        <div class="auth-req" id="req-number">
+                            <i class="bi bi-x-circle"></i> One number
+                        </div>
+                        <div class="auth-req" id="req-special">
+                            <i class="bi bi-x-circle"></i> One special character
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ff" style="margin-bottom:1rem;">
+                    <label class="auth-label-strong">Confirm Password</label>
+                    <div class="auth-input-icon">
+                        <input type="password" name="confirm_password" id="confirmInput"
+                               placeholder="Repeat your password"
+                               required class="auth-input" />
+                        <button type="button" class="auth-eye"
+                                onclick="togglePassword('confirmInput', this)">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <div class="auth-field-hint" id="confirmHint"></div>
+                </div>
+
+                <div class="f2">
+                    <div class="ff">
+                        <label class="auth-label-strong">Security Question</label>
+                        <select name="security_question" class="auth-select"
+                                style="color:var(--muted);" onchange="this.style.color='var(--text)'">
+                            <option value="" disabled selected>Select a question</option>
+                            <option>What was the name of your first pet?</option>
+                            <option>What city were you born in?</option>
+                            <option>What is your mother's maiden name?</option>
+                            <option>What was the name of your first school?</option>
+                            <option>What is your favourite book?</option>
+                        </select>
+                    </div>
+                    <div class="ff">
+                        <label class="auth-label-strong">Your Answer</label>
+                        <input type="text" name="security_answer"
+                               placeholder="Your answer" class="auth-input" />
+                    </div>
+                </div>
+
+                <div class="ff" style="margin-bottom:1.5rem;">
+                    <label class="auth-label-strong">Preferred Notifications</label>
+                    <select name="notifications" class="auth-select"
+                            onchange="this.style.color='var(--text)'">
+                        <option value="email">Email</option>
+                        <option value="none">None</option>
+                    </select>
+                </div>
+
+                <div class="auth-terms" style="margin-bottom:1.5rem;">
+                    <label class="auth-checkbox-label">
+                        <input type="checkbox" name="terms_accepted" id="termsCheck" required />
+                        <span class="auth-checkbox-custom"></span>
+                        <span class="auth-checkbox-text">
+                            I agree to the
+                            <a href="{{ url_for('terms') }}" target="_blank">Terms and Conditions</a>
+                            and
+                            <a href="{{ url_for('terms') }}" target="_blank">Privacy Policy</a>
+                        </span>
+                    </label>
+                </div>
+
+                <button type="submit" class="auth-btn-submit" id="submitBtn">
+                    <span>Create Account</span>
+                    <span class="auth-btn-arrow">→</span>
+                </button>
+
+                <p class="auth-switch" style="text-align:center;margin-top:1rem;">
+                    <a href="{{ url_for('register') }}?step=3" class="auth-back-link">
+                        ← Back to Usage Details
+                    </a>
+                </p>
+            </form>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Progress bar
+var progressFill = document.getElementById('progressFill');
+if (progressFill) {
+    var stepInput = document.querySelector('input[name="step"]');
+    if (stepInput) {
+        var stepNum = parseInt(stepInput.value);
+        var widths  = { 1: '25%', 2: '50%', 3: '75%', 4: '100%' };
+        setTimeout(function() {
+            progressFill.style.width = widths[stepNum] || '25%';
+        }, 100);
+    }
+}
+
+// Email availability check
+var emailInput = document.getElementById('emailInput');
+if (emailInput) {
+    var emailTimer;
+    emailInput.addEventListener('input', function() {
+        clearTimeout(emailTimer);
+        var email  = this.value;
+        var hint   = document.getElementById('emailHint');
+        var status = document.getElementById('emailStatus');
+
+        if (!email || !email.includes('@')) {
+            hint.textContent = '';
+            status.className = 'auth-email-status';
+            status.innerHTML = '';
+            return;
+        }
+
+        emailTimer = setTimeout(function() {
+            fetch('/api/check-email?email=' + encodeURIComponent(email))
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    if (data.exists) {
+                        hint.textContent = 'This email is already registered.';
+                        hint.style.color = '#dc2626';
+                        status.className = 'auth-email-status taken';
+                        status.innerHTML = '<i class="bi bi-x-circle-fill"></i>';
+                    } else {
+                        hint.textContent = 'Email is available.';
+                        hint.style.color = 'var(--green)';
+                        status.className = 'auth-email-status available';
+                        status.innerHTML = '<i class="bi bi-check-circle-fill"></i>';
+                    }
+                });
+        }, 500);
+    });
+}
+
+// Password strength
+var passwordInput = document.getElementById('passwordInput');
+if (passwordInput) {
+    passwordInput.addEventListener('input', function() {
+        var val        = this.value;
+        var hasLength  = val.length >= 8;
+        var hasUpper   = /[A-Z]/.test(val);
+        var hasNumber  = /[0-9]/.test(val);
+        var hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(val);
+        var strength   = [hasLength, hasUpper, hasNumber, hasSpecial].filter(Boolean).length;
+
+        updateReq('req-length',  hasLength,  'At least 8 characters');
+        updateReq('req-upper',   hasUpper,   'One uppercase letter');
+        updateReq('req-number',  hasNumber,  'One number');
+        updateReq('req-special', hasSpecial, 'One special character');
+
+        var fill   = document.getElementById('strengthFill');
+        var label  = document.getElementById('strengthLabel');
+        var levels = [
+            { bg: '#e5e7eb', text: 'Enter password', color: 'var(--muted)' },
+            { bg: '#dc2626', text: 'Weak',   color: '#dc2626' },
+            { bg: '#f59e0b', text: 'Fair',   color: '#f59e0b' },
+            { bg: '#3b82f6', text: 'Good',   color: '#3b82f6' },
+            { bg: 'var(--green)', text: 'Strong', color: 'var(--green)' }
+        ];
+        fill.style.width       = (strength / 4 * 100) + '%';
+        fill.style.background  = levels[strength].bg;
+        label.textContent      = levels[strength].text;
+        label.style.color      = levels[strength].color;
+    });
+}
+
+function updateReq(id, met, text) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.className  = 'auth-req' + (met ? ' met' : '');
+    el.innerHTML  = (met
+        ? '<i class="bi bi-check-circle-fill"></i> '
+        : '<i class="bi bi-x-circle"></i> ') + text;
+}
+
+// Confirm password
+var confirmInput = document.getElementById('confirmInput');
+if (confirmInput && passwordInput) {
+    confirmInput.addEventListener('input', function() {
+        var hint = document.getElementById('confirmHint');
+        if (this.value === passwordInput.value) {
+            hint.textContent = 'Passwords match.';
+            hint.style.color = 'var(--green)';
+        } else {
+            hint.textContent = 'Passwords do not match.';
+            hint.style.color = '#dc2626';
+        }
+    });
+}
+
+// Show/hide password
+function togglePassword(inputId, btn) {
+    var input = document.getElementById(inputId);
+    if (input.type === 'password') {
+        input.type    = 'text';
+        btn.innerHTML = '<i class="bi bi-eye-slash"></i>';
+    } else {
+        input.type    = 'password';
+        btn.innerHTML = '<i class="bi bi-eye"></i>';
+    }
+}
+
+// Restore saved select values
+var savedSelects = {
+    country      : "{{ saved.get('reg_country', '') if saved else '' }}",
+    industry     : "{{ saved.get('reg_industry', '') if saved else '' }}",
+    company_size : "{{ saved.get('reg_company_size', '') if saved else '' }}",
+    annual_revenue: "{{ saved.get('reg_annual_revenue', '') if saved else '' }}",
+    job_title    : "{{ saved.get('reg_job_title', '') if saved else '' }}",
+    fraud_analysts: "{{ saved.get('reg_fraud_analysts', '') if saved else '' }}",
+    use_case     : "{{ saved.get('reg_use_case', '') if saved else '' }}",
+    monthly_transactions: "{{ saved.get('reg_monthly_tx', '') if saved else '' }}",
+    current_fraud_solution: "{{ saved.get('reg_fraud_solution', '') if saved else '' }}",
+    compliance   : "{{ saved.get('reg_compliance', '') if saved else '' }}",
+    referral     : "{{ saved.get('reg_referral', '') if saved else '' }}"
+};
+
+Object.keys(savedSelects).forEach(function(name) {
+    var val = savedSelects[name];
+    if (!val) return;
+    var el = document.querySelector('select[name="' + name + '"]');
+    if (el) {
+        for (var i = 0; i < el.options.length; i++) {
+            if (el.options[i].text === val || el.options[i].value === val) {
+                el.selectedIndex = i;
+                el.style.color   = 'var(--text)';
+                break;
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

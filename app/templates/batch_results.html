@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block title %}Batch Results — PrediQt{% endblock %}
+{% block page_title %}Batch Results{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/batch.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="br-hero">
+    <div class="br-hero-inner">
+        <div class="br-eyebrow">Batch Analysis</div>
+        <h1 class="br-page-title">Results Preview</h1>
+        <h2 class="br-result-headline {{ 'br-result-headline-alert' if results.fraud > 0 else '' }}">
+            {% if results.fraud > 0 %}
+                <span class="br-fraud-num">{{ results.fraud }}</span> fraud
+                {{ 'case' if results.fraud == 1 else 'cases' }} detected.
+            {% else %}
+                No fraud detected.
+            {% endif %}
+        </h2>
+        <p class="br-result-sub">
+            {{ results.total }} transactions analysed — {{ results.legitimate }} legitimate,
+            {{ results.fraud }} flagged as fraud ({{ results.fraud_rate }}% fraud rate).
+        </p>
+    </div>
+</div>
+
+<div class="br-stats-grid">
+    <div class="br-stat-card">
+        <div class="br-stat-val">{{ results.total }}</div>
+        <div class="br-stat-label">Total</div>
+    </div>
+    <div class="br-stat-card br-stat-card-fraud">
+        <div class="br-stat-val">{{ results.fraud }}</div>
+        <div class="br-stat-label">Fraud</div>
+    </div>
+    <div class="br-stat-card br-stat-card-legit">
+        <div class="br-stat-val">{{ results.legitimate }}</div>
+        <div class="br-stat-label">Legitimate</div>
+    </div>
+    <div class="br-stat-card">
+        <div class="br-stat-val">{{ results.fraud_rate }}%</div>
+        <div class="br-stat-label">Fraud Rate</div>
+    </div>
+</div>
+
+<div class="br-table-wrap">
+    <div class="bt-table-hd2">
+        <div>
+            <div class="bt-table-title2">Transaction Details</div>
+            <div class="bt-table-sub2">
+                Showing {{ (results.page - 1) * results.per_page + 1 }}–{{ [results.page * results.per_page, results.total]|min }}
+                of {{ results.total }}
+            </div>
+        </div>
+        <a href="{{ url_for('download_results', filename=results.output_file) }}" class="bt-dl-btn2">
+            <i class="bi bi-download"></i>
+            Download CSV
+        </a>
+    </div>
+    <div class="tw">
+        <table>
+            <thead>
+                <tr>
+                    <th>Row</th>
+                    <th>Amount</th>
+                    <th>Result</th>
+                    <th>Probability</th>
+                    <th>Risk Level</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in results.rows %}
+                <tr class="{{ 'fraud-row' if row.Result == 'FRAUD' else '' }}">
+                    <td style="color:var(--muted);font-family:'Fraunces',serif;">{{ (results.page - 1) * results.per_page + loop.index }}</td>
+                    <td><strong>£{{ "%.2f"|format(row.amount) }}</strong></td>
+                    <td>
+                        {% if row.Result == 'FRAUD' %}
+                        <span class="badge badge-fraud">FRAUD</span>
+                        {% else %}
+                        <span class="badge badge-legit">LEGITIMATE</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ (row.Fraud_Probability * 100)|round(1) }}%</td>
+                    <td>
+                        <span class="badge badge-{{ row.Risk_Level|lower }}">{{ row.Risk_Level }}</span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if results.total_pages > 1 %}
+    <div class="br-pagination">
+        {% if results.page > 1 %}
+        <a href="{{ url_for('batch_results', filename=results.output_file, page=results.page - 1) }}" class="br-page-btn">
+            <i class="bi bi-chevron-left"></i>
+        </a>
+        {% else %}
+        <span class="br-page-btn disabled"><i class="bi bi-chevron-left"></i></span>
+        {% endif %}
+
+        {% for p in range(1, results.total_pages + 1) %}
+        <a href="{{ url_for('batch_results', filename=results.output_file, page=p) }}"
+           class="br-page-btn {{ 'br-page-active' if p == results.page else '' }}">{{ p }}</a>
+        {% endfor %}
+
+        {% if results.page < results.total_pages %}
+        <a href="{{ url_for('batch_results', filename=results.output_file, page=results.page + 1) }}" class="br-page-btn">
+            <i class="bi bi-chevron-right"></i>
+        </a>
+        {% else %}
+        <span class="br-page-btn disabled"><i class="bi bi-chevron-right"></i></span>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+<div class="br-bottom-cta">
+    <a href="{{ url_for('batch') }}#batchForm" class="bt-results-dl-btn">
+        <i class="bi bi-arrow-left"></i>
+        Return to Batch Upload
+    </a>
+</div>
+
+{% endblock %}

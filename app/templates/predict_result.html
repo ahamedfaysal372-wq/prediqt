@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Transaction Result — PrediQt{% endblock %}
+{% block page_title %}Transaction Result{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/batch.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="br-hero">
+    <div class="br-hero-inner">
+        <div class="br-eyebrow">Transaction Analysis</div>
+        <h1 class="br-page-title">Result Preview</h1>
+        <h2 class="br-result-headline {{ 'br-result-headline-alert' if result.label == 'FRAUD' else '' }}">
+            {% if result.label == 'FRAUD' %}
+                <span class="br-fraud-num">FRAUD</span> detected.
+            {% else %}
+                No fraud detected.
+            {% endif %}
+        </h2>
+        <p class="br-result-sub">
+            £{{ "%.2f"|format(result.amount) }} {{ result.transaction_type.replace('_',' ').title() }} —
+            scored {{ result.probability }}% probability ({{ result.risk_level }} risk).
+        </p>
+    </div>
+</div>
+
+<div class="br-stats-grid">
+    <div class="br-stat-card">
+        <div class="br-stat-val">£{{ "%.0f"|format(result.amount) }}</div>
+        <div class="br-stat-label">Amount</div>
+    </div>
+    <div class="br-stat-card {{ 'br-stat-card-fraud' if result.label == 'FRAUD' else 'br-stat-card-legit' }}">
+        <div class="br-stat-val">{{ result.probability }}%</div>
+        <div class="br-stat-label">Fraud Probability</div>
+    </div>
+    <div class="br-stat-card">
+        <div class="br-stat-val">{{ result.risk_level }}</div>
+        <div class="br-stat-label">Risk Level</div>
+    </div>
+    <div class="br-stat-card">
+        <div class="br-stat-val">{{ result.threshold }}</div>
+        <div class="br-stat-label">Threshold</div>
+    </div>
+</div>
+
+<div class="br-table-wrap">
+    <div class="bt-table-hd2">
+        <div>
+            <div class="bt-table-title2">{{ result.model_used }}</div>
+            <div class="bt-table-sub2">{{ result.dataset }} dataset · Auto-selected for {{ result.transaction_type.replace('_',' ').title() }}</div>
+        </div>
+        <span class="badge badge-{{ result.label|lower if result.label == 'FRAUD' else 'legit' }}" style="font-size:13px;padding:8px 16px;">{{ result.label }}</span>
+    </div>
+    <div class="tw">
+        <table>
+            <thead>
+                <tr><th>Field</th><th>Value</th></tr>
+            </thead>
+            <tbody>
+                <tr><td style="color:var(--muted);">Transaction Type</td><td><strong>{{ result.transaction_type.replace('_',' ').title() }}</strong></td></tr>
+                <tr><td style="color:var(--muted);">Amount</td><td><strong>£{{ "%.2f"|format(result.amount) }}</strong></td></tr>
+                <tr><td style="color:var(--muted);">Fraud Probability</td><td>{{ result.probability }}%</td></tr>
+                <tr><td style="color:var(--muted);">Decision Threshold</td><td>{{ result.threshold }}</td></tr>
+                <tr><td style="color:var(--muted);">Risk Level</td><td><span class="badge badge-{{ result.risk_level|lower }}">{{ result.risk_level }}</span></td></tr>
+                <tr><td style="color:var(--muted);">Model Used</td><td>{{ result.model_used }}</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="br-bottom-cta">
+    <a href="{{ url_for('predict') }}#predictTypeSection" class="bt-results-dl-btn">
+        <i class="bi bi-arrow-left"></i>
+        Check Another Transaction
+    </a>
+</div>
+
+{% endblock %}

@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block title %}User Management — PrediQt{% endblock %}
+{% block page_title %}User Management{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="adm-hero-centered">
+    <h1 class="adm-hero-title-huge">User Management.</h1>
+    <p class="adm-hero-sub-line">Manage everyone with access to PrediQt</p>
+    <p class="adm-hero-sub-line">and control what they're able to do.</p>
+</div>
+
+<div class="usr-stats-row" style="justify-content:center;margin-top:0;margin-bottom:2rem;">
+    <span>Total Users: <strong>{{ total_users }}</strong></span>
+    <span class="usr-stats-div"></span>
+    <span>Admins: <strong>{{ admin_count }}</strong></span>
+</div>
+
+<div class="usr-table-head">
+    <div class="usr-role-pills">
+        <a href="{{ url_for('users', role='all', search=search) }}" class="usr-pill {{ 'active' if role_filter == 'all' else '' }}">All</a>
+        <a href="{{ url_for('users', role='admin', search=search) }}" class="usr-pill {{ 'active' if role_filter == 'admin' else '' }}">Admins</a>
+        <a href="{{ url_for('users', role='user', search=search) }}" class="usr-pill {{ 'active' if role_filter == 'user' else '' }}">Users</a>
+    </div>
+    <form method="GET" action="{{ url_for('users') }}" class="usr-search-form">
+        <input type="hidden" name="role" value="{{ role_filter }}">
+        <input type="text" name="search" class="usr-search-input" placeholder="Search by name or email" value="{{ search }}">
+        <button type="submit" class="usr-search-icon-btn"><i class="bi bi-search"></i></button>
+    </form>
+</div>
+
+<div class="adm-table-wrap">
+    <div class="usr-row usr-row-head">
+        <div>User</div>
+        <div>Role</div>
+        <div>Checks</div>
+        <div>Fraud</div>
+        <div>Joined</div>
+        <div>Last Login</div>
+        <div>Actions</div>
+    </div>
+
+    {% for u in users.items %}
+    {% set role_class = 'usr-role-' + u.user_role %}
+    {% set joined = u.created_at.strftime('%d %b %Y') %}
+    {% set last_login = u.last_login.strftime('%d %b, %H:%M') if u.last_login else 'Never' %}
+    <div class="usr-row">
+        <div class="usr-user-cell">
+            <div class="usr-avatar-sm">
+                {% if u.avatar_filename %}
+                <img src="{{ url_for('static', filename='avatars/' + u.avatar_filename) }}" alt="">
+                {% else %}
+                <span>{{ u.name[0].upper() }}</span>
+                {% endif %}
+            </div>
+            <div>
+                <div class="usr-name">{{ u.name }}</div>
+                <div class="usr-email">{{ u.email }}</div>
+            </div>
+        </div>
+        <div><span class="usr-role-badge {{ role_class }}">{{ u.user_role }}</span></div>
+        <div class="usr-num">{{ user_stats[u.id].total }}</div>
+        <div class="usr-num">{{ user_stats[u.id].fraud }}</div>
+        <div class="usr-date">{{ joined }}</div>
+        <div class="usr-date">{{ last_login }}</div>
+        <div>
+            {% if u.id != current_user.id %}
+            <button type="button" class="usr-action-btn usr-action-btn-danger usr-delete-btn"
+                data-user-id="{{ u.id }}" data-user-name="{{ u.name|e }}">Delete</button>
+            {% else %}
+            <span class="usr-you-tag">You</span>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+    <div class="aud-empty">No users found.</div>
+    {% endfor %}
+
+    {% if users.pages > 1 %}
+    <div class="adm-pagination">
+        {% if users.has_prev %}<a href="{{ url_for('users', page=users.prev_num, search=search, role=role_filter) }}" class="adm-page-btn"><i class="bi bi-chevron-left"></i></a>{% else %}<span class="adm-page-btn disabled"><i class="bi bi-chevron-left"></i></span>{% endif %}
+        {% for p in users.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+            {% if p %}<a href="{{ url_for('users', page=p, search=search, role=role_filter) }}" class="adm-page-btn {{ 'adm-page-active' if p == users.page else '' }}">{{ p }}</a>{% else %}<span class="adm-page-btn">…</span>{% endif %}
+        {% endfor %}
+        {% if users.has_next %}<a href="{{ url_for('users', page=users.next_num, search=search, role=role_filter) }}" class="adm-page-btn"><i class="bi bi-chevron-right"></i></a>{% else %}<span class="adm-page-btn disabled"><i class="bi bi-chevron-right"></i></span>{% endif %}
+    </div>
+    {% endif %}
+</div>
+
+<div id="userDeleteModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;">
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:2rem;width:100%;max-width:420px;margin:0 1rem;box-shadow:0 24px 64px rgba(0,0,0,0.15);">
+        <div style="font-family:'DM Sans',sans-serif;font-weight:800;font-size:1.3rem;color:var(--text);margin-bottom:0.5rem;">Delete this user?</div>
+        <p style="font-size:14px;color:var(--muted);margin-bottom:1.75rem;line-height:1.6;">
+            "<span id="userDeleteName"></span>" and everything tied to their account — predictions, API keys, webhooks — will be permanently removed. This can't be undone.
+        </p>
+        <form id="userDeleteForm" method="POST" action="">
+            <div style="display:flex;gap:10px;justify-content:center;">
+                <button type="button" onclick="closeUserDeleteModal()" style="padding:10px 24px;border-radius:var(--r);border:1.5px solid var(--text);background:transparent;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;color:var(--text);cursor:pointer;">Cancel</button>
+                <button type="submit" style="padding:10px 24px;border-radius:var(--r);border:1.5px solid #dc2626;background:#dc2626;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;color:#fff;cursor:pointer;">Yes, delete</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('click', function(e) {
+    var btn = e.target.closest('.usr-delete-btn');
+    if (!btn) return;
+    var userId = btn.dataset.userId;
+    var userName = btn.dataset.userName;
+    document.getElementById('userDeleteName').textContent = userName;
+    document.getElementById('userDeleteForm').action = '/users/' + userId + '/delete';
+    document.getElementById('userDeleteModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+});
+
+function openUserDeleteModal(userId, userName) {
+    document.getElementById('userDeleteName').textContent = userName;
+    document.getElementById('userDeleteForm').action = '/users/' + userId + '/delete';
+    document.getElementById('userDeleteModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+function closeUserDeleteModal() {
+    document.getElementById('userDeleteModal').style.display = 'none';
+    document.body.style.overflow = '';
+}
+document.addEventListener('DOMContentLoaded', function() {
+    var modal = document.getElementById('userDeleteModal');
+    if (modal && modal.parentElement !== document.body) document.body.appendChild(modal);
+});
+</script>
+{% endblock %}

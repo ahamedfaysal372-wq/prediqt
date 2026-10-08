@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% block title %}Verify Login — PrediQt{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+{% endblock %}
+
+{% block public_content %}
+
+<div class="auth-split">
+
+    <!-- Left panel -->
+    <div class="auth-left">
+        <div class="auth-left-bg"></div>
+        <div class="auth-left-content">
+
+            <a href="{{ url_for('index') }}" class="auth-brand">
+                <div class="auth-brand-logo">
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                        <rect width="28" height="28" rx="6" fill="#1a6b4a"/>
+                        <path d="M7 9.5L14 7L21 9.5V14.5C21 18 17.5 20.5 14 21.5C10.5 20.5 7 18 7 14.5V9.5Z" fill="white" opacity="0.2"/>
+                        <path d="M11 13.5L13.5 16L18 11" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <span>PrediQt</span>
+            </a>
+
+            <div class="auth-left-hero">
+                <h1 class="auth-left-title">
+                    Two-factor<br/>
+                    authentication<br/>
+                    <em>enabled.</em>
+                </h1>
+                <p class="auth-left-sub">
+                    An extra layer of security keeps your fraud detection
+                    data protected. Enter the code sent to your email
+                    to complete sign in.
+                </p>
+            </div>
+
+            <div class="auth-trust">
+                <div class="auth-trust-item">
+                    <div class="auth-trust-icon">🔐</div>
+                    <div>
+                        <div class="auth-trust-title">2FA Protected</div>
+                        <div class="auth-trust-sub">6-digit one-time code</div>
+                    </div>
+                </div>
+                <div class="auth-trust-item">
+                    <div class="auth-trust-icon">⏱️</div>
+                    <div>
+                        <div class="auth-trust-title">10 Minute Expiry</div>
+                        <div class="auth-trust-sub">Code expires automatically</div>
+                    </div>
+                </div>
+                <div class="auth-trust-item">
+                    <div class="auth-trust-icon">📧</div>
+                    <div>
+                        <div class="auth-trust-title">Email Verified</div>
+                        <div class="auth-trust-sub">Sent to your registered email</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Right panel -->
+    <div class="auth-right">
+        <div class="auth-form-wrap">
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="auth-flash auth-flash-{{ category }}">{{ message }}</div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            <div class="auth-step-header">
+                <h2 class="auth-title">Check your email</h2>
+                <p class="auth-sub">
+                    We sent a 6-digit code to
+                    <strong style="color:var(--text);">{{ email }}</strong>
+                </p>
+            </div>
+
+            <form method="POST">
+
+                <div class="ff" style="margin-bottom:1.5rem;">
+                    <label class="auth-label-strong">Verification Code</label>
+                    <input type="text" name="code" id="otpInput"
+                           placeholder="000000"
+                           maxlength="6" autocomplete="one-time-code"
+                           class="auth-input otp-input"
+                           required autofocus />
+                    <div class="auth-field-hint" id="otpHint"></div>
+                </div>
+
+                <!-- Countdown timer -->
+                <div class="otp-timer">
+                    <i class="bi bi-clock"></i>
+                    Code expires in <span id="countdown">10:00</span>
+                </div>
+
+                <button type="submit" class="auth-btn-submit" style="margin-top:1rem;">
+                    <span>Verify and Sign in</span>
+                    <span class="auth-btn-arrow">→</span>
+                </button>
+
+            </form>
+
+            <!-- Resend -->
+            <form method="POST" style="margin-top:1rem;">
+                <input type="hidden" name="action" value="resend">
+                <button type="submit" class="login-demo-btn">
+                    <i class="bi bi-arrow-clockwise"></i>
+                    Resend verification code
+                </button>
+            </form>
+
+            <p class="auth-switch">
+                Wrong account?
+                <a href="{{ url_for('login') }}">Back to sign in</a>
+            </p>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// OTP input — numbers only, auto format
+var otpInput = document.getElementById('otpInput');
+if (otpInput) {
+    otpInput.addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6);
+        if (this.value.length === 6) {
+            document.getElementById('otpHint').textContent = 'Code entered. Click verify to continue.';
+            document.getElementById('otpHint').style.color = 'var(--green)';
+        } else {
+            document.getElementById('otpHint').textContent = '';
+        }
+    });
+}
+
+// Countdown timer
+var seconds = 600;
+var timer   = setInterval(function() {
+    seconds--;
+    var mins = Math.floor(seconds / 60);
+    var secs = seconds % 60;
+    document.getElementById('countdown').textContent =
+        mins + ':' + (secs < 10 ? '0' : '') + secs;
+
+    if (seconds <= 60) {
+        document.getElementById('countdown').style.color = '#dc2626';
+    }
+
+    if (seconds <= 0) {
+        clearInterval(timer);
+        document.getElementById('countdown').textContent = 'Expired';
+        document.getElementById('otpHint').textContent   = 'Code has expired. Please resend.';
+        document.getElementById('otpHint').style.color   = '#dc2626';
+    }
+}, 1000);
+</script>
+{% endblock %}
